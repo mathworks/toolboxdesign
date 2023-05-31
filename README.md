@@ -1,5 +1,7 @@
 # MATLAB Toolbox Best Practices
 
+![](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![](https://img.shields.io/github/license/mathworks/toolboxdesign)
+
 You have a MATLAB&reg; toolbox that you want to share with the world. We want to help. To do that, we want to convince you to use the MathWorks Toolbox best practices. It's a little bit of extra work with a big payoff.
 
 Being in a standard format makes it easier for other people to assess and take advantage of your work. Your work is more "legible," because it's in a familiar format. They know, for example, that they can always expect to find a helpful and thorough `README.md` file in the top folder. They also know that a good place to start learning how to use your toolbox will be the `gettingStarted.mlx` file. These and other best practices help your users build confidence that your toolbox is well built and ready to use.
