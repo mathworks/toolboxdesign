@@ -224,7 +224,7 @@ For your toolbox project hosted on GitHub.com, MathWorks offers 2 badges you can
 
 This opens your toolbox in MATLAB Online. This feature enables your users to try out your toolbox quickly. See [this page](https://www.mathworks.com/products/matlab-online/git.html) to learn more and create an Open in MATLAB Online badge.
 
-[![View Toolbox Best Practice on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/tbd)
+![File Exchange Badge](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)
 
 This provides an easy way for people visiting your GitHub repository to jump to your code on File Exchange. Once your File Exchange entry is set up, a tool will appear at the top of the page to assist you in creating a File Exchange badge.  See [this posting](https://blogs.mathworks.com/community/2019/11/27/a-github-badge-for-the-file-exchange/) for more information.
 
