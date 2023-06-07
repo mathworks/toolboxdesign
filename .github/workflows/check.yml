@@ -19,8 +19,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      # Spell check (main config in .spellcheck.yml and .ignore_spelling.txt
       - uses: rojopolis/spellcheck-github-actions@v0
         name: Spellcheck
 
-
+      # Check Markdown
+      - uses: avto-dev/markdown-lint@v1
+        name: Check markdown
 
