@@ -1,5 +1,4 @@
 MathWorks
-mathworks
 CFD
 QuickerSim
 quickerSimCFD
