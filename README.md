@@ -12,7 +12,7 @@ But the advantages go beyond helping your users. Standard formats also make it e
 
 We use the term “toolbox” here to mean a collection of reusable MATLAB code that you want to share with other people. Toolboxes contain not just code files, but also data, apps, tests, and examples. Some toolboxes will be just a few files; others may be extensive and represent years of effort by multiple people. The guidelines we present can be adapted for toolboxes that are large or small, casual or sophisticated. We will step through a comprehensive example with many aspects. There’s no need to do everything all at once -- you can start with a few guidelines and adopt more as you go.
 
-To make it easier to follow, we’ve created a fictitious toolbox for doing basic arithmetic: The Arithmetic Toolbox on [GitHub](https://github.com/mathworks/arithmetic). We’ll use this throughout to show how to apply these design principles.  If you'd like to explore a complete toolbox that uses this structure, visit the [Climate Data Store Toolbox](https://github.com/mathworks/climatedatastore).
+To make it easier to follow, we’ve created a fictitious toolbox for doing basic arithmetic: The Arithmetic Toolbox on [GitHub](https://github.com/mathworks/arithmetic). We’ll use this throughout to show how to apply these design principles.  If you'd like to explore a complete toolbox that uses this structure, visit the [Climate Data Store Toolbox](https://github.com/kathworks/climatedatastore).
 
 ## Topics
 
