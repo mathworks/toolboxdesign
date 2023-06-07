@@ -4,7 +4,7 @@ matrix:
     lang: en
   dictionary:
     wordlists:
-    - .ignore_spelling.txt
+    - buildUtilities/wordlist.txt
     encoding: utf-8
   pipeline:
   - pyspelling.filters.markdown:

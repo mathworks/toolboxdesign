@@ -21,13 +21,17 @@ jobs:
       # Spell check (main config in .spellcheck.yml and .ignore_spelling.txt)
       - uses: rojopolis/spellcheck-github-actions@v0
         name: Spellcheck
+        with:
+          output_file: spellcheck-output.txt
+          config_path: buildUtilites/spellcheck.yml # configuration file
           
       # Check Markdown (main config in .markdownlint.yml
       - uses: avto-dev/markdown-lint@v1
         name: Check markdown
         with:
-          config: '.markdownlint.yml'
+          config: 'buildUtilities/markdownlint.yml' # configuration file
           args: '*.md'
+          output: 'markdownlint-output.txt'
 
       # Check Links
       - name: Check for broken links in markdown
