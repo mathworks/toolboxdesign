@@ -20,15 +20,10 @@ jobs:
       - uses: actions/checkout@v3
 
       # Check Links
-      - name: Check for broken links
-        uses: celinekurpershoek/link-checker@v1.0.2
+      - name: Check for broken links in markdown
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
-          # Required:
-          url: "https://..."
-          # optional:
-          honorRobotExclusions: false
-          ignorePatterns: "github,google"
-          recursiveLinks: false # Check all URLs on all reachable pages (could take a while)      
+          max-depth: 2
           
           
       # Check Markdown
