@@ -2,9 +2,8 @@ name: Check
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Triggers the workflow on push to any branch or pull request events for the "main" branch
   push:
-    branches: [ "spellcheck" ]
   pull_request:
     branches: [ "main" ]
 
@@ -18,22 +17,21 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      # Check Links
-      - name: Check for broken links in markdown
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
-        with:
-          max-depth: 2
           
+      # Spell check (main config in .spellcheck.yml and .ignore_spelling.txt)
+      - uses: rojopolis/spellcheck-github-actions@v0
+        name: Spellcheck
           
-      # Check Markdown
+      # Check Markdown (main config in .markdownlint.yml
       - uses: avto-dev/markdown-lint@v1
         name: Check markdown
         with:
           config: '.markdownlint.yml'
           args: '*.md'
 
-      # Spell check (main config in .spellcheck.yml and .ignore_spelling.txt
-      - uses: rojopolis/spellcheck-github-actions@v0
-        name: Spellcheck
+      # Check Links
+      - name: Check for broken links in markdown
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          max-depth: 2
 
