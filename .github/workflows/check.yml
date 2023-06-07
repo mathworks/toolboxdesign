@@ -24,6 +24,7 @@ jobs:
         name: Check markdown
         with:
           config: '.markdownlint.yml'
+          args: '*.md'
 
       # Spell check (main config in .spellcheck.yml and .ignore_spelling.txt
       - uses: rojopolis/spellcheck-github-actions@v0
