@@ -3,6 +3,8 @@ matrix:
   aspell:
     lang: en
   dictionary:
+    wordlists:
+    - .ignore_spelling.txt
     encoding: utf-8
   pipeline:
   - pyspelling.filters.markdown:
