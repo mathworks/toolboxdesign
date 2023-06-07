@@ -39,9 +39,10 @@ jobs:
         with:
           max-depth: 2
 
-      # Save results
+      # Save results. Always do this, even if previous steps fail.
       - name: Upload output to artifact
         uses: actions/upload-artifact@v3
+        if: ${{ always() }}  
         with:
           name: check-results
           path: |
