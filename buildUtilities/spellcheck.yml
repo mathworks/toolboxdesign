@@ -2,6 +2,7 @@ matrix:
 - name: Markdown
   aspell:
     lang: en
+    mode: markdown
   dictionary:
     wordlists:
     - buildUtilities/wordlist.txt
