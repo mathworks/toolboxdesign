@@ -18,14 +18,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
           
-      # Spell check (main config in .spellcheck.yml and .ignore_spelling.txt)
+      # Spell check (main config in spellcheck.yml and wordlist.txt)
+      # https://github.com/marketplace/actions/github-spellcheck-action
       - uses: rojopolis/spellcheck-github-actions@v0
         name: Spellcheck
         with:
           output_file: spellcheck-output.txt
           config_path: buildUtilities/spellcheck.yml # configuration file
           
-      # Check Markdown (main config in .markdownlint.yml
+      # Check Markdown (main config in markdownlint.yml
+      # https://github.com/gaurav-nelson/github-action-markdown-link-check
       - uses: avto-dev/markdown-lint@v1
         name: Check markdown
         with:
@@ -34,12 +36,14 @@ jobs:
           output: 'markdownlint-output.txt'
 
       # Check Links
+      # https://github.com/gaurav-nelson/github-action-markdown-link-check
       - name: Check for broken links in markdown
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           max-depth: 2
 
       # Save results. Always do this, even if previous steps fail.
+      # https://github.com/actions/upload-artifact
       - name: Upload output to artifact
         uses: actions/upload-artifact@v3
         if: ${{ always() }}  
