@@ -21,7 +21,6 @@ jobs:
 
       - uses: rojopolis/spellcheck-github-actions@v0
         name: Spellcheck
-        with:
-          source_files: README.md
+
 
 
