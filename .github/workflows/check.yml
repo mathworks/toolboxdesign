@@ -23,7 +23,7 @@ jobs:
         name: Spellcheck
         with:
           output_file: spellcheck-output.txt
-          config_path: buildUtilites/spellcheck.yml # configuration file
+          config_path: buildUtilities/spellcheck.yml # configuration file
           
       # Check Markdown (main config in .markdownlint.yml
       - uses: avto-dev/markdown-lint@v1
@@ -39,3 +39,13 @@ jobs:
         with:
           max-depth: 2
 
+      # Save results
+      - name: Upload output to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: check-results
+          path: |
+            spellcheck-output.txt
+            markdownlint-output.txt
+
+ 
