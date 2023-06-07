@@ -19,6 +19,18 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      # Check Links
+      - name: Check for broken links
+        uses: celinekurpershoek/link-checker@v1.0.2
+        with:
+          # Required:
+          url: "https://..."
+          # optional:
+          honorRobotExclusions: false
+          ignorePatterns: "github,google"
+          recursiveLinks: false # Check all URLs on all reachable pages (could take a while)      
+          
+          
       # Check Markdown
       - uses: avto-dev/markdown-lint@v1
         name: Check markdown
