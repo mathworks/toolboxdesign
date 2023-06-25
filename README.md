@@ -1,6 +1,6 @@
 # MATLAB Toolbox Best Practices
 
-![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
+![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![Repo stars](https://img.shields.io/github/stars/mathworks/toolboxdesign) ![Repo watchers](https://img.shields.io/github/watchers/mathworks/toolboxdesign) [![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)](License.txt)
 
 You have a MATLAB&reg; toolbox that you want to share with the world. We want to help. To do that, we want to convince you to use the MathWorks Toolbox best practices. It's a little bit of extra work with a big payoff.
 
