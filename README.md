@@ -4,7 +4,7 @@
 
 You have a MATLAB&reg; toolbox that you want to share with the world. We want to help. To do that, we want to convince you to use the MathWorks Toolbox best practices. It's a little bit of extra work with a big payoff.
 
-Being in a standard format makes it easier for other people to assess and take advantage of your work. Your work is more "legible," because it's in a familiar format. They know, for example, that they can always expect to find a helpful and thorough `README.md` file in the top folder. They also know that a good place to start learning how to use your toolbox will be the `gettingStarted.mlx` file. These and other best practices help your users build confidence that your toolbox is well built and ready to use.
+Being in a standard format makes it easier for other people to assess and take advantage of your work. Your work is more "legible," because it's in a familiar format. They know, for example, that they can always expect to find a helpful and thorough `README.md` file in the top folder. They also know that a good place to start learning how to use your toolbox will be the `GettingStarted.mlx` file. These and other best practices help your users build confidence that your toolbox is well built and ready to use.
 
 But the advantages go beyond helping your users. Standard formats also make it easier for you to maintain the toolbox. Tools and systems (such as automated testing on GitHub) will immediately know how to work.
 
@@ -25,7 +25,7 @@ To make it easier to follow, we’ve created a fictitious toolbox for doing basi
 At the top level of your project is a folder or source repository, which we'll call the _root folder_. This folder has everything a developer needs to collaborate with you on your toolbox.  When you are working in GitHub, this is the repository name, and will be the name of the folder when the repository is cloned.
 
 * To name the root folder of your toolbox, shorten the English name by removing the word "toolbox" and start with a letter. Use only letters, numbers, and underscores. For instance, if your toolbox is named "QuickerSim CFD Toolbox for MATLAB," the root folder might be named "quickerSimCFD." Following this naming convention will guarantee the validity of your toolbox in every operating system and source control system you use, eliminating the need to rename it in the future whenever you migrate to new systems.
-* Include a `README.md` file in the root folder. See [this article](https://medium.com/swlh/how-to-make-the-perfect-readme-md-on-github-92ed5771c061) for a good tutorial. Start with a short, user focused summary of the toolbox with installation instructions, and then point them to your `gettingStarted.mlx` file (see below). The rest of your `README.md` should be written for collaborators working on the toolbox, and how to contribute to it. It is a historical convention (more than 50 years!) that the file name be capitalized to make it stand out.
+* Include a `README.md` file in the root folder. See [this article](https://medium.com/swlh/how-to-make-the-perfect-readme-md-on-github-92ed5771c061) for a good tutorial. Start with a short, user focused summary of the toolbox with installation instructions, and then point them to your `GettingStarted.mlx` file (see below). The rest of your `README.md` should be written for collaborators working on the toolbox, and how to contribute to it. It is a historical convention (more than 50 years!) that the file name be capitalized to make it stand out.
 * A `license.txt` file outlines how others can use, distribute, and change your code. Including a license file adds clarity and transparency for other people. Without a license, others may not be sure if they're allowed to use or change your code.
 * You should put images for your `README.md` file in an `images` folder to reduce clutter.
 * See [below](#make-your-toolbox-more-robust) for information on where to put tests, MATLAB projects, and automation files.
@@ -52,7 +52,7 @@ The structure of this folder depends on the size and complexity of your toolbox:
 
 We also recommend including in your toolbox folder:
 
-* A `gettingStarted.mlx` file at the top level of the toolbox folder that introduces your users to your toolbox and showcase important workflows. This file should give an overview of how to use your toolbox and highlight key functionality.
+* A `GettingStarted.mlx` file at the top level of the documentation folder that introduces your users to your toolbox and showcase important workflows. This file should give an overview of how to use your toolbox and highlight key functionality.
 * Examples are an effective way for users to learn how to use your toolbox. We recommend using MATLAB Live Scripts to show how to use different parts of your toolbox and including them in an `examples` folder under the toolbox directory. This makes it easier for users to explore and try out different code samples.
 
 Our example toolbox has:
@@ -231,4 +231,4 @@ This provides an easy way for people visiting your GitHub repository to jump to 
 ---
 [![CC-BY-4.0](images/cc-by-40.png)](https://creativecommons.org/licenses/by/4.0/)
 
-Copyright &copy; 2023, The MathWorks, Inc.
+Copyright &copy; 2024, The MathWorks, Inc.
