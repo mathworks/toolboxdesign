@@ -1,7 +1,7 @@
 # MATLAB MEX Best Practice
 
-|:exclamation: This page is under construction and review  |
-|----------------------------------------------------------|
+> [!IMPORTANT]
+> This page is under construction and review
 
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
