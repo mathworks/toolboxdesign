@@ -22,8 +22,10 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 - **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool` documentation](https://www.mathworks.com/help/matlab/ref/buildtool.html) for more information.
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
-## Managing MEX functions and run time binaries
-[MATLAB Toolbox Best Practices](README.md) advocates for placing the files needed by the user to run the toolbox under the `toolbox` folder. Contents of this folder is what shipped to the users. For a toolbox that uses MEX, we recommend the MEX functions to be placed under a `private` folder within the `toolbox` folder.  The content of the `private` folder can be ignored from version control (add the private folder to the .gitignore) since MEX functions are derived artifacts. In addition to MEX functions, the `private` folder can also have other binary files that are required during runtime.
+## MEX functions and runtime binaries
+[MATLAB Toolbox Best Practices](README.md) advocates for placing the files needed by the user to run the toolbox under the `toolbox` folder. Contents of this folder is what gets shipped to the user. For a toolbox that uses MEX, we recommend the MEX functions to be placed under a `private` folder within the `toolbox` folder.  The content of the `private` folder can be ignored from version control (add the private folder to the .gitignore) since MEX functions are derived artifacts. In addition to MEX functions, the `private` folder can also have other binary files that are required at runtime.
+
+Improper use of MEX functions can lead to MATLAB crashing. An effective safeguard against this failure is to prevent direct access to MEX functions. We recommended calling the MEX function from a MATLAB script, by doing so the author can validate the inputs from a MATLAB script before passing it to the MEX function. Placing the the MEX functions within a private folder only facilitates this, since a private folder cannot be added to MATLAB path directly and only MATLAB scripts placed within the parent folder of a private folder can access its contents.
 
 ## MEX Source Files
 
