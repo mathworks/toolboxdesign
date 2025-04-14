@@ -5,7 +5,7 @@
 
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
-Welcome to the MATLAB&reg; MEX Best Practice guide. This document offers a refined approach to seamlessly integrating MEX files into your MATLAB toolbox projects, complementing our established [MATLAB Toolbox Best Practices](README.md). MEX files enable you to harness the power of C or C++ functions within MATLAB, and this guide will equip you with the knowledge to maintain a consistent and efficient workflow. Let's explore the world of MEX integration!
+Welcome to the MATLAB&reg; MEX Best Practice guide. This document offers a refined approach to seamlessly integrating MEX files into your MATLAB toolbox projects, complementing our established [MATLAB Toolbox Best Practices](README.md). MEX files enable you to harness the power of C /C++/ Fortran functions within MATLAB, and this guide will equip you with the knowledge to maintain a consistent and efficient workflow. Let's explore the world of MEX integration!
 
 ## Overview
 
@@ -15,9 +15,15 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 
 ## Key Concepts
 
-- **MEX Files**: These are functions written in C, C++, or Fortran, compiled to be callable from MATLAB.  See the [MEX documentation](https://www.mathworks.com/help/matlab/cpp-mex-file-applications.html) for more information.
+- **MEX Source Files**: These are functions written in C, C++, or Fortran, compiled to be callable from MATLAB.  See the [MEX documentation](https://www.mathworks.com/help/matlab/cpp-mex-file-applications.html) for more information.
+- **MEX Functions**: 
+- **MEX Gateway Function**:
+- **Run time binaries**:
 - **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool` documentation](https://www.mathworks.com/help/matlab/ref/buildtool.html) for more information.
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
+
+## Managing MEX functions and run time binaries
+[MATLAB Toolbox Best Practices](README.md) advocates for placing the files needed by the user to run the toolbox under the `toolbox` folder. Contents of this folder is what shipped to the users. For a toolbox that uses MEX, we recommend the MEX functions to be placed under a `private` folder within the `toolbox` folder.  The content of the `private` folder can be ignored from version control (add the private folder to the .gitignore) since MEX functions are derived artifacts. In addition to MEX functions, the `private` folder can also have other binary files that are required during runtime.
 
 ## MEX Source Files
 
