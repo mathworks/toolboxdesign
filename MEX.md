@@ -32,24 +32,24 @@ This classification is based on how many source files are required to generate a
 
 Organize your MEX source files in language-specific directories at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder at the root of the toolbox repo for both C and C++ source code.
 
-For C and C++ single source MEX functions, place the source code within the `mexfunctions` folder within the `cpp` folder. In case of Fortran, source code create a `fortran` folder within the toolbox root and move the Fortran single source MEX function within the `mexfunctions` folder. Note that a toolbox project can have the `cpp` and `fortran` folders if it has C, C++ and Fortran source code. 
+For C and C++ single source MEX functions, place the source code within the `mexfunctions` folder within the `cpp` folder. In case of Fortran, create a `fortran` folder within the toolbox root and move the source code for Fortran single source MEX function within the `mexfunctions` folder. Note that a toolbox project can have both `cpp` and `fortran` folders if it has MEX functions written using C/ C++ and Fortran. We also recommend the file names be suffixed with 'Mex' to indicate that the source files are to be compiled to MEX functions.
 
- For multiple source MEX functions create a folder for each MEX function and 
+For multiple source MEX functions, create a folder for each MEX function. The name of the folder should be same as that of the MEX function. In addition, we recommend suffixing the folder name with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function.    
 
 
 Our Arithmetic Toolbox example features two MEX functions: `addMex` and `subtractMex`, which are called by the MATLAB functions `add.m` and `subtract.m`.
 
 ``` text
 arithmetic/
-├───toolbox/
-|   ├───add.m
-|   └───subtract.m
 ├───cpp/
 │   ├───addMex/
 │   │   ├───firstFile.cpp
 │   │   └───secondFile.cpp
-│   └───subtractMex/
-│       └───subtract.cpp
+│   └───mexfunctions/
+│       └───subtractMex.cpp
+├───toolbox/
+|   ├───add.m
+|   └───subtract.m
 ├───arithmetic.prj
 └───buildfile.m
 ```
