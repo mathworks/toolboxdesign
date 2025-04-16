@@ -16,16 +16,12 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 ## Key Concepts
 
 - **MEX Source Files**: These are functions written in C, C++, or Fortran, compiled to be callable from MATLAB.  See the [MEX documentation](https://www.mathworks.com/help/matlab/cpp-mex-file-applications.html) for more information.
-- **MEX Functions**: 
+- **MEX Functions**: Platform dependent binaries that can be called directly from MATLAB, they behave almost like a MATLAB function. 
 - **MEX Gateway Function**:
-- **Run time binaries**:
+- **Compile time binaries**: These are binaries need not be shipped to the customers, they are required only at compile time. Static libraries are a good example of these binaries.
+- **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples of run time binaries.
 - **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool` documentation](https://www.mathworks.com/help/matlab/ref/buildtool.html) for more information.
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
-
-## MEX functions and runtime binaries
-[MATLAB Toolbox Best Practices](README.md) advocates for placing the files needed by the user to run the toolbox under the `toolbox` folder. Contents of this folder is what gets shipped to the user. For a toolbox that uses MEX, we recommend the MEX functions be placed under a `private` folder within the `toolbox` folder, thus making these MEX functions [Private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  The content of the `private` folder can be ignored from version control (add the private folder to the .gitignore) since MEX functions are derived artifacts. In addition to MEX functions, the `private` folder can also have other binary files that are required at runtime.
-
-Improper use of MEX functions can lead to MATLAB crashing. An effective safeguard against this failure is to prevent direct access to MEX functions. We recommended calling the MEX function from a MATLAB script, by doing so the author can validate the inputs from a MATLAB script before passing it to the MEX function. Placing the the MEX functions within a private folder only facilitates this, since a private folder cannot be added to MATLAB path directly and only MATLAB scripts placed within the parent folder of a private folder can access its contents.
 
 ## MEX Source Files
 
@@ -47,6 +43,12 @@ arithmetic/
 ├───arithmetic.prj
 └───buildfile.m
 ```
+## MEX functions and runtime binaries
+[MATLAB Toolbox Best Practices](README.md) advocates for placing the files needed by the user to run the toolbox under the `toolbox` folder. Contents of this folder is what gets shipped to the user. For a toolbox that uses MEX, we recommend the MEX functions be placed under a `private` folder within the `toolbox` folder, thus making these MEX functions [Private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  The content of the `private` folder can be ignored from version control (add the private folder to the .gitignore) since MEX functions are derived artifacts. In addition to MEX functions, the `private` folder can also have other binary files that are required at runtime.
+
+Improper use of MEX functions can lead to MATLAB crashing. An effective safeguard against this failure is to prevent direct access to MEX functions. We recommended calling the MEX function from a MATLAB script, by doing so the author can validate the inputs from a MATLAB script before passing it to the MEX function. Placing the the MEX functions within a private folder only facilitates this, since a private folder cannot be added to MATLAB path directly and only MATLAB scripts placed within the parent folder of a private folder can access its contents.
+
+
 
 ## Building MEX Files
 - **Tools**: Use MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, to automate the MEX build process. The [`matlab.buildtool.tasks.MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), introduced in R2024a, automates the compilation, ensuring consistency across environments.  If you need support in earlier releases, use the [`mex` command](https://www.mathworks.com/help/matlab/ref/mex.html).
