@@ -15,16 +15,17 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 
 ## Key Concepts
 - **MEX Source Files**: These are functions written in C, C++, or Fortran, compiled to be callable from MATLAB.  See the [MEX documentation](https://www.mathworks.com/help/matlab/cpp-mex-file-applications.html) for more information.
-- **MEX Functions**: Platform dependent binaries that can be called directly from MATLAB, they behave almost like a MATLAB function. 
-- **MEX Gateway Function**: Written in a MEX supported language, MATLAB accesses this function when a call is made to a MEX function. Each MEX function has only one gateway function written using the syntax of the source language.
-- **Compile time binaries**: Static libraries are a good example of these binaries. You need not ship these binaries to your users.
+- **MEX Functions**: Platform dependent binaries that can be called directly from MATLAB, they behave almost like a MATLAB function. MATLAB uses a platform dependent file extension for MEX functions, these extensions can be determined using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html).
+- **MEX Gateway Function**: Written in a MEX supported language, MATLAB accesses this function when a call is made to a MEX function. Each MEX function has only one gateway function. [MEX gateway functions written in C](https://www.mathworks.com/help/matlab/apiref/mexfunction.html) 
+- **Compile time binaries**: Static libraries are a good example of these binaries. These library binaries are required only at build time and you need not ship them to your users.
 - **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples of run time binaries.
 - **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool` documentation](https://www.mathworks.com/help/matlab/ref/buildtool.html) for more information.
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
 ## MEX Source Files
 
-Organize your MEX source files in language-specific directories at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages.
+Organize your MEX source files in language-specific directories at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder for both C and C++ source code.
+
 
 Our Arithmetic Toolbox example features two MEX functions: `addMex` and `subtractMex`, which are called by the MATLAB functions `add.m` and `subtract.m`.
 
