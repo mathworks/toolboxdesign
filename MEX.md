@@ -53,15 +53,19 @@ arithmetic/
 ├───arithmetic.prj
 └───buildfile.m
 ```
-## MEX functions and runtime binaries
-[MATLAB Toolbox Best Practices](README.md) advocates for placing the files needed by the user to run the toolbox under the `toolbox` folder. Contents of this folder is what gets shipped to the user. For a toolbox that uses MEX, we recommend the MEX functions be placed under a `private` folder within the `toolbox` folder, thus making these MEX functions [Private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  The content of the `private` folder can be ignored from version control (add the private folder to the .gitignore) since MEX functions are derived artifacts. In addition to MEX functions, the `private` folder can also have other binary files that are required at runtime.
-
-Improper use of MEX functions can lead to MATLAB crashing. An effective safeguard against this failure is to prevent direct access to MEX functions. We recommended calling the MEX function from a MATLAB script, by doing so the author can validate the inputs from a MATLAB script before passing it to the MEX function. Placing the the MEX functions within a private folder only facilitates this, since a private folder cannot be added to MATLAB path directly and only MATLAB scripts placed within the parent folder of a private folder can access its contents.
-
-
-
-## Building MEX Files
+## Building MEX Functions
 - **Tools**: Use MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, to automate the MEX build process. The [`matlab.buildtool.tasks.MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), introduced in R2024a, automates the compilation, ensuring consistency across environments.  If you need support in earlier releases, use the [`mex` command](https://www.mathworks.com/help/matlab/ref/mex.html).
+
+
+## Organizing MEX Functions
+[MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder. Contents of this folder is what gets shipped to the user. For a toolbox that uses MEX, we recommend the MEX functions be placed under a `private` folder within the `toolbox` folder, making these MEX functions [Private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
+
+We recommend ignoring the MEX functions with `private` folder from version control (add the private folder to the `.gitignore`) since MEX functions are derived artifacts.
+
+Our motivation for placing the MEX functions with the `private` folder is to restrict the user from directly calling the MEX function. 
+
+stems from the observation that improper use of MEX functions can lead to MATLAB crashing. By placing MEX function An effective safeguard against this failure is to prevent direct access to MEX functions. We recommended calling the MEX function from a MATLAB script, by doing so the author can validate the inputs from a MATLAB script before passing it to the MEX function. Placing the the MEX functions within a private folder only facilitates this, since a private folder cannot be added to MATLAB path directly and only MATLAB scripts placed within the parent folder of a private folder can access its contents.
+
 - **Compiled Binaries**: Store compiled MEX binaries in the `toolbox/private` folder. This approach maintains internal accessibility while mitigating the risk of crashes from unhandled inputs by preventing direct user access to MEX functions.
 
 Our example toolbox shows the built mex functions for several platforms:
@@ -69,6 +73,12 @@ Our example toolbox shows the built mex functions for several platforms:
 ``` text
 arithmetic/
 :
+├───cpp/
+│   ├───substractMex/
+│   │   ├───substract.cpp
+│   │   └───substractImp.cpp
+│   └───mexfunctions/
+│       └───addMex.cpp
 ├───toolbox/
 |   ├───add.m
 |   ├───subtract.m
@@ -79,12 +89,6 @@ arithmetic/
 |       ├───subtractMex.mexw64 (derived)
 |       ├───subtractMex.mexa64 (derived)
 |       └───subtractMex.mexmaca64 (derived)
-├───cpp/
-│   ├───addMex/
-│   │   ├───firstFile.cpp
-│   │   └───secondFile.cpp
-│   └───subtractMex/
-│       └───subtract.cpp
 ├───arithmetic.prj
 └───buildfile.m 
 ```
