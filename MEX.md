@@ -60,13 +60,11 @@ arithmetic/
 ## Organizing MEX Functions
 [MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder. Contents of this folder is what gets shipped to the user. For a toolbox that uses MEX, we recommend the MEX functions be placed under a `private` folder within the `toolbox` folder, making these MEX functions [Private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
 
+Our motivation for placing the MEX functions with the `private` folder is to restrict the toolbox user from  calling the MEX function directly. We recommend accessing the MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination unexpected MATLAB crashes.
+
 We recommend ignoring the MEX functions with `private` folder from version control (add the private folder to the `.gitignore`) since MEX functions are derived artifacts.
 
-Our motivation for placing the MEX functions with the `private` folder is to restrict the user from directly calling the MEX function. 
-
-stems from the observation that improper use of MEX functions can lead to MATLAB crashing. By placing MEX function An effective safeguard against this failure is to prevent direct access to MEX functions. We recommended calling the MEX function from a MATLAB script, by doing so the author can validate the inputs from a MATLAB script before passing it to the MEX function. Placing the the MEX functions within a private folder only facilitates this, since a private folder cannot be added to MATLAB path directly and only MATLAB scripts placed within the parent folder of a private folder can access its contents.
-
-- **Compiled Binaries**: Store compiled MEX binaries in the `toolbox/private` folder. This approach maintains internal accessibility while mitigating the risk of crashes from unhandled inputs by preventing direct user access to MEX functions.
+<!-- - **Compiled Binaries**: Store compiled MEX binaries in the `toolbox/private` folder. This approach maintains internal accessibility while mitigating the risk of crashes from unhandled inputs by preventing direct user access to MEX functions. -->
 
 Our example toolbox shows the built mex functions for several platforms:
 
