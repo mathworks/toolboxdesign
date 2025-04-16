@@ -20,9 +20,15 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 - **Compile time binaries**: Static libraries are a good example of these binaries. These library binaries are required only at build time and you need not ship them to your users.
 - **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples of run time binaries.
 - **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool` documentation](https://www.mathworks.com/help/matlab/ref/buildtool.html) for more information.
+-  **MEX compiler**: Converts MEX source files into MEX functions. The MEX compiler can be accessed from MATLAB via the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, it can be invoked for the system terminal via the same command.
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
-## MEX Source Files
+## Organizing MEX Source Files
+MEX functions are classified into two groups: 
+1. Single source MEX function 
+2. Multiple source MEX function 
+
+This classification is based on how many source files are required to generate a MEX function. For a single source MEX function, the source file implements a MEX gateway function and other functionalities that are called within the gateway function. A multiple source MEX function has one of its source files implement a gateway function while the other source files implement features and functionalities that are used in the gateway function.
 
 Organize your MEX source files in language-specific directories at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder for both C and C++ source code.
 
