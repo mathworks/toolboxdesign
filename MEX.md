@@ -28,9 +28,13 @@ MEX functions are classified into two groups:
 1. Single source MEX function 
 2. Multiple source MEX function 
 
-This classification is based on how many source files are required to generate a MEX function. For a single source MEX function, the source file implements a MEX gateway function and other functionalities that are called within the gateway function. A multiple source MEX function has one of its source files implement a gateway function while the other source files implement features and functionalities that are used in the gateway function.
+This classification is based on how many source files are required to generate a MEX function. For a single source MEX function, the source file implements a MEX gateway function and other functionalities that are called within the gateway function. A multiple source MEX function on the other hand, has one of its source files implement a gateway function while the other source files implement features and functionalities that are used in the gateway function. Our folder structure for the MEX source files is largely based on this classification.
 
-Organize your MEX source files in language-specific directories at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder for both C and C++ source code.
+Organize your MEX source files in language-specific directories at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder at the root of the toolbox repo for both C and C++ source code.
+
+For C and C++ single source MEX functions, place the source code within the `mexfunctions` folder within the `cpp` folder. In case of Fortran, source code create a `fortran` folder within the toolbox root and move the Fortran single source MEX function within the `mexfunctions` folder. Note that a toolbox project can have the `cpp` and `fortran` folders if it has C, C++ and Fortran source code. 
+
+ For multiple source MEX functions create a folder for each MEX function and 
 
 
 Our Arithmetic Toolbox example features two MEX functions: `addMex` and `subtractMex`, which are called by the MATLAB functions `add.m` and `subtract.m`.
