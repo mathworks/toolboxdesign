@@ -14,11 +14,10 @@ MEX files bridge the gap between MATLAB and C, C++, or Fortran, allowing you to 
 To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this project throughout the guide to demonstrate practical applications of these principles.
 
 ## Key Concepts
-
 - **MEX Source Files**: These are functions written in C, C++, or Fortran, compiled to be callable from MATLAB.  See the [MEX documentation](https://www.mathworks.com/help/matlab/cpp-mex-file-applications.html) for more information.
 - **MEX Functions**: Platform dependent binaries that can be called directly from MATLAB, they behave almost like a MATLAB function. 
-- **MEX Gateway Function**:
-- **Compile time binaries**: These are binaries need not be shipped to the customers, they are required only at compile time. Static libraries are a good example of these binaries.
+- **MEX Gateway Function**: Written in a MEX supported language, MATLAB accesses this function when a call is made to a MEX function. Each MEX function has only one gateway function written using the syntax of the source language.
+- **Compile time binaries**: Static libraries are a good example of these binaries. You need not ship these binaries to your users.
 - **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples of run time binaries.
 - **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool` documentation](https://www.mathworks.com/help/matlab/ref/buildtool.html) for more information.
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
