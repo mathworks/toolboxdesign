@@ -37,7 +37,7 @@ For C and C++ single source MEX functions, place the source code within the `mex
 For multiple source MEX functions, create a folder for each MEX function. The name of the folder should be same as that of the MEX function. In addition, we recommend suffixing the folder name with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function.    
 
 
-Our Arithmetic Toolbox example features two MEX functions: `addMex` and `subtractMex`, we have left the MEX function's extension to make the discussion platform agnostic. `addMEX` is implemented as a single source MEX function and placed under the `mexfunctions` within the `cpp` folder, while is substract is .   which are called by the MATLAB functions `add.m` and `subtract.m`.
+Our Arithmetic Toolbox example features two MEX functions: `addMex` and `subtractMex`, we have left the MEX function's extension to make the discussion platform agnostic. `addMEX` is implemented as a single source MEX function and placed under the `mexfunctions` folder within the `cpp` folder, while `substractMEX` is implemented as a MEX function with multiple source and the source code that compiles to `substractMEX` is place within the `substractMex` under the `cpp` folder. `substract.cpp` implements the MEX gateway function and `substractImp.cpp` contains implementations that are required for the functionality of `substractMEX` function.
 
 ``` text
 arithmetic/
