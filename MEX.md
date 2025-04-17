@@ -58,9 +58,9 @@ arithmetic/
 
 
 ## Organizing MEX Functions
-[MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder. Contents of this folder is what gets shipped to the user. For a toolbox that uses MEX, we recommend the MEX functions be placed under a `private` folder within the `toolbox` folder, making these MEX functions [Private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
+[MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder, contents of this folder gets shipped to the user. For a toolbox that uses MEX, place the MEX functions under a `private` folder within the `toolbox` folder, thus making them private [Private functions](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
 
-Our motivation for placing the MEX functions with the `private` folder is to restrict the toolbox user from  calling the MEX function directly. We recommend accessing the MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination unexpected MATLAB crashes.
+Our motivation for making MEX functions private is to restrict the toolbox user from  calling the MEX function directly. We recommend accessing the MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination unexpected MATLAB crashes.
 
 We recommend ignoring the MEX functions with `private` folder from version control (add the private folder to the `.gitignore`) since MEX functions are derived artifacts.
 
@@ -91,9 +91,22 @@ arithmetic/
 └───buildfile.m 
 ```
 
-Example buildfile.m:
+Here is a `buildfile` with a single task called `mex`, it compile the single source and multiple source MEX functions. Note that the `buildfile` was tested on Windows, with MATLAB R2025a.
+
 ``` matlab
-TBD
+function plan = buildfile
+
+import matlab.buildtool.tasks.*
+import matlab.buildtool.io.*
+
+% Create a plan 
+plan = buildplan();
+
+% Compile all the .cpp files inside cpp/mexfunctions into MEX functions
+mexSourceFiles = files(plan, fullfile("cpp", "mexfunctions", "*.cpp"));
+plan("mex") = MexTask.forEachFile(mexSourceFiles, fullfile("toolbox","private"));
+
+end
 ```
 
 
