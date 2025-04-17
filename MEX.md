@@ -104,7 +104,8 @@ plan = buildplan();
 
 % Compile all the .cpp files inside cpp/mexfunctions into MEX functions
 mexSourceFiles = files(plan, fullfile("cpp", "mexfunctions", "*.cpp"));
-plan("mex") = MexTask.forEachFile(mexSourceFiles, fullfile("toolbox","private"));
+mexOutputFolder = fullfile("toolbox","private")l;
+plan("mex") = MexTask.forEachFile(mexSourceFiles, mexOutputFolder);
 
 end
 ```
