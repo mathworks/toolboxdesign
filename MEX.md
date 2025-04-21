@@ -36,10 +36,10 @@ Our folder structure within the language-specific folder (e.g., `cpp`) for the M
 For C and C++ single source MEX functions, place the source code within the `mexfunctions` folder within the `cpp` folder. In case of Fortran, create a `fortran` folder within the toolbox root and move the source code for Fortran single source MEX function within the `mexfunctions` folder. Note that a toolbox project can have both `cpp` and `fortran` folders if it has MEX functions written using C/ C++ and Fortran. We also recommend the names of the MEX functions to be same as their  source file (of course with different extensions), this ensures traceability. Moreover, we also recommend the file names be suffixed with 'Mex', this acts as an indication that the function being called is not any MATLAB function but a MEX function.
 
 
-For multiple source MEX functions, create a folder for each MEX function within the respective language folder under project root. The name of the folder should be same as that of the MEX function that will be created out for source code with the folder. The folder name has to be suffixed with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function.    
+For multiple source MEX functions, create a folder for each MEX function within the respective language folder. The name of the folder should be same as that of the MEX function that will be created out for source code with the folder. The folder name can be suffixed with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function, with the same name as the folder.    
 
 
-Our Arithmetic Toolbox example features two MEX functions: `addMex` and `subtractMex`, we have left the MEX function's extension to make the discussion platform agnostic. `addMEX` is implemented as a single source MEX function and placed under the `mexfunctions` folder within the `cpp` folder, while `substractMEX` is implemented as a MEX function with multiple source and the source code that compiles to `substractMEX` is place within the `substractMex` under the `cpp` folder. `substract.cpp` implements the MEX gateway function and `substractImp.cpp` contains implementations that are required for the functionality of `substractMEX` function.
+Our [Arithmetic Toolbox]() example features two MEX functions: `addMex` and `subtractMex`. `addMex` is implemented as a single source MEX function and the source code is placed under the `mexfunctions` folder. On the other hand, `substractMex` is implemented as a multiple source MEX function with source code placed under the `substractMex` folder, `substract.cpp` implements the MEX gateway function for the `substractMex` MEX function and `substractImp.cpp`  implementations functionalities that are used in `substract.cpp`. The organization of the MEX source files is shown below:
 
 ``` text
 arithmetic/
@@ -56,7 +56,7 @@ arithmetic/
 └───buildfile.m
 ```
 ## Building MEX Functions
-- **Tools**: Use MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, to automate the MEX build process. The [`matlab.buildtool.tasks.MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), introduced in R2024a, automates the compilation, ensuring consistency across environments.  If you need support in earlier releases, use the [`mex` command](https://www.mathworks.com/help/matlab/ref/mex.html).
+- **Tools**: Use MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, to automate the MEX build process. The [`matlab.buildtool.tasks.MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), introduced in R2024a, automates the compilation, ensuring consistency across environments.  If you need support in earlier releases, use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command directly. 
 
 
 ## Organizing MEX Functions
