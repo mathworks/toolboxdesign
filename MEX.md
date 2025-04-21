@@ -24,13 +24,14 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
 ## Organizing MEX Source Files
+Organize your MEX source files in language-specific folder at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder at the root of the toolbox repo for both C and C++ source code.
+
 MEX functions are classified into two groups: 
 1. Single source MEX function 
 2. Multiple source MEX function 
 
-This classification is based on how many source files are required to generate a MEX function. For a single source MEX function, the source file implements a MEX gateway function and other functionalities that are called within the gateway function. A multiple source MEX function on the other hand, has one of its source files implement a gateway function while the other source files implement features and functionalities that are used in the gateway function. Our folder structure for the MEX source files is largely based on this classification.
+Our folder structure within the language-specific folder (e.g., `cpp`) for the MEX source files is largely based on this classification. For a single source MEX function, the source code file implements the MEX gateway function and other functionalities that are called within the gateway function. A multiple source MEX function on the other hand, has one of its source code files implement the gateway function while the other source files implement features and functionalities that are used in the gateway function. 
 
-Organize your MEX source files in language-specific directories at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder at the root of the toolbox repo for both C and C++ source code.
 
 For C and C++ single source MEX functions, place the source code within the `mexfunctions` folder within the `cpp` folder. In case of Fortran, create a `fortran` folder within the toolbox root and move the source code for Fortran single source MEX function within the `mexfunctions` folder. Note that a toolbox project can have both `cpp` and `fortran` folders if it has MEX functions written using C/ C++ and Fortran. We also recommend the file names be suffixed with 'Mex' to indicate that the source files are to be compiled to MEX functions.
 
