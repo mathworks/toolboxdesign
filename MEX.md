@@ -117,7 +117,8 @@ plan("mex") = MexTask.forEachFile(mexSourceFiles, mexOutputFolder);
 end
 ```
 
-### Call MEX functions from a mexhost 
+### Out of process MEX host
+If you are using MEX functions written using the C++, we recommend calling the MEX function from an out of process MEX host. You can create an out of process MEX host using the [mexhost](https://www.mathworks.com/help/matlab/ref/mexhost.html) command. It protects MATLAB from crashing due to unexpected errors originating from the MEX function execution.
 
 
 ## Incorporating External Libraries
@@ -140,6 +141,10 @@ The toolbox user does not need these libraries to run the MEX functions  they ar
 | Linux             | glnx64      | .a             |
 | Windows           | win64       | .lib           |
 | Mac ARM           | maca64      | .dylib         |
+
+
+### Managing runtime library binaries
+
 
 
 * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. 
