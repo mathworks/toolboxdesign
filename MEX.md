@@ -133,13 +133,13 @@ Create an `include` folder within the the language specific folder (say `cpp`) a
 
 
 ### Managing compile time library binaries
-The toolbox user does not need these libraries to run the MEX functions  they are required only at compile time. You can place these binaries under platform specific folders within the `library` folder. We recommend using standard names for these platform folders.
+The toolbox user does not need these libraries to run the MEX functions  they are required only at compile time, these libraries are often referred to as static libraries. You can place these binaries under platform specific folders within the `library` folder. We recommend using standard names for the platform folders. The table below provides a summary of the folder names and file extensions used for static libraries for popular platforms
 
-| Platform             | Folder name | 
-| :---------------- | :------: |
-| Linux | glnx64 |
-| Windows | win64 |
-| Mac ARM | maca64 |
+| Platform          | Folder name | File Extension | 
+| :---------------- | :------     | :------        |
+| Linux             | glnx64      | .a             |
+| Windows           | win64       | .lib           |
+| Mac ARM           | maca64      | .dylib         |
 
 
 * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. 
