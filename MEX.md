@@ -62,13 +62,18 @@ arithmetic/
 ## Organizing MEX Functions
 [MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder, contents of this folder gets shipped to the user. For a toolbox that uses MEX, place the MEX functions under a `private` folder within the `toolbox` folder, thus making them private [Private functions](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
 
-Our motivation for making MEX functions private is to restrict the toolbox user from  calling the MEX function directly. We recommend accessing the MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination unexpected MATLAB crashes.
+Our motivation for making MEX functions private is to restrict the toolbox user from  calling them directly. We recommend accessing the MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination failures due to unhandled inputs.
 
-We recommend ignoring the MEX functions with `private` folder from version control (add the private folder to the `.gitignore`) since MEX functions are derived artifacts.
+We recommend ignoring the MEX functions from version control (add the `private` folder to the `.gitignore`) since MEX functions are derived artifacts.
 
 <!-- - **Compiled Binaries**: Store compiled MEX binaries in the `toolbox/private` folder. This approach maintains internal accessibility while mitigating the risk of crashes from unhandled inputs by preventing direct user access to MEX functions. -->
 
-Our example toolbox shows the built mex functions for several platforms:
+<!-- Our example toolbox shows the MEX functions for several platforms: -->
+
+The layout of the files with the `private` folder is shown below, for the sake of clarity we have shown the MEX functions for all the major platforms. Not that the GitHub repository for the Arithmetic toolbox will not contain the MEX functions since they are ignored by the version control system. You can create the MEX functions by running the following command from MATLAB terminal:
+``` matlab
+>> buildtool mex
+```
 
 ``` text
 arithmetic/
@@ -93,7 +98,7 @@ arithmetic/
 └───buildfile.m 
 ```
 
-Here is a `buildfile` with a single task called `mex`, it compile the single and multiple source MEX functions. Note that the `buildfile` was tested on Windows, with MATLAB R2025a.
+Here is a `buildfile` with a single task called `mex`,  this task compile the single and multiple source MEX functions and places them within the `private` folder. Note that the `buildfile` was tested on MATLAB R2025a.
 
 ``` matlab
 function plan = buildfile
