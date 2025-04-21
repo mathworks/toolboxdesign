@@ -98,7 +98,7 @@ arithmetic/
 └───buildfile.m 
 ```
 
-Here is a `buildfile` with a single task called `mex`,  this task compile the single and multiple source MEX functions and places them within the `private` folder. Note that the `buildfile` was tested on MATLAB R2025a.
+Here is a `buildfile` with a single task called `mex`,  this task compiles the single and multiple source MEX functions and places them within the `private` folder. Note that the `buildfile` was tested on MATLAB R2025a.
 
 ``` matlab
 function plan = buildfile
@@ -119,6 +119,12 @@ end
 
 
 ## Incorporating External Libraries
+One of the key strengths of MEX functions is their ability to call  libraries implemented in languages like C, C++ and Fortran. Since MEX source files are just source code written in a MEX supported language, they use the source language syntax to access functionality implemented in other libraries. One of the common questions with using external libraries in you toolbox work is, where to store these external libraries?
+
+The answer to this question depends on if the library is required at **compile** or **run** time. For the purposes of this best practices we will assume that the external library is available to you as a include headers and binaries. We do not dwell into the details of how these binaries are created.
+
+
+
 * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. 
 * For projects with complex dependencies, consider adopting dependency management tools like [Conan](https://conan.io/) which can significantly simplify library management across different platforms.
 * During the build process, copy the external libraries into the `toolbox/private` folder to circumvent path management issues on Windows and `LD_LIBRARY_PATH` concerns on Linux.
