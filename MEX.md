@@ -134,17 +134,17 @@ Create an `include` folder within the the language specific folder (say `cpp`) a
 
 
 ### Managing compile time library binaries
-The toolbox user does not need these libraries to run the MEX functions  they are required only at compile time, these libraries are often referred to as static libraries. You can place these binaries under platform specific folders within the `library` folder. We recommend using standard names for the platform folders. The table below provides a summary of the folder names and file extensions used for static libraries for popular platforms
+The toolbox user does not need these libraries to run the MEX functions  they are required only at compile time, these libraries are often referred to as static libraries. You can place these binaries under platform specific folders within the `library` folder. We recommend using standard names for the platform folders. The table below provides a summary of the folder names and file extensions used for static libraries for popular platforms.
 
 | Platform          | Folder name | File Extension | 
 | :---------------- | :------     | :------        |
-| Linux             | glnx64      | .a             |
+| Linux             | glnxa64     | .a             |
 | Windows           | win64       | .lib           |
-| Mac ARM           | maca64      | .dylib         |
-
+| ARM Mac           | maca64      | .dylib         |
+| Intel Mac         | maci64      | .dylib         |
 
 ### Managing runtime library binaries
-
+These type of libraries are often referred to as shared object libraries or static libraries. These libraries are required by the toolbox user to the run the MEX functions. You can place the runtime binaries within the `private` folder under the `toolbox` folder, this makes sure that the library gets shipped to the user. You can use the -L and -l flags during compile time to specify the location and the name of the runtime library.
 
 
 * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. 
