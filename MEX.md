@@ -9,18 +9,18 @@ Welcome to the MATLAB&reg; MEX Best Practice guide. This document offers a refin
 
 ## Overview
 
-MEX files bridge the gap between MATLAB and C, C++, or Fortran, allowing you to leverage the strengths of these languages directly within MATLAB. While the integration of MEX files can be intricate, this guide will navigate you through the process, ensuring smooth implementation in both development and production environments.  This organized structure enhances maintainability and makes it easier for others to understand and contribute to your project.
+MEX functions bridge the gap between MATLAB and C, C++, or Fortran, allowing you to leverage the strengths of these languages directly within MATLAB. While the integration of MEX files can be intricate, this guide will navigate you through the process, ensuring smooth implementation in both development and production environments.  This organized structure enhances maintainability and makes it easier for others to understand and contribute to your project.
 
 To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this project throughout the guide to demonstrate practical applications of these principles.
 
 ## Key Concepts
 - **MEX Source Files**: These are functions written in C, C++, or Fortran, compiled to be callable from MATLAB.  See the [MEX documentation](https://www.mathworks.com/help/matlab/cpp-mex-file-applications.html) for more information.
-- **MEX Functions**: Platform dependent binaries that can be called directly from MATLAB, they behave almost like a MATLAB function. MATLAB uses a platform dependent file extension for MEX functions, these extensions can be determined using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html).
-- **MEX Gateway Function**: Written in a MEX supported language, MATLAB accesses this function when a call is made to a MEX function. Each MEX function has only one gateway function. [MEX gateway functions written in C](https://www.mathworks.com/help/matlab/apiref/mexfunction.html) 
-- **Compile time binaries**: Static libraries are a good example of these binaries. These library binaries are required only at build time and you need not ship them to your users.
-- **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples of run time binaries.
+- **MEX Functions**: Platform dependent binaries that can be called directly from MATLAB, they behave almost like a MATLAB function. MATLAB uses a platform dependent file extension for MEX functions, you can determine the MEX extension for your platform using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html).
+- **MEX Gateway Function**: Written in a MEX supported language, MATLAB accesses this function when a call is made to the MEX function. Each MEX function can have one gateway function only. [MEX gateway functions written in C](https://www.mathworks.com/help/matlab/apiref/mexfunction.html) 
+- **Compile time binaries**: Static libraries are a good examples of compile time binaries. These library binaries are required only at build time and you need not ship them to your users.
+- **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples.
 - **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool` documentation](https://www.mathworks.com/help/matlab/ref/buildtool.html) for more information.
--  **MEX compiler**: Converts MEX source files into MEX functions. The MEX compiler can be accessed from MATLAB via the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, it can be invoked for the system terminal via the same command.
+-  **MEX compiler**: Converts MEX source files into MEX functions. The MEX compiler can be accessed from MATLAB via the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, it can be invoked for the system terminal via the same command. You can configure C/ C++/ Fortran compilers using the [mex -setup](https://www.mathworks.com/help/matlab/matlab_external/changing-default-compiler.html).
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
 ## Organizing MEX Source Files
@@ -91,7 +91,7 @@ arithmetic/
 └───buildfile.m 
 ```
 
-Here is a `buildfile` with a single task called `mex`, it compile the single source and multiple source MEX functions. Note that the `buildfile` was tested on Windows, with MATLAB R2025a.
+Here is a `buildfile` with a single task called `mex`, it compile the single and multiple source MEX functions. Note that the `buildfile` was tested on Windows, with MATLAB R2025a.
 
 ``` matlab
 function plan = buildfile
