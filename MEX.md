@@ -117,13 +117,23 @@ plan("mex") = MexTask.forEachFile(mexSourceFiles, mexOutputFolder);
 end
 ```
 
+### Call MEX functions from a mexhost 
+
 
 ## Incorporating External Libraries
 One of the key strengths of MEX functions is their ability to call  libraries implemented in languages like C, C++ and Fortran. Since MEX source files are just source code written in a MEX supported language, they use the source language syntax to access functionality implemented in other libraries. One of the common questions with using external libraries in you toolbox work is, where to store these external libraries?
 
 The answer to this question depends on if the library is required at **compile** or **run** time. For the purposes of this best practices we will assume that the external library is available to you as a include headers and binaries. We do not dwell into the details of how these binaries are created.
 
+### External library headers
+These files are required only at compile time, your toolbox users do not want them to run the MEX functions. Having a standard location to store these headers makes it easier for you (the author) to manage them and pass it to the compiler.
 
+Create an `include` folder within the the language specific folder (say `cpp`) and move the external library headers within this folder. The [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) MATLAB API takes in an [optional argument](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) that can be used to inform the compiler to look for header files within the `include` folder.
+
+
+
+### Managing compile time library binaries
+The toolbox user does not need these libraries to run the MEX functions that make a call to these libraries. 
 
 * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. 
 * For projects with complex dependencies, consider adopting dependency management tools like [Conan](https://conan.io/) which can significantly simplify library management across different platforms.
