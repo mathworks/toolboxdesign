@@ -143,9 +143,57 @@ The toolbox user does not need these library binaries to run the MEX functions  
 | ARM Mac           | maca64      | .dylib         |
 | Intel Mac         | maci64      | .dylib         |
 
+``` text
+zlibStatic/
+:
+├───cpp/
+|   ├───include/
+|   │   └───zlib.h
+|   ├───library/
+|   │   ├───glnxa64
+|   |   |   └───libz.a
+|   │   ├───win64
+|   |   |   └───libz.lib
+|   │   └───maca64
+|   |       └───libz.dylib
+│   └───mexfunctions/
+│       └───deflateMex.cpp
+├───toolbox/
+|   ├───deflate.m
+|   └───private/
+|       ├───deflateMex.mexw64 (derived)
+|       ├───deflateMex.mexa64 (derived)
+|       └───deflateMex.mexmaca64 (derived)
+├───zlibStatic.prj
+└───buildfile.m 
+```
+
+
 ### Execution time libraries
 These type of libraries are often referred to as shared object libraries or static libraries. These libraries are required for running the MEX functions and need to be shipped to the users. You can place the runtime binaries within the `private` folder under the `toolbox` folder, this makes sure that the library gets shipped to the user. You can use the -L and -l flags during compile time to specify the location and the name of the runtime library.
 
+
+
+``` text
+zlibShared/
+:
+├───cpp/
+|   ├───include/
+|   │   └───zlib.h
+│   └───mexfunctions/
+│       └───deflateMex.cpp
+├───toolbox/
+|   ├───deflate.m
+|   └───private/
+|       ├───libz.so
+|       ├───z.lib
+|       ├───libz.dylib
+|       ├───deflateMex.mexw64 (derived)
+|       ├───deflateMex.mexa64 (derived)
+|       └───deflateMex.mexmaca64 (derived)
+├───zlibShared.prj
+└───buildfile.m 
+```
 
 * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. 
 * For projects with complex dependencies, consider adopting dependency management tools like [Conan](https://conan.io/) which can significantly simplify library management across different platforms.
