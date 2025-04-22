@@ -240,13 +240,22 @@ arithmetic/
 
 ## Testing
 
-Develop tests for the MATLAB layer in the `tests/` folder. While MEX functionality is indirectly tested through MATLAB scripts, this approach ensures comprehensive validation of your toolbox's capabilities.
+Develop tests for the MATLAB layer in the `tests` folder. While MEX functionality is indirectly tested through MATLAB scripts, this approach ensures comprehensive validation of your toolbox's capabilities.
 
 Our example toolbox adds `testAdd.m` and `testSubtract.m`to validate the functionality of `add.m` and `subtract.m` which, in turn, use `addMex` and `subtractMex`.
 
 ``` text
 arithmetic/
 :
+├───tests/
+|   ├───testAdd.m
+|   └───testSubstract.m
+├───cpp/
+│   ├───substractMex/
+│   │   ├───substract.cpp
+│   │   └───substractImp.cpp
+│   └───mexfunctions/
+│       └───addMex.cpp
 ├───toolbox/
 |   ├───add.m
 |   ├───subtract.m
@@ -257,23 +266,6 @@ arithmetic/
 |       ├───subtractMex.mexw64 (derived)
 |       ├───subtractMex.mexa64 (derived)
 |       └───subtractMex.mexmaca64 (derived)
-├───cpp/
-│   ├───addMex/
-│   │   ├───firstFile.cpp
-│   │   └───secondFile.cpp
-│   └───subtractMex/
-│       ├───subtract.cpp
-|       └───libraries
-|           ├───complex.hpp
-|           ├───glnxa64
-|           |   └───libcomplex.so
-|           ├───maci64
-|           |   └───libcomplex.dylib
-|           └───win64
-|               └───complex.dll
-├───tests/
-|   ├───testAdd.m
-|   └───testSubstract.m
 ├───arithmetic.prj
 └───buildfile.m 
 ```
