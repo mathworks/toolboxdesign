@@ -124,12 +124,18 @@ If you are using MEX functions written using the C++, we recommend calling the M
 ## Incorporating External Libraries
 One of the key strengths of MEX functions is their ability to call  libraries implemented in languages like C, C++ and Fortran. Since MEX source files are just source code written in a MEX supported language, they use the source language syntax to access functionality implemented in external libraries. One of the common questions with using external libraries in you toolbox work is, where to store these external libraries?
 
-The answer to this question depends on if the library is required at **compile** or **execution** time. For the purposes of this best practices, we will assume that the external library is available to you as include headers and binaries. We do not dwell into the details of how these binaries are created.
+The answer to this question depends on the external library. For the purposes of this best practices we classify the external libraries into,
+ 1. compile time libraries
+ 2. execution time time. 
+ 
+We will assume that the external library is available to you as include headers and binaries. We do not dwell into the details of how these headers and binaries are created.
 
 ### External library headers
 These files are required only at compile time, your toolbox users do not want them to run the MEX functions. Having a standard location to store these headers makes it easier for you (the author) to manage them and pass it to the compiler.
 
 Create an `include` folder within the the language specific folder (say `cpp`) and move the external library headers within this folder. The [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) MATLAB API takes in an [optional argument](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) that can be used to inform the compiler to look for header files within the `include` folder.
+
+If you want to include a header only library in your work, copy the library headers into the `include` folder within the respective language folders.
 
 
 
@@ -161,9 +167,9 @@ zlibStatic/
 ├───toolbox/
 |   ├───deflate.m
 |   └───private/
-|       ├───deflateMex.mexw64 (derived)
-|       ├───deflateMex.mexa64 (derived)
-|       └───deflateMex.mexmaca64 (derived)
+|       ├───deflateMex.mexw64
+|       ├───deflateMex.mexa64
+|       └───deflateMex.mexmaca64
 ├───zlibStatic.prj
 └───buildfile.m 
 ```
@@ -185,11 +191,11 @@ zlibShared/
 |   ├───deflate.m
 |   └───private/
 |       ├───libz.so
-|       ├───z.lib
+|       ├───z.dll
 |       ├───libz.dylib
-|       ├───deflateMex.mexw64 (derived)
-|       ├───deflateMex.mexa64 (derived)
-|       └───deflateMex.mexmaca64 (derived)
+|       ├───deflateMex.mexw64
+|       ├───deflateMex.mexa64
+|       └───deflateMex.mexmaca64
 ├───zlibShared.prj
 └───buildfile.m 
 ```
