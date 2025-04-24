@@ -19,7 +19,7 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 - **MEX Gateway Function**: Written in a MEX supported language, MATLAB accesses this function when a call is made to the MEX function. Each MEX function can have one gateway function only. [MEX gateway functions written in C](https://www.mathworks.com/help/matlab/apiref/mexfunction.html) 
 - **Compile time binaries**: Static libraries are a good examples of compile time binaries. These library binaries are required only at build time and you need not ship them to your users.
 - **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples.
-- **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool` documentation](https://www.mathworks.com/help/matlab/ref/buildtool.html) for more information.
+- **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool`](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html) for more information.
 -  **MEX compiler**: Converts MEX source files into MEX functions. The MEX compiler can be accessed from MATLAB via the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, it can be invoked for the system terminal via the same command. You can configure C/ C++/ Fortran compilers using the [mex -setup](https://www.mathworks.com/help/matlab/matlab_external/changing-default-compiler.html).
 - **Project Root**: The folder under which the toolbox source code is organized. A git repository is initialized under this folder.
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
@@ -39,7 +39,7 @@ For C and C++ single source MEX functions, place the source code within the `mex
 For multiple source MEX functions, create a folder for each MEX function within the respective language folder. The name of the folder should be same as that of the MEX function that will be created out for source code with the folder. The folder name can be suffixed with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function, with the same name as the folder.    
 
 
-Our [Arithmetic Toolbox]() example features two MEX functions: `addMex` and `subtractMex`. `addMex` is implemented as a single source MEX function and the source code is placed under the `mexfunctions` folder. On the other hand, `substractMex` is implemented as a multiple source MEX function with source code placed under the `substractMex` folder, `substract.cpp` implements the MEX gateway function for the `substractMex` MEX function and `substractImp.cpp`  implementations functionalities that are used in `substract.cpp`. The organization of the MEX source files is shown below:
+Our [Arithmetic Toolbox]() example features two MEX functions: `addMex` and `subtractMex`. `addMex` is implemented as a single source MEX function with the source code placed under the `mexfunctions` folder. On the other hand, `substractMex` is implemented as a multiple source MEX function with source code placed under the `substractMex` folder, `substract.cpp` implements the MEX gateway function for the `substractMex` MEX function and `substractImp.cpp`  implementations functionalities that are used in `substract.cpp`. The organization of the MEX source files is shown below:
 
 ``` text
 arithmetic/
@@ -55,6 +55,7 @@ arithmetic/
 ├───arithmetic.prj
 └───buildfile.m
 ```
+
 ## Building MEX Functions
 - **Tools**: Use MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, to automate the MEX build process. The [`matlab.buildtool.tasks.MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), introduced in R2024a, automates the compilation, ensuring consistency across environments.  If you need support in earlier releases, use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command directly. 
 
@@ -124,11 +125,9 @@ If you are using MEX functions written using the C++, we recommend calling the M
 ## Incorporating External Libraries
 One of the key strengths of MEX functions is their ability to call  libraries implemented in languages like C, C++ and Fortran. Since MEX source files are just source code written in a MEX supported language, they use the source language syntax to access functionality implemented in external libraries. One of the common questions with using external libraries in you toolbox work is, where to store these external libraries?
 
-The answer to this question depends on the external library. For the purposes of this best practices we classify the external libraries into,
- 1. compile time libraries
- 2. execution time time. 
+The answer to this question depends on the external library and the platform with which you are working with. For the purposes of this best practices we classify the external libraries into compile time and execution time libraries. 
  
-We will assume that the external library is available to you as include headers and binaries. We do not dwell into the details of how these headers and binaries are created.
+We will assume that the external library is available to you as include headers and binaries. We do not dwell into the details of how these headers and binaries are created. First let as talk a bit about organizing 
 
 ### External library headers
 These files are required only at compile time, your toolbox users do not want them to run the MEX functions. Having a standard location to store these headers makes it easier for you (the author) to manage them and pass it to the compiler.
@@ -154,6 +153,7 @@ zlibStatic/
 :
 ├───cpp/
 |   ├───include/
+|   │   ├───zlibconf.h
 |   │   └───zlib.h
 |   ├───library/
 |   │   ├───glnxa64
@@ -176,7 +176,7 @@ zlibStatic/
 
 
 ### Execution time libraries
-These type of libraries are often referred to as shared object libraries or static libraries. These libraries are required for running the MEX functions and need to be shipped to the users. You can place the runtime binaries within the `private` folder under the `toolbox` folder, this makes sure that the library gets shipped to the user. You can use the -L and -l flags during compile time to specify the location and the name of the runtime library.
+These type of libraries are often referred to as shared object libraries or dynamic link libraries. These libraries are required for running the MEX functions and need to be shipped to the users. You can place the runtime binaries within the `private` folder under the `toolbox` folder, this makes sure that the library gets shipped to the user. You can use the -L and -l flags during compile time to specify the location and the name of the runtime library.
 
 
 ``` text
@@ -191,7 +191,7 @@ zlibShared/
 |   ├───deflate.m
 |   └───private/
 |       ├───libz.so
-|       ├───z.dll
+|       ├───libz.lib
 |       ├───libz.dylib
 |       ├───deflateMex.mexw64
 |       ├───deflateMex.mexa64
@@ -199,15 +199,13 @@ zlibShared/
 ├───zlibShared.prj
 └───buildfile.m 
 ```
-
-
-* When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. 
+<!-- * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB.  -->
 * For projects with complex dependencies, consider adopting dependency management tools like [Conan](https://conan.io/) which can significantly simplify library management across different platforms.
 * During the build process, copy the external libraries into the `toolbox/private` folder to circumvent path management issues on Windows and `LD_LIBRARY_PATH` concerns on Linux.
 
-Our example toolbox adds a library called `complex` to the `subtractMex` function:
+<!-- Our example toolbox adds a library called `complex` to the `subtractMex` function: -->
 
-``` text
+<!-- ``` text
 arithmetic/
 :
 ├───toolbox/
@@ -236,7 +234,7 @@ arithmetic/
 |               └───complex.dll
 ├───arithmetic.prj
 └───buildfile.m 
-```
+``` -->
 
 ## Testing
 
