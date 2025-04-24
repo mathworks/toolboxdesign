@@ -176,7 +176,7 @@ zlibStatic/
 
 
 ### Execution time libraries
-These type of libraries are often referred to as shared object libraries or dynamic link libraries. These libraries are required for running the MEX functions and need to be shipped to the users. You can place the runtime binaries within the `private` folder under the `toolbox` folder, this makes sure that the library gets shipped to the user. You can use the -L and -l flags during compile time to specify the location and the name of the runtime library.
+These type of libraries are often referred to as shared object libraries or dynamic link libraries. These libraries are required for running the MEX functions and need to be shipped to the users. You can place the execution time binaries within the `private` folder under the `toolbox` folder, this makes sure that the library gets shipped to the user. You can use the -L and -l flags during compile time to specify the location and the name of the runtime library.
 
 
 ``` text
@@ -201,7 +201,16 @@ zlibShared/
 ```
 <!-- * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB.  -->
 * For projects with complex dependencies, consider adopting dependency management tools like [Conan](https://conan.io/) which can significantly simplify library management across different platforms.
-* During the build process, copy the external libraries into the `toolbox/private` folder to circumvent path management issues on Windows and `LD_LIBRARY_PATH` concerns on Linux.
+* Depending on the platform, execution time libraries require their path to be added to the loader's search path. These search paths are often establish using platform dependent environment variables.  In case of C++ libraries you can use [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html)'s `EnvironmentVariables` option to set-up the loader's path. Here is a summary of 
+loader's search path for different platforms.
+
+| Platform  | Environment variable for loader's search path |
+| :-------- | :-------------------------------------------- |
+| Linux     | LD_LIBRARY_PATH                               |
+| Windows   | Path                                          |
+| Mac       | LD_LIBRARY_PATH                               |           
+
+For non C++ libraries, you need to start MATLAB from an environment where the linker's search path is already established.
 
 <!-- Our example toolbox adds a library called `complex` to the `subtractMex` function: -->
 
@@ -281,4 +290,4 @@ We welcome your input! For further details, suggestions, or to contribute, pleas
 ---
 [![CC-BY-4.0](images/cc-by-40.png)](https://creativecommons.org/licenses/by/4.0/)
 
-Copyright &copy; 2023-2024, The MathWorks, Inc.
+Copyright &copy; 2023-2025, The MathWorks, Inc.
