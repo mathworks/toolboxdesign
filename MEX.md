@@ -24,6 +24,42 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 - **Project Root**: The folder under which the toolbox source code is organized. A git repository is initialized under this folder.
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
+## Scenario: 1 Single source MEX functions
+Suppose that you have a bunch of MEX source files that 
+
+``` text
+arithmetic/
+├───cpp/
+│   └───mexfunctions/
+|       ├───substractMex.cpp
+│       └───addMex.cpp
+├───toolbox/
+|   ├───add.m
+|   └───subtract.m
+├───arithmetic.prj
+└───buildfile.m
+```
+
+### Building the MEX functions
+MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b can be used to automate building the MEX functions. Here is a simple buildfile for building MEX functions: 
+``` matlab
+function plan = buildfile
+
+% Create a plan 
+plan = buildplan();
+
+% Compile all the .cpp files inside cpp/mexfunctions into MEX functions
+mexSourceFiles = files(plan, fullfile("cpp", "mexfunctions", "*.cpp"));
+mexOutputFolder = fullfile("toolbox","private");
+plan("mex") = matlab.buildtool.tasks.MexTask.forEachFile(mexSourceFiles, mexOutputFolder);
+
+end
+```
+In the buildfile, we create a [plan](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [MexTask](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the plan. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html), introduced in R2025a, converts every C++ file within the folder into MEX functions. [MexTask.forEachFile](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [FileCollection](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. A FileCollecton object can also be created using the [files](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API
+
+automates the compilation, ensuring consistency across environments.  If you need support in earlier releases, use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command directly. 
+
+
 ## Organizing MEX Source Files
 Organize your MEX source files in language-specific folder at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder at the root of the toolbox repo for both C and C++ source code.
 
@@ -56,8 +92,7 @@ arithmetic/
 └───buildfile.m
 ```
 
-## Building MEX Functions
-- **Tools**: Use MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, to automate the MEX build process. The [`matlab.buildtool.tasks.MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), introduced in R2024a, automates the compilation, ensuring consistency across environments.  If you need support in earlier releases, use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command directly. 
+
 
 
 ## Organizing MEX Functions
@@ -207,10 +242,10 @@ loader's search path for different platforms.
 | Platform  | Environment variable for loader's search path |
 | :-------- | :-------------------------------------------- |
 | Linux     | LD_LIBRARY_PATH                               |
-| Windows   | Path                                          |
-| Mac       | LD_LIBRARY_PATH                               |           
+| Windows   | PATH                                          |
+| Mac       | DYLD_LIBRARY_PATH                             |           
 
-For non C++ libraries, you need to start MATLAB from an environment where the linker's search path is already established.
+For non C++ libraries, you need to start MATLAB from an environment where the loaders's search path is already established.
 
 <!-- Our example toolbox adds a library called `complex` to the `subtractMex` function: -->
 
