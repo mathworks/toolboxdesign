@@ -55,9 +55,11 @@ plan("mex") = matlab.buildtool.tasks.MexTask.forEachFile(mexSourceFiles, mexOutp
 
 end
 ```
-In the buildfile, we create a [plan](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [MexTask](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the plan. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html), introduced in R2025a, converts every C++ file within the folder into MEX functions. [MexTask.forEachFile](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [FileCollection](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. A FileCollecton object can also be created using the [files](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API
+In the buildfile, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the plan. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html), introduced in R2025a, converts every C++ file within the folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. A FileCollecton object can also be created using the [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API. The buildfile has some hidden benefits,
+1. Incremental build
+2. No hardcoding of source files
 
-automates the compilation, ensuring consistency across environments.  If you need support in earlier releases, use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command directly. 
+Since we are using `MexTask` for building MEX files directly as opposed to using the `mex` command, we get support for incremental build out of box. Moreover, since we are pointing only to the folder that contain the MEX source files, the buildfile can be extended for any number of MEX source files as long as the source files are placed within the `cpp/mexfunctions` folder 
 
 
 ## Organizing MEX Source Files
