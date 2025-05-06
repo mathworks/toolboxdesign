@@ -25,7 +25,11 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
 ## Scenario: 1 Single source MEX functions
-Suppose that you have a bunch of MEX source files that 
+Suppose you have several C/C++ MEX source files, each implementing its own MEX gateway and none of these files depend on an external library or other source files. Since the C/C++ source files need not be distributed to the toolbox users, we recommend placing these source files outside the `toolbox` folder. Create folder named `cpp` under the toolbox repository root.  Within this folder, create a subfolder called `mexfunctions` and place the source code for all the single source MEX functions within the `mexfunctions` subfolder. 
+
+We will be using the arithmetic repository, for demonstrating the idea. For the sack of discussion, we will reimplement the functionality of `add()` and `substruct()` using MEX functions. We have created two MEX source files `addMex.cpp` and `substractMex.cpp`. The names of the C/C++ source files reflect the names of the MEX functions complied out of these source files. On Windows platform `addMex.cpp` would be complied to `addMex.mexw64`. Having the same file name (excluding extension)makes it easy to go between the MEX functions and their source code.
+
+Notice that we have suffixed the filenames of the source code with "Mex", to ind
 
 ``` text
 arithmetic/
@@ -41,7 +45,7 @@ arithmetic/
 ```
 
 ### Building the MEX functions
-MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b can be used to automate building the MEX functions. Here is a simple buildfile for building MEX functions: 
+MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b can be used to automate building the MEX functions. Here is a simple buildfile for can be applied on the previously discussed folder structure: 
 ``` matlab
 function plan = buildfile
 
