@@ -67,6 +67,8 @@ The buildfile has some advantages,
 2. *No hardcoding of source files:* Since the buildfile references the folder containing the MEX source files, there is no need to manually specify or update the list of source files.
 3. *Platform independence:* Although MEX functions themselves are platform dependent, the buildfile does not rely on any platform-specific information to compile them, making it possible to use the same buildfile across different platforms.
 
+With this setup, the build file can easily scale to handle any number of single-source MEX functions, as long as the source files are placed within the cpp/mexfunctions folder.
+
 ## Organizing MEX Source Files
 Organize your MEX source files in language-specific folder at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder at the root of the toolbox repo for both C and C++ source code.
 
