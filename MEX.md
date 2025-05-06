@@ -45,7 +45,7 @@ arithmetic/
 ```
 
 ### Building the MEX functions
-MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b can be used to automate building the MEX functions. Here is a simple buildfile for can be applied on the previously discussed folder structure: 
+We recommend using MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b for automating the MEX functions build. Here is a simple buildfile that can be used to build single source MEX functions: 
 ``` matlab
 function plan = buildfile
 
@@ -59,13 +59,13 @@ plan("mex") = matlab.buildtool.tasks.MexTask.forEachFile(mexSourceFiles, mexOutp
 
 end
 ```
-In the buildfile, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the plan. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html), introduced in R2025a, converts every C++ file within the folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. A FileCollecton object can also be created using the [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API. The buildfile has some hidden benefits,
+In the buildfile, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the it. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) API, introduced in R2025a, converts every C++ file within the specified folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input, which can be created using the [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API. 
 
-1. Incremental build
-2. No hardcoding of source files
+The buildfile has some advantages,
 
-Since we are using `MexTask` for building MEX files directly as opposed to using the `mex` command, we get support for incremental build out of box. Moreover, since we are pointing only to the folder that contain the MEX source files, the buildfile can be extended for any number of MEX source files as long as the source files are placed within the `cpp/mexfunctions` folder 
-
+1. *Incremental build:* By using `MexTask` instead of the `mex` command, the build process automatically supports incremental build, recompiling only the files that have changed.
+2. *No hardcoding of source files:* Since the buildfile references the folder containing the MEX source files, there is no need to manually specify or update the list of source files.
+3. *Platform independence:* Although MEX functions themselves are platform dependent, the buildfile does not rely on any platform-specific information to compile them, making it possible to use the same buildfile across different platforms.
 
 ## Organizing MEX Source Files
 Organize your MEX source files in language-specific folder at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder at the root of the toolbox repo for both C and C++ source code.
