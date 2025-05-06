@@ -25,11 +25,11 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
 ## Scenario: 1 Single source MEX functions
-Suppose you have several C/C++ MEX source files, each implementing its own MEX gateway and none of these files depend on an external library or other source files. Since the C/C++ source files need not be distributed to the toolbox users, we recommend placing these source files outside the `toolbox` folder. Create folder named `cpp` under the toolbox repository root.  Within this folder, create a subfolder called `mexfunctions` and place the source code for all the single source MEX functions within the `mexfunctions` subfolder. 
+Suppose you have several C/C++ MEX source files, each implementing its own MEX gateway and not depending on an external library or other source files. Since the C/C++ source files need not be distributed to the toolbox users, we recommend placing them outside the `toolbox` folder. Create a folder named `cpp` under the repository root.  Within this folder, create a subfolder called `mexfunctions` and place the single source MEX functions source code within this folder. 
 
-We will be using the arithmetic repository, for demonstrating the idea. For the sack of discussion, we will reimplement the functionality of `add()` and `substruct()` using MEX functions. We have created two MEX source files `addMex.cpp` and `substractMex.cpp`. The names of the C/C++ source files reflect the names of the MEX functions complied out of these source files. On Windows platform `addMex.cpp` would be complied to `addMex.mexw64`. Having the same file name (excluding extension)makes it easy to go between the MEX functions and their source code.
+To illustrate this organization, we will use the arithmetic repository as an example. For the demonstration purposes we will reimplement the internals of `add()` and `substruct()` using MEX functions. We have created two MEX source files: `addMex.cpp` and `substractMex.cpp`. The names of the C/C++ source files are chosen to match the  the MEX functions complied out of the source files. For example, on Windows platform, `addMex.cpp` would be complied to `addMex.mexw64` and `addMex` will be the name of the MEX function . Maintaining consistent file names (apart from the extension) makes it easy to associate each MEX function with its source code.  Moreover, the "Mex" suffix in the file name clearly indicates that the function is a MEX function rather than a standard MATLAB function. 
 
-Notice that we have suffixed the filenames of the source code with "Mex", to ind
+The organization of the MEX source files relative to the toolbox folder is shown below:
 
 ``` text
 arithmetic/
@@ -60,6 +60,7 @@ plan("mex") = matlab.buildtool.tasks.MexTask.forEachFile(mexSourceFiles, mexOutp
 end
 ```
 In the buildfile, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the plan. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html), introduced in R2025a, converts every C++ file within the folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. A FileCollecton object can also be created using the [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API. The buildfile has some hidden benefits,
+
 1. Incremental build
 2. No hardcoding of source files
 
