@@ -24,7 +24,7 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 - **Project Root**: The folder under which the toolbox source code is organized. A git repository is initialized under this folder.
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
-## Scenario: 1 Single source MEX functions
+## Organizing single source MEX functions
 Suppose you have several C/C++ MEX source files, each implementing its own MEX gateway and not depending on an external library or other source files. Since the C/C++ source files need not be distributed to the toolbox users, we recommend placing them outside the `toolbox` folder. Create a folder named `cpp` under the repository root.  Within this folder, create a subfolder called `mexfunctions` and place the single source MEX functions source code within this folder. 
 
 To illustrate this organization, we will use the arithmetic repository as an example. For the demonstration purposes we will reimplement the internals of `add()` and `substruct()` using MEX functions. We have created two MEX source files: `addMex.cpp` and `substractMex.cpp`. The names of the C/C++ source files are chosen to match the  the MEX functions complied out of the source files. For example, on Windows platform, `addMex.cpp` would be complied to `addMex.mexw64` and `addMex` will be the name of the MEX function . Maintaining consistent file names (apart from the extension) makes it easy to associate each MEX function with its source code.  Moreover, the "Mex" suffix in the file name clearly indicates that the function is a MEX function rather than a standard MATLAB function. 
@@ -44,8 +44,36 @@ arithmetic/
 └───buildfile.m
 ```
 
-### Building the MEX functions
-We recommend using MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b for automating the MEX functions build. Here is a simple buildfile that can be used to build single source MEX functions: 
+### Building MEX functions
+We recommend using MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b for automating MEX functions build. 
+
+[MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder, contents of this folder gets shipped to the user. For a toolbox that uses MEX, place the MEX functions under a `private` folder within the `toolbox` folder, thus making them private [Private functions](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
+
+Our motivation for making MEX functions private is to restrict the toolbox user from  calling them directly. We recommend accessing the MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination failures due to unhandled inputs.
+
+We recommend ignoring the MEX functions from version control (add the `private` folder to the `.gitignore`) since MEX functions are derived artifacts.
+
+``` text
+arithmetic/
+├───cpp/
+│   └───mexfunctions/
+|       ├───substractMex.cpp
+│       └───addMex.cpp
+├───toolbox/
+|   ├───private/
+|   |   ├───substractMex.mexw64
+|   |   ├───substractMex.mexw64
+|   |   ├───substractMex.mexw64
+|   |   ├───addMex.mexw64
+|   |   ├───addMex.mexw64
+│   |   └───addMex.mexw64
+|   ├───add.m
+|   └───subtract.m
+├───arithmetic.prj
+└───buildfile.m
+```
+
+Here is a simple buildfile that can be used to build single source MEX functions, these MEX functions will be stored within private folder within the toolbox folder: 
 ``` matlab
 function plan = buildfile
 
