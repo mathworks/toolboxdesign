@@ -5,11 +5,11 @@
 
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
-Welcome to the MATLAB&reg; MEX Best Practice guide. This document offers a refined approach to seamlessly integrating MEX files into your MATLAB toolbox projects, complementing our established [MATLAB Toolbox Best Practices](README.md). MEX files enable you to harness the power of C /C++/ Fortran functions within MATLAB, and this guide will equip you with the knowledge to maintain a consistent and efficient workflow. Let's explore the world of MEX integration!
+Welcome to the MATLAB&reg; MEX Best Practice guide. This document offers a refined approach to seamlessly integrating MEX files into your MATLAB toolbox projects, complementing our established [MATLAB Toolbox Best Practices](README.md). MEX files enable you to harness the power of C/C++/Fortran functions within MATLAB, and this guide will equip you with the knowledge to maintain a consistent and efficient workflow. Let's explore the world of MEX integration!
 
 ## Overview
 
-MEX functions bridge the gap between MATLAB and C, C++, or Fortran, allowing you to leverage the strengths of these languages directly within MATLAB. While the integration of MEX files can be intricate, this guide will navigate you through the process, ensuring smooth implementation in both development and production environments.  This organized structure enhances maintainability and makes it easier for others to understand and contribute to your project.
+[MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) bridge the gap between MATLAB and C, C++, or Fortran, allowing you to leverage the strengths of these languages directly within MATLAB. While the integration of MEX files can be intricate, this guide will navigate you through the process, ensuring smooth implementation in both development and production environments.  This organized structure enhances maintainability and makes it easier for others to understand and contribute to your project.
 
 To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this project throughout the guide to demonstrate practical applications of these principles.
 
@@ -25,11 +25,11 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically.
 
 ## Organizing single source MEX functions
-Suppose you have several C++ MEX source files, each implementing its own MEX gateway and not depending on an external library or other source files, you want to organize these files in a way that makes building, integrating the sharing the MEX functions easy. Since the C++ source files need not be distributed to the toolbox users, we recommend placing them outside the `toolbox` folder. Create a folder named `cpp` under the repository root.  Within this folder, create a subfolder called `mexfunctions` and place the single source MEX functions source code within this folder. 
+Suppose you have several C++ MEX source files, each implementing its own MEX gateway and not depending on an external library or other source files, you want to organize these files in a way that makes building, integrating and sharing the MEX functions easy. Since the C++ source files need not be distributed to the toolbox users, we recommend placing them outside the `toolbox` folder. Create a folder named `cpp` under the repository root.  Within this folder, create a subfolder called `mexfunctions` and place the single source MEX functions source code within this folder. 
 
-To illustrate this organization, we will use the arithmetic repository as an example. For the demonstration purposes we will reimplement the internals of `add()` and `substruct()` using MEX functions. We have created two MEX source files: `addMex.cpp` and `substractMex.cpp`. The names of the C/C++ source files are chosen to match the  the MEX functions complied out of the source files. For example, on Windows platform, `addMex.cpp` would be complied to `addMex.mexw64` and `addMex` will be the name of the MEX function . Maintaining consistent file names (apart from the extension) makes it easy to associate each MEX function with its source code.  Moreover, the "Mex" suffix in the MEX function file name clearly indicates that the function is a MEX function rather than a standard MATLAB function. 
+To illustrate this organization, we will use the arithmetic repository as an example. For demonstration purposes we will reimplement the internals of `add()` and `substruct()` using MEX functions. We have created two MEX source files: `addMex.cpp` and `substractMex.cpp`. The names of the C/C++ source files are chosen to match the  the MEX functions complied out of the source files. For example, on Windows platform, `addMex.cpp` would be complied to `addMex.mexw64` and `addMex` will be the name of the MEX function . Maintaining consistent file names (apart from the extension) makes it easy to associate each MEX function with its source code.  Moreover, the "Mex" suffix in the MEX function file name clearly indicates that the function is a MEX function rather than a standard MATLAB function.
 
-The organization of the MEX source files for the arithmetic toolbox repository relative to the toolbox folder is shown below:
+The organization of the MEX source files for the arithmetic toolbox relative to the toolbox folder is shown below:
 
 ``` text
 arithmetic/
@@ -47,11 +47,11 @@ arithmetic/
 ### Building MEX functions
 We recommend using MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b for automating MEX functions build. 
 
-[MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder, contents of this folder gets shipped to the user. Create a `private` folder within the `toolbox` folder and place the MEX functions within this folder, thus making them private [Private functions](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
+[MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder, contents of this folder gets shipped to the user. Create a `private` folder within the `toolbox` folder and place the MEX functions within this folder, thus making them [Private functions](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
 
 Our motivation for making MEX functions private is to restrict the toolbox user from  calling them directly. We recommend accessing the MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination failures due to unhandled inputs.
 
-We recommend ignoring the MEX functions from version control (add the `private` folder to the `.gitignore`) since MEX functions are derived artifacts.
+We recommend ignoring the MEX functions from version control (add the `private` folder to the `.gitignore`) since MEX functions are derived artifacts. Here is the organization of the toolbox repository after building the MEX functions.
 
 ``` text
 arithmetic/
@@ -353,6 +353,9 @@ arithmetic/
 
 ## Automating Builds with GitHub Actions
 **TBD**
+
+## Summary: Organizing a toolbox with MEX functions
+
 
 ## Conclusion
 
