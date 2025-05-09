@@ -49,7 +49,7 @@ We recommend using MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/
 
 [MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder, contents of this folder gets shipped to the user. Create a `private` folder within the `toolbox` folder and place the MEX functions within this folder, thus making them [Private functions](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
 
-Our motivation for making MEX functions private is to restrict the toolbox user from  calling them directly. We recommend accessing the MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination failures due to unhandled inputs.
+Our motivation for making MEX functions private is to restrict the toolbox user from  calling them directly. We recommend accessing MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination failures due to unhandled inputs.
 
 We recommend ignoring the MEX functions from version control (add the `private` folder to the `.gitignore`) since MEX functions are derived artifacts. Here is the organization of the toolbox repository after building the MEX functions.
 
@@ -95,7 +95,29 @@ The buildfile has some advantages,
 2. *No hardcoding of source files:* Since the build file references to the folder containing the MEX source files and not the source files directly, the build file can scale to handle any number of single-source MEX functions, as long as the source files are placed within the cpp/mexfunctions folder.
 3. *Platform independence:* Although MEX functions themselves are platform dependent, the build file does not rely on any platform-specific information to compile them, making it possible to use the same build file across different platforms.
 
-### Multi platform MED functions build using CI systems
+### Multi platform MEX functions build using CI systems
+
+
+## Organizing multiple source MEX functions
+It is common to have MEX functions generated from multiple C++ source files, we call these MEX functions multiple source MEX functions. For such MEX functions one of the source files implement the gateway function and other source files implement methods that are called within the gateway function. For multiple source MEX functions, create a folder for each MEX function within the `cpp` folder. The name of the folder should be same as that of the MEX function that will be created out for source code with the folder. The folder name can be suffixed with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function. 
+
+
+For the sake of discussion let us implement substractMex MEXfunction as a Multiple source MEX function. The organization of the source files is shown below.
+
+``` text
+arithmetic/
+├───cpp/
+│   ├───substractMex/
+│   │   ├───substract.cpp % Implements gateway function
+│   │   └───substractImp.cpp % other features
+│   └───mexfunctions/
+│       └───addMex.cpp
+├───toolbox/
+|   ├───add.m
+|   └───subtract.m
+├───arithmetic.prj
+└───buildfile.m
+```
 
 
 ## Organizing MEX Source Files
