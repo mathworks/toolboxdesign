@@ -12,15 +12,15 @@ Welcome to the MATLAB&reg; MEX Best Practice guide. This document offers a refin
 
 ## Overview
 
-[MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) bridge the gap between MATLAB and C, C++, or Fortran, allowing you to leverage the strengths of these languages directly within MATLAB. While the integration of MEX files can be intricate, this guide will navigate you through the process, ensuring smooth implementation in both development and production environments.  This makes it easier for others to understand and contribute to your project.
+[MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) are compiler code that bridges the gap between MATLAB and C, C++, or Fortran. They behave like a MATLAB function and are platform dependent. You can determine the MEX extension for your platform using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html). While the integration of MEX files can be intricate, this guide will navigate you through the process, ensuring smooth implementation in both development and production environments.  This makes it easier for others to understand and contribute to your project.
 
-To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this project throughout the guide to demonstrate practical applications of these principles.  To make things clearer, when we say "C++", we mean "C, C++, and Fortran."
+To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this project throughout the guide to demonstrate practical applications of these principles.  To make things clearer, when we say "C++", we mean "C, C++, and Fortran." For Key Concepts please refer to [Toolbox Best Practices](./README.md).
 
-
-## Key Concepts
-<!-- RP: Move this to the intro -->
+<!-- RP: Move this to the intro
+     BP: Moved MEX functions to Overview -->
 _See [Toolbox Best Practices] for other concepts._
-- **MEX Functions**: Compiled code that can be called directly from MATLAB. They behave like a MATLAB function. MEX files are platform dependent binaries, so there is a platform dependent file extension. You can determine the MEX extension for your platform using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html).
+
+<!-- - **MEX Functions**: Compiled code that can be called directly from MATLAB. They behave like a MATLAB function. MEX files are platform dependent binaries, so there is a platform dependent file extension. You can determine the MEX extension for your platform using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html). -->
 <!-- - **MEX Gateway Function**: Written in a MEX supported language, MATLAB accesses this function when a call is made to the MEX function. Each MEX function can have one gateway function only. [MEX gateway functions written in C](https://www.mathworks.com/help/matlab/apiref/mexfunction.html)  -->
 <!-- - **Compile time binaries**: Static libraries are a good examples of compile time binaries. These library binaries are required only at build time and you need not ship them to your users. -->
 <!-- - **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples. -->
