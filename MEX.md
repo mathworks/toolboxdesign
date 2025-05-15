@@ -101,7 +101,7 @@ If you’ve got several MEX functions, running the `mex` command for each one ca
 <!-- RP: put this motivation earlier -- we need to advocate for buildtool first, before we show how. 
 BP: Moved the motivation for buildfile -->
 
-1. *Incremental build:* By using `MexTask` instead of the `mex` command, you automatically get support for incremental build, recompiling only the files that have changed.
+1. *Incremental build:* By using `MexTask` instead of the `mex` command, you automatically get support for incremental build, i.e) buildtool only re-compiles the files that have changed.
 2. *No hardcoding of source files:* Since the build file references to the folder containing the MEX source files and not the source files directly, the build file can scale to handle any number of single-source MEX functions, as long as the source files are placed within the cpp/mexfunctions folder.
 3. *Platform independence:* Although MEX functions themselves are platform dependent, the build file does not rely on any platform-specific information to compile them, making it possible to use the same build file across different platforms.
 
