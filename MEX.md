@@ -44,15 +44,16 @@ Suppose you have a C++ MEX source file. This file has got its own MEX gateway an
 
 Be able to say "We are going to create the invertMex function, which on Windows will be invertMex.mexw64." -->
 
-Let’s walk through how this organization works with the arithmetic toolbox example. We implement a MATLAB function called `invertNumber()`, under the hood, this function uses the MEX functions `invertMex()`, which we compiled from `invertMex.cpp`. You’ll notice that we deliberately name the source file and the MEX function the same way. For example, on Windows, `invertMex.cpp` gets compiled into `invertMex.mexw64`, and `invertMex` will be the name of the MEX function.
+Let’s walk through how this organization works with the arithmetic toolbox example. We implement a MATLAB function `invertNumber()`, under the hood, this function uses the MEX functions `invertMex()`, which we compiled from `invertMex.cpp`. You’ll notice that we deliberately name the source file and the MEX function the same way. For example, on Windows, `invertMex.cpp` gets compiled into `invertMex.mexw64`, and `invertMex` will be the name of the MEX function.
 
-This naming convention is really helpful for a couple of reasons:
+This naming convention is helpful for a couple of reasons:
 
 * First, it makes it easy to match each MEX function to its source code.
 * Second, by adding the "Mex" suffix, it’s immediately clear that this is a MEX function—not a regular MATLAB function.
-
-The organization of the MEX source files for the arithmetic toolbox relative to the toolbox folder is shown below:
-<!-- RP: Follow the langauge of the best practice -->
+<!-- 
+The organization of the MEX source files for the arithmetic toolbox relative to the toolbox folder is shown below: -->
+<!-- RP: Follow the langauge of the best practice 
+BP: Removing the line above, TBP does not tell anything -->
 ``` text
 arithmetic/
 ├───cpp/
@@ -68,10 +69,10 @@ arithmetic/
 
 ### Building MEX functions
 <!-- RP: I think we're introducing buildtool too early. Show the basic mex solution first. -->
-The following [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, when executed from the `root folder` can builds the MEX function and place it within a `private` folder under the `toolbox` folder.
+You can use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, to compile your MEX source code into MEX files. You need to provide the path to your MEX source file and where you want the compiled MEX file to go as inputs to the `mex` command. So, if you run the `mex` command from the `root` folder, you’d point to `cpp/mexfunctions/invertMex.cpp` as your source, and set `toolbox/private/` as the destination.
 ```matlab
 >>source = fullfile("cpp", "mexfunctions", "invertMex.cpp");
->>destinations = fullfile("toolbox", "private");
+>>destination = fullfile("toolbox", "private");
 >>mex(source, destination)
 ``` 
 When you have multiple MEX files, executing the `mex` command separately for each file MEX file can be cumbersome. Moreover, you might also becomes document your build recipe and share it with others.  MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b is a solution to problems just mentioned. It provides tooling to automate your MEX build. 
