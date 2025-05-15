@@ -38,13 +38,13 @@ To illustrate these best practices, we've created a sample project: The Arithmet
 ## Creating a MEX function from a single C++ source file
 <!-- RP: Recast this titles to be user centric. Answer the question "What goal does this section help the user achieve?" -->
 <!-- RP: let's focus on a single C++ / MEX scenario first (add), then have a closing section that talks about multiple single C++ file MEX functions. -->
-Suppose you have a C++ MEX source file. This file has got its own MEX gateway and doesn't depend on any external library or other source files. You want to organize this file in a way that makes building, integrating and sharing the MEX function easy. According the [Toolbox best practices](./README.md), MEX (C++) source files need not be distributed to the toolbox users, since they are not required to run the toolbox. So, here’s what we suggest: keep your MEX source file outside of the `toolbox` folder. You can do this by creating a folder called `cpp` at the `root` folder. Inside the `cpp` folder, make another folder named `mexfunctions`, and that’s where you’ll put your MEX function’s source code.
+Suppose you have a C++ MEX source file. This file has got its own MEX gateway and doesn't depend on any external library or other source files. You want to organize this file in a way that makes building, integrating and sharing the MEX function easy. According to the [Toolbox best practices](./README.md), MEX (C++) source files need not be distributed to the toolbox users, since they are not required to run the toolbox. So, here’s what we suggest: keep your MEX source file outside of the `toolbox` folder. You can do this by creating a folder called `cpp` at the `root` folder. Inside the `cpp` folder, make another folder named `mexfunctions`, and that’s where you put your MEX function’s source code.
 
 <!-- RP: For clarity's sake, let's not get mixed up in add and subtract -- let's create something new, like multiply.
 
 Be able to say "We are going to create the invertMex function, which on Windows will be invertMex.mexw64." -->
 
-Let’s walk through how this organization works with the arithmetic toolbox example. We implement a MATLAB function `invertNumber()`, under the hood, this function uses the MEX functions `invertMex()`, which we compiled from `invertMex.cpp`. You’ll notice that we deliberately name the source file and the MEX function the same way. For example, on Windows, `invertMex.cpp` gets compiled into `invertMex.mexw64`, and `invertMex` will be the name of the MEX function.
+Let’s walk through how this organization works with the arithmetic toolbox example. We implement a MATLAB function `invertNumber()`, under the hood, this function uses the MEX functions `invertMex()`, which we compiled from `invertMex.cpp`. You’ll notice that we deliberately name the source file and the MEX function the same way. For example, on Windows, `invertMex.cpp` gets compiled into `invertMex.mexw64`, with `invertMex` being the name of the MEX function.
 
 This naming convention is helpful for a couple of reasons:
 
@@ -75,32 +75,26 @@ You can use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) comm
 >>destination = fullfile("toolbox", "private");
 >>mex(source, destination)
 ``` 
-When you have multiple MEX files, executing the `mex` command separately for each file MEX file can be cumbersome. Moreover, you might also becomes document your build recipe and share it with others.  MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b is a solution to problems just mentioned. It provides tooling to automate your MEX build. 
 
-[MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder, contents of this folder gets shipped to the user. Create a `private` folder within the `toolbox` folder and place the MEX functions within this folder, thus making them [Private functions](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
+By placing the MEX file in a `private` folder, we have made the MEX function [private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html). Our motivation for doing this is to restrict the toolbox user from  calling these functions directly.  Instead, we suggest always accessing MEX functions through a MATLAB script. This way, you have control over what gets passed as input to the MEX function, this helps avoid errors from unexpected or unhandled inputs.
 
-Our motivation for making MEX functions private is to restrict the toolbox user from  calling them directly. We recommend accessing MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination failures due to unhandled inputs.
-
-We recommend ignoring the MEX functions from version control (add the `private` folder to the `.gitignore`) since MEX functions are derived artifacts. Here is the organization of the toolbox repository after building the MEX functions.
-
+Also, since MEX files are just built artifacts, it’s a good idea to leave them out of version control. You can do this by adding the `private` folder to your `.gitignore` file—there’s no need to track those files in your repo.
 ``` text
 arithmetic/
 ├───cpp/
 │   └───mexfunctions/
-|       ├───substractMex.cpp
-│       └───addMex.cpp
+│       └───invertMex.cpp
 ├───toolbox/
-|   ├───private/
-|   |   ├───substractMex.mexw64
-│   |   └───addMex.mexw64
+|   ├───private
+|   |   └───invertMex.mexw64
 |   ├───add.m
-|   └───subtract.m
+|   ├───subtract.m
+|   └───invertNumber.m
 ├───arithmetic.prj
 └───buildfile.m
 ```
 <!-- RP: Introduce Buildtool here. -->
-## Expanding to create multiple MEX functions
-_Insert the add and subtract example here_
+If you’ve got several MEX functions, running the `mex` command for each one can be tedious. In addition, you might also want to document the build recipe, so that you can refer to it in the future or shared with others.  That’s where MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b can be useful. With buildtool, you can automate the MEX build process and share your build recipe with others. 
 
 ### Automating using `buildtool`
 <!-- RP: I think we need a summary of why this is a good idea. -->
@@ -118,7 +112,7 @@ plan("mex") = matlab.buildtool.tasks.MexTask.forEachFile(mexSourceFiles, mexOutp
 
 end
 ```
-<!-- If you want to build mex pre 25a look at arith -->
+<!-- RP: If you want to build mex pre 25a look at arith -->
 
 In the build file, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the it. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) API, introduced in R2025a, converts every C++ file within the specified folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input, which can be created using the [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API. 
 
@@ -128,6 +122,12 @@ The buildfile has some advantages,
 1. *Incremental build:* By using `MexTask` instead of the `mex` command, you automatically get support for incremental build, recompiling only the files that have changed.
 2. *No hardcoding of source files:* Since the build file references to the folder containing the MEX source files and not the source files directly, the build file can scale to handle any number of single-source MEX functions, as long as the source files are placed within the cpp/mexfunctions folder.
 3. *Platform independence:* Although MEX functions themselves are platform dependent, the build file does not rely on any platform-specific information to compile them, making it possible to use the same build file across different platforms.
+
+
+## Expanding to create multiple MEX functions
+_Insert the add and subtract example here_
+
+
 
 ### Multi platform MEX functions build using CI systems
 
