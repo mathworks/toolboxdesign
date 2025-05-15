@@ -5,20 +5,24 @@
 
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
-<!-- RP: I think we should assume that the user is coming from the main best practice. Position this as a sub-document. We should avoid LLM excitement "Let's explore the world of MEX integration!" -->
+<!-- RP: I think we should assume that the user is coming from the main best practice. Position this as a sub-document. We should avoid LLM excitement "Let's explore the world of MEX integration!" 
+BP: updated the introduction: This document is an extension of Toolbox best practices-->
 
-_This is a sub document of the Toolbox Best practices._
-Welcome to the MATLAB&reg; MEX Best Practice guide. This document offers a refined approach to seamlessly integrating MEX files into your MATLAB toolbox projects, complementing our established [MATLAB Toolbox Best Practices](README.md). MEX files enable you to harness the power of C/C++/Fortran functions within MATLAB, and this guide will equip you with the knowledge to maintain a consistent and efficient workflow. _We're going show you how to...._
+<!-- RP: This is a sub document of the Toolbox Best practices. -->
+
+Welcome to the MATLAB&reg; MEX Best Practice guide, this document extends [MATLAB Toolbox Best Practices](./README.md) by offering advise on integrating [MEX files](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) into your MATLAB toolbox projects. MEX function enable you to harness the power of _C/C++/Fortran_ functions within MATLAB, and this guide will help you with organizing the MEX source code files and MEX functions.
+
+<!-- RP: We're going show you how to.... -->
 
 ## Overview
 
 [MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) are compiler code that bridges the gap between MATLAB and C, C++, or Fortran. They behave like a MATLAB function and are platform dependent. You can determine the MEX extension for your platform using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html). While the integration of MEX files can be intricate, this guide will navigate you through the process, ensuring smooth implementation in both development and production environments.  This makes it easier for others to understand and contribute to your project.
 
-To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this project throughout the guide to demonstrate practical applications of these principles.  To make things clearer, when we say "C++", we mean "C, C++, and Fortran." For Key Concepts please refer to [Toolbox Best Practices](./README.md).
+To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this project throughout the guide to demonstrate practical applications of these principles. To make things clearer, when we say "C++", we mean "C, C++, and Fortran." For Key Concepts please refer to [Toolbox Best Practices](./README.md).
 
 <!-- RP: Move this to the intro
-     BP: Moved MEX functions to Overview -->
-_See [Toolbox Best Practices] for other concepts._
+     BP: Moved MEX functions to Overview
+     RP: See [Toolbox Best Practices] for other concepts-->
 
 <!-- - **MEX Functions**: Compiled code that can be called directly from MATLAB. They behave like a MATLAB function. MEX files are platform dependent binaries, so there is a platform dependent file extension. You can determine the MEX extension for your platform using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html). -->
 <!-- - **MEX Gateway Function**: Written in a MEX supported language, MATLAB accesses this function when a call is made to the MEX function. Each MEX function can have one gateway function only. [MEX gateway functions written in C](https://www.mathworks.com/help/matlab/apiref/mexfunction.html)  -->
@@ -34,16 +38,18 @@ _See [Toolbox Best Practices] for other concepts._
 ## Creating a MEX function from a single C++ source file
 <!-- RP: Recast this titles to be user centric. Answer the question "What goal does this section help the user achieve?" -->
 <!-- RP: let's focus on a single C++ / MEX scenario first (add), then have a closing section that talks about multiple single C++ file MEX functions. -->
-Suppose you have several C++ MEX source files, each implementing its own MEX gateway and not depending on an external library or other source files, you want to organize these files in a way that makes building, integrating and sharing the MEX functions easy. Since the C++ source files need not be distributed to the toolbox users, we recommend placing them outside the `toolbox` folder. Create a folder named `cpp` under the repository root.  Within this folder, create a subfolder called `mexfunctions` and place the single source MEX functions source code within this folder. 
+Suppose you have a C++ MEX source file. This file has got its own MEX gateway and doesn't depend on any external library or other source files. You want to organize this file in a way that makes building, integrating and sharing the MEX function easy. According the [Toolbox best practices](./README.md), MEX (C++) source files need not be distributed to the toolbox users, since they are not required to run the toolbox. So, here’s what we suggest: keep your MEX source file outside of the `toolbox` folder. You can do this by creating a folder called `cpp` at the `root` folder. Inside the `cpp` folder, make another folder named `mexfunctions`, and that’s where you’ll put your MEX function’s source code.
 
 <!-- RP: For clarity's sake, let's not get mixed up in add and subtract -- let's create something new, like multiply.
 
 Be able to say "We are going to create the invertMex function, which on Windows will be invertMex.mexw64." -->
 
-To illustrate this organization, we will use the arithmetic repository as an example. For demonstration purposes we will reimplement the internals of `add()` and `substruct()` using MEX functions. We have created two MEX source files: `addMex.cpp` and `substractMex.cpp`. The names of the C/C++ source files are chosen to match the  the MEX functions complied out of the source files. For example, on Windows platform, `addMex.cpp` would be complied to `addMex.mexw64` and `addMex` will be the name of the MEX function . 
-This naming convention gives us
-*  makes it easy to associate each MEX function with its source code.  
-* the "Mex" suffix in the MEX function file name clearly indicates that the function is a MEX function rather than a standard MATLAB function.
+Let’s walk through how this organization works with the arithmetic toolbox example. We implement a MATLAB function called `invertNumber()`, under the hood, this function uses the MEX functions `invertMex()`, which we compiled from `invertMex.cpp`. You’ll notice that we deliberately name the source file and the MEX function the same way. For example, on Windows, `invertMex.cpp` gets compiled into `invertMex.mexw64`, and `invertMex` will be the name of the MEX function.
+
+This naming convention is really helpful for a couple of reasons:
+
+* First, it makes it easy to match each MEX function to its source code.
+* Second, by adding the "Mex" suffix, it’s immediately clear that this is a MEX function—not a regular MATLAB function.
 
 The organization of the MEX source files for the arithmetic toolbox relative to the toolbox folder is shown below:
 <!-- RP: Follow the langauge of the best practice -->
@@ -51,18 +57,24 @@ The organization of the MEX source files for the arithmetic toolbox relative to 
 arithmetic/
 ├───cpp/
 │   └───mexfunctions/
-|       ├───substractMex.cpp
-│       └───addMex.cpp
+│       └───invertMex.cpp
 ├───toolbox/
 |   ├───add.m
-|   └───subtract.m
+|   ├───subtract.m
+|   └───invertNumber.m
 ├───arithmetic.prj
 └───buildfile.m
 ```
 
 ### Building MEX functions
 <!-- RP: I think we're introducing buildtool too early. Show the basic mex solution first. -->
-We recommend using MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b for automating MEX functions build. 
+The following [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, when executed from the `root folder` can builds the MEX function and place it within a `private` folder under the `toolbox` folder.
+```matlab
+>>source = fullfile("cpp", "mexfunctions", "invertMex.cpp");
+>>destinations = fullfile("toolbox", "private");
+>>mex(source, destination)
+``` 
+When you have multiple MEX files, executing the `mex` command separately for each file MEX file can be cumbersome. Moreover, you might also becomes document your build recipe and share it with others.  MATLAB's [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b is a solution to problems just mentioned. It provides tooling to automate your MEX build. 
 
 [MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder, contents of this folder gets shipped to the user. Create a `private` folder within the `toolbox` folder and place the MEX functions within this folder, thus making them [Private functions](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
 
