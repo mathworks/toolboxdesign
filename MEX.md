@@ -78,7 +78,7 @@ You can use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) comm
 
 By placing the MEX file in a `private` folder, we have made the MEX function [private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html). Our motivation for doing this is to restrict the toolbox user from  calling these functions directly.  Instead, we suggest always accessing MEX functions through a MATLAB script. This way, you have control over what gets passed as input to the MEX function, this helps avoid errors from unexpected or unhandled inputs.
 
-Also, since MEX files are just built artifacts, it’s a good idea to leave them out of version control. You can do this by adding the `private` folder to your `.gitignore` file—there’s no need to track those files in your repo.
+Also, since MEX files are just build artifacts, it’s a good idea to leave them out of version control. You can do this by adding the `private` folder to your `.gitignore` file—there’s no need to track those files in your repo.
 ``` text
 arithmetic/
 ├───cpp/
@@ -94,11 +94,18 @@ arithmetic/
 └───buildfile.m
 ```
 <!-- RP: Introduce Buildtool here. -->
-If you’ve got several MEX functions, running the `mex` command for each one can be tedious. In addition, you might also want to document the build recipe, so that you can refer to it in the future or shared with others.  That’s where MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b can be useful. With buildtool, you can automate the MEX build process and share your build recipe with others. 
-
 ### Automating using `buildtool`
-<!-- RP: I think we need a summary of why this is a good idea. -->
-Here is a simple buildfile that can be used to build single source MEX functions: 
+<!-- RP: I think we need a summary of why this is a good idea. 
+BP: Added the motivation for buildtool-->
+If you’ve got several MEX functions, running the `mex` command for each one can be tedious. In addition, you might also want to document the build recipe, so that you can refer to it in the future or shared with others.  That’s where MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b can be useful. Buildtool uses a build file to document the build recipe, which has several advantages:
+<!-- RP: put this motivation earlier -- we need to advocate for buildtool first, before we show how. 
+BP: Moved the motivation for buildfile -->
+
+1. *Incremental build:* By using `MexTask` instead of the `mex` command, you automatically get support for incremental build, recompiling only the files that have changed.
+2. *No hardcoding of source files:* Since the build file references to the folder containing the MEX source files and not the source files directly, the build file can scale to handle any number of single-source MEX functions, as long as the source files are placed within the cpp/mexfunctions folder.
+3. *Platform independence:* Although MEX functions themselves are platform dependent, the build file does not rely on any platform-specific information to compile them, making it possible to use the same build file across different platforms.
+
+
 ``` matlab
 function plan = buildfile
 
@@ -116,12 +123,7 @@ end
 
 In the build file, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the it. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) API, introduced in R2025a, converts every C++ file within the specified folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input, which can be created using the [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API. 
 
-<!-- RP: put this motivation earlier -- we need to advocate for buildtool first, before we show how. -->
-The buildfile has some advantages,
 
-1. *Incremental build:* By using `MexTask` instead of the `mex` command, you automatically get support for incremental build, recompiling only the files that have changed.
-2. *No hardcoding of source files:* Since the build file references to the folder containing the MEX source files and not the source files directly, the build file can scale to handle any number of single-source MEX functions, as long as the source files are placed within the cpp/mexfunctions folder.
-3. *Platform independence:* Although MEX functions themselves are platform dependent, the build file does not rely on any platform-specific information to compile them, making it possible to use the same build file across different platforms.
 
 
 ## Expanding to create multiple MEX functions
