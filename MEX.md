@@ -129,14 +129,30 @@ plan("mex") = matlab.buildtool.tasks.MexTask.forEachFile(mexSourceFiles, mexOutp
 
 end
 ```
-In the build file, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the it. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) API, introduced in R2025a, converts every C++ file within the specified folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input, which can be created using the [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API. 
+In the build file, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the it. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) API, introduced in R2025a, converts every C++ file within the specified folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. The  [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API can be used to create a `FileCollection`.
+
 
 <!-- RP: If you want to build mex pre 25a look at arith -->
-
+The previously mentioned build file works only in MATLAB R2025a and later, for older releases of MATLAB you can use `mextask` given in the arithmetic toolbox repository.
 
 ## Expanding to create multiple MEX functions
 _Insert the add and subtract example here_
-
+``` text
+arithmetic/
+├───cpp/
+│   └───mexfunctions/
+|       ├───addMex.cpp
+│       └───invertMex.cpp
+├───toolbox/
+|   ├───private
+|   |   ├───addMex.mexw64
+|   |   └───invertMex.mexw64
+|   ├───add.m
+|   ├───subtract.m
+|   └───invertNumber.m
+├───arithmetic.prj
+└───buildfile.m
+```
 
 
 ### Multi platform MEX functions build using CI systems
