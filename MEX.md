@@ -28,24 +28,55 @@ BP: Introduced the buildtool later as suggested-->
 <!-- RP: let's focus on a single C++ / MEX scenario first (add), then have a closing section that talks about multiple single C++ file MEX functions.
 BP: Added the single source scenario, first.
  -->
-Suppose you have a C++ MEX source file that has every thing you need in it. You want to organize this file in a way that makes building, integrating and sharing the MEX function easy. 
+Suppose you have a C++ MEX source file that is self contained (has a MEX gateway and does not depend on other files). You want to organize this file in a way that makes building, integrating and sharing the MEX function easy. 
 MEX source files need not be distributed to the toolbox users, since they are not required to run the toolbox. 
-Our recommendation is that you keep the MEX source file outside of the `toolbox` folder. Create a folder called `cpp` at the root folder. Inside the `cpp` folder, make a folder with the same name as your MEX function, which contains the source code of your MEX function. 
+We recommend keeping the MEX source file outside of the `toolbox` folder. 
 
-<!-- use the same language as in TBP -->
-Let’s walk through how this organization works with the arithmetic toolbox example. We implement a MATLAB function `invertNumber()`, under the hood, this function uses the MEX functions `invertMex()`, which we compiled from `invertMex.cpp`. You’ll notice that we deliberately name the source file and the MEX function the same way. For example, on Windows, `invertMex.cpp` gets compiled into `invertMex.mexw64`, with `invertMex` being the name of the MEX function.
 
+For the Arithmetic toolbox: 
+1. Create a folder called `cpp` at the root folder
+2. Create a subfolder called `mexfunctions` within the `cpp` folder and save `invertMex.cpp` within this folder
+3. Create a private folder within the toolbox folder for storing the compiled MEX functions
 ``` text
 arithmetic/
 ├───cpp/
-│   └───invertMex/
+│   └───mexfunctions/
 │       └───invertMex.cpp
 ├───toolbox/
+|   ├───private/
 |   ├───add.m
 |   ├───subtract.m
 |   └───invertNumber.m
 └───arithmetic.prj
 ```
+You can use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, to compile `invertMex.cpp` into MEX functions. You need to provide the path of `invertMex.cpp` and path of the `private` folder as inputs to the `mex` command. 
+
+```matlab
+>>source = fullfile("cpp", "mexfunctions", "invertMex.cpp");
+>>destination = fullfile("toolbox", "private");
+>>mex(source, destination)
+```
+After running the `mex` command, the folder structure of the repository would look:
+``` text
+arithmetic/
+├───cpp/
+│   └───mexfunctions/
+│       └───invertMex.cpp
+├───toolbox/
+|   ├───private/
+|   |   └───invertMex.mexw64
+|   ├───add.m
+|   ├───subtract.m
+|   └───invertNumber.m
+└───arithmetic.prj
+``` 
+
+The above command compiles `invertMex.cpp` and places the MEX functions in a `private` folder, we have made the MEX function [private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html). Our motivation for doing this is to restrict the toolbox user from  calling these functions directly.  Instead, we suggest always accessing MEX functions through a MATLAB script. This way, you have control over what gets passed as input to the MEX function, this helps avoid errors from unexpected or unhandled inputs.
+
+<!-- use the same language as in TBP -->
+Let’s walk through how this organization works with the arithmetic toolbox example. We implement a MATLAB function `invertNumber()`, under the hood, this function uses the MEX functions `invertMex()`, which we compiled from `invertMex.cpp`. You’ll notice that we deliberately name the source file and the MEX function the same way. For example, on Windows, `invertMex.cpp` gets compiled into `invertMex.mexw64`, with `invertMex` being the name of the MEX function.
+
+
 
 <!-- make another folder named `mexfunctions`, and that’s where you put your MEX function’s source code. -->
 
@@ -71,14 +102,7 @@ BP: Removing the line above, TBP does not tell anything -->
 ### Building MEX functions
 <!-- RP: I think we're introducing buildtool too early. Show the basic mex solution first.
 BP: Added the mex command based build and introduced the buildtool lated  -->
-You can use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, to compile your MEX source code into MEX files. You need to provide the path to your MEX source file and where you want the compiled MEX file to go as inputs to the `mex` command. So, if you run the `mex` command from the `root` folder, you’d point to `cpp/mexfunctions/invertMex.cpp` as your source, and set `toolbox/private/` as the destination.
-```matlab
->>source = fullfile("cpp", "mexfunctions", "invertMex.cpp");
->>destination = fullfile("toolbox", "private");
->>mex(source, destination)
-``` 
 
-By placing the MEX file in a `private` folder, we have made the MEX function [private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html). Our motivation for doing this is to restrict the toolbox user from  calling these functions directly.  Instead, we suggest always accessing MEX functions through a MATLAB script. This way, you have control over what gets passed as input to the MEX function, this helps avoid errors from unexpected or unhandled inputs.
 
 Also, since MEX files are just build artifacts, it’s a good idea to leave them out of version control. You can do this by adding the `private` folder to your `.gitignore` file—there’s no need to track those files in your repo.
 ``` text
