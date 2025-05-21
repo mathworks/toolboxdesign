@@ -79,6 +79,13 @@ You’ll notice that we deliberately name the source file and the MEX function t
 
 If you are using git, we recommend leaving the compiled MEX files out of version control. You can add `*.mex*` to you `.gitignore` file. This is part of the [standard .gitignore](https://github.com/mathworks/gitignore/blob/main/Global/MATLAB.gitignore) for MATLAB.
 
+### Out of process MEX host
+For MEX functions written using the C++, we recommend calling the MEX function from an out of process MEX host. You can create an out of process MEX host using the [mexhost](https://www.mathworks.com/help/matlab/matlab_external/out-of-process-execution-of-c-mex-functions.html) command. It protects MATLAB from crashing due to unexpected errors originating from the MEX function execution.
+
+**Note**: `mexhost` is only supported for C++ MEX functions. 
+
+<!-- Create an Example for mexhost -->
+
 ### Automation using `buildtool`
 Running the `mex` command for each MEX file can be tedious and error prone. That’s where MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b can be useful. The following `buildfile.m` creates a `mex` task, that builds your MEX files.
 
@@ -125,124 +132,7 @@ arithmetic/
 
 The `buildfile.m` is the same as before.
 
-
-<!-- ## Expanding to create multiple MEX functions
-_Insert the add and subtract example here_
-``` text
-arithmetic/
-├───cpp/
-│   └───mexfunctions/
-|       ├───addMex.cpp
-│       └───invertMex.cpp
-├───toolbox/
-|   ├───private
-|   |   ├───addMex.mexw64
-|   |   └───invertMex.mexw64
-|   ├───add.m
-|   ├───subtract.m
-|   └───invertNumber.m
-├───arithmetic.prj
-└───buildfile.m
-```
-
-## Organizing MEX Source Files
-Organize your MEX source files in language-specific folder at the root level of your project (e.g., `cpp`). This structure enhances code organization and simplifies management across multiple programming languages. We recommend using the `cpp` folder at the root of the toolbox repo for both C and C++ source code.
-
-MEX functions are classified into two groups: 
-1. Single source MEX function 
-2. Multiple source MEX function 
-
-Our folder structure within the language-specific folder (e.g., `cpp`) for the MEX source files is largely based on this classification. For a single source MEX function, the source code file implements the MEX gateway function and other functionalities that are called within the gateway function. A multiple source MEX function on the other hand, has one of its source code files implement the gateway function while the other source files implement features and functionalities that are used in the gateway function. 
-
-For C and C++ single source MEX functions, place the source code within the `mexfunctions` folder within the `cpp` folder. In case of Fortran, create a `fortran` folder within the toolbox root and move the source code for Fortran single source MEX function within the `mexfunctions` folder. Note that a toolbox project can have both `cpp` and `fortran` folders if it has MEX functions written using C/ C++ and Fortran. We also recommend the names of the MEX functions to be same as their  source file (of course with different extensions), this ensures traceability. Moreover, we also recommend the file names be suffixed with 'Mex', this acts as an indication that the function being called is not any MATLAB function but a MEX function.
-
-
-For multiple source MEX functions, create a folder for each MEX function within the respective language folder. The name of the folder should be same as that of the MEX function that will be created out for source code with the folder. The folder name can be suffixed with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function, with the same name as the folder.    
-
-
-Our [Arithmetic Toolbox]() example features two MEX functions: `addMex` and `subtractMex`. `addMex` is implemented as a single source MEX function with the source code placed under the `mexfunctions` folder. On the other hand, `substractMex` is implemented as a multiple source MEX function with source code placed under the `substractMex` folder, `substract.cpp` implements the MEX gateway function for the `substractMex` MEX function and `substractImp.cpp`  implementations functionalities that are used in `substract.cpp`. The organization of the MEX source files is shown below:
-
-``` text
-arithmetic/
-├───cpp/
-│   ├───substractMex/
-│   │   ├───substract.cpp % Implements gateway function
-│   │   └───substractImp.cpp % other features
-│   └───mexfunctions/
-│       └───addMex.cpp
-├───toolbox/
-|   ├───add.m
-|   └───subtract.m
-├───arithmetic.prj
-└───buildfile.m
-```
-
-
-
-
-## Organizing MEX Functions
-[MATLAB Toolbox Best Practices](README.md) advocates for placing the user files under the `toolbox` folder, contents of this folder gets shipped to the user. For a toolbox that uses MEX, place the MEX functions under a `private` folder within the `toolbox` folder, thus making them private [Private functions](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html).  
-
-Our motivation for making MEX functions private is to restrict the toolbox user from  calling them directly. We recommend accessing the MEX functions always from a MATLAB script, this approach gives toolbox authors control over what gets passed as input to the MEX functions, their by elimination failures due to unhandled inputs.
-
-We recommend ignoring the MEX functions from version control (add the `private` folder to the `.gitignore`) since MEX functions are derived artifacts.
-
-<!-- - **Compiled Binaries**: Store compiled MEX binaries in the `toolbox/private` folder. This approach maintains internal accessibility while mitigating the risk of crashes from unhandled inputs by preventing direct user access to MEX functions. -->
-
-<!-- Our example toolbox shows the MEX functions for several platforms: -->
-
-<!-- The layout of the files with the `private` folder is shown below, for the sake of clarity we have shown the MEX functions for all the major platforms. Not that the GitHub repository for the Arithmetic toolbox will not contain the MEX functions since they are ignored by the version control system. You can create the MEX functions by running the following command from MATLAB terminal:
-``` matlab
->> buildtool mex
-```
-
-``` text
-arithmetic/
-:
-├───cpp/
-│   ├───substractMex/
-│   │   ├───substract.cpp
-│   │   └───substractImp.cpp
-│   └───mexfunctions/
-│       └───addMex.cpp
-├───toolbox/
-|   ├───add.m
-|   ├───subtract.m
-|   └───private/
-|       ├───addMex.mexw64 (derived)
-|       ├───addMex.mexa64 (derived)
-|       ├───addMex.mexmaca64 (derived)
-|       ├───subtractMex.mexw64 (derived)
-|       ├───subtractMex.mexa64 (derived)
-|       └───subtractMex.mexmaca64 (derived)
-├───arithmetic.prj
-└───buildfile.m 
-```
-
-Here is a `buildfile` with a single task called `mex`,  this task compiles the single and multiple source MEX functions and places them within the `private` folder. Note that the `buildfile` was tested on MATLAB R2025a. -->
-
-<!-- ``` matlab
-function plan = buildfile
-
-import matlab.buildtool.tasks.*
-import matlab.buildtool.io.*
-
-% Create a plan 
-plan = buildplan();
-
-% Compile all the .cpp files inside cpp/mexfunctions into MEX functions
-mexSourceFiles = files(plan, fullfile("cpp", "mexfunctions", "*.cpp"));
-mexOutputFolder = fullfile("toolbox","private")l;
-plan("mex") = MexTask.forEachFile(mexSourceFiles, mexOutputFolder);
-
-end
-```  -->
-
-
-### Out of process MEX host
-For MEX functions written using the C++, we recommend calling the MEX function from an out of process MEX host. You can create an out of process MEX host using the [mexhost](https://www.mathworks.com/help/matlab/ref/mexhost.html) command. It protects MATLAB from crashing due to unexpected errors originating from the MEX function execution.
-
-**Caution**: mexhost does not support MEX functions written in C and Fortran. 
+## Special case: Many MEX functions with a single C++ source file
 
 
 ## Incorporating External Libraries
