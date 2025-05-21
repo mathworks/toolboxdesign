@@ -30,9 +30,9 @@ BP: Added the single source scenario, first.
 Suppose you have a C++ MEX source file that is self contained (has a MEX gateway and does not depend on other files). You want to organize this file in a way that makes building, integrating and sharing the MEX function easy. MEX source files need not be distributed to the toolbox users, since they are not required to run the toolbox. We recommend keeping the MEX source file outside of the `toolbox` folder. 
 
 For the Arithmetic toolbox, create: 
-1. `cpp` folder at the root folder
+1. `cpp` folder under the root folder
 2. `mexfunctions` subfolder within the `cpp` folder and save `invertMex.cpp` within this folder
-3. `private` folder within the toolbox folder for storing the compiled MEX functions
+3. `private` folder within the `toolbox` folder for storing the compiled MEX functions
 ``` text
 arithmetic/
 ├───cpp/
@@ -45,6 +45,9 @@ arithmetic/
 |   └───invertNumber.m
 └───arithmetic.prj
 ```
+### Building MEX functions
+<!-- RP: I think we're introducing buildtool too early. Show the basic mex solution first.
+BP: Added the mex command based build and introduced the buildtool lated  -->
 You can use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, to compile `invertMex.cpp` into MEX functions. You need to provide the path of `invertMex.cpp` and path of the `private` folder as inputs to the `mex` command. 
 
 ```matlab
@@ -67,14 +70,14 @@ arithmetic/
 └───arithmetic.prj
 ``` 
 
-By placing the MEX functions within the `private` folder, we have made it [private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html). Our motivation for doing this is to restrict the toolbox user from  calling the MEX functions directly.  We suggest accessing MEX functions through a MATLAB script. This way, you can control what gets passed as input to the MEX function, this prevents errors from unexpected or unhandled inputs.
+By placing the MEX functions within the `private` folder, we have made it [private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html). By doing this, you restrict your users from  calling the MEX functions directly.  We suggest accessing MEX functions through a MATLAB script. This way, you can control what gets passed as input to the MEX function, there by preventing errors from unexpected or unhandled inputs.
 
 You’ll notice that we deliberately name the source file and the MEX function the same way. For example, on Windows, `invertMex.cpp` gets compiled into `invertMex.mexw64`, with `invertMex` being the name of the MEX function. This naming convention is helpful for the following reasons:
 
 * It makes it easy to match each MEX function to its source code.
 * By adding the "Mex" suffix, it’s immediately clear that this is a MEX function—not a regular MATLAB function.
 
-MEX files are just build artifacts, it’s a good idea to leave them out of version control. You can do this by adding the `private` folder to your `.gitignore` file.
+We recommend leaving the MEX files out of version control since they are just build artifacts. You can do this by adding the `private` folder to your `.gitignore` file.
 
 <!-- use the same language as in TBP -->
 
@@ -98,12 +101,10 @@ The organization of the MEX source files for the arithmetic toolbox relative to 
 BP: Removing the line above, TBP does not tell anything -->
 
 
-### Building MEX functions
-<!-- RP: I think we're introducing buildtool too early. Show the basic mex solution first.
-BP: Added the mex command based build and introduced the buildtool lated  -->
 
 
-``` text
+
+<!-- ``` text
 arithmetic/
 ├───cpp/
 │   └───mexfunctions/
@@ -116,7 +117,7 @@ arithmetic/
 |   └───invertNumber.m
 ├───arithmetic.prj
 └───buildfile.m
-```
+``` -->
 <!-- RP: Introduce Buildtool here. 
 BP: Introduced the buildtool under Automating using buildtool-->
 ### Automation using `buildtool`
@@ -127,7 +128,7 @@ If you’ve got several MEX functions, running the `mex` command for each one ca
 BP: Moved the motivation for buildfile -->
 
 1. *Incremental build:* By using `MexTask` instead of the `mex` command, you automatically get support for incremental build, i.e) buildtool only re-compiles the files that have changed.
-2. *No hardcoding of source files:* Since the build file references to the folder containing the MEX source files and not the source files directly, the build file can scale to handle any number of single-source MEX functions, as long as the source files are placed within the cpp/mexfunctions folder.
+2. *No hardcoding of source files:* Since the build file refers to the folder containing the MEX source files and not the source files directly, the build file can scale to handle any number of single-source MEX functions, as long as the source files are placed within the cpp/mexfunctions folder.
 3. *Platform independence:* Although MEX functions themselves are platform dependent, the build file does not rely on any platform-specific information to compile them, making it possible to use the same build file across different platforms.
 
 
@@ -148,15 +149,16 @@ In the build file, we create a [`plan`](https://www.mathworks.com/help/matlab/re
 
 
 <!-- RP: If you want to build mex pre 25a look at arith -->
-The previously mentioned build file works only in MATLAB R2025a and later, for older releases of MATLAB you can use `mextask` given in the arithmetic toolbox repository.
+The previously mentioned build file works only in MATLAB R2025a and later, for older releases of MATLAB you can use `mextask` as shown in the arithmetic toolbox repository.
 
 
 ## Creating a MEX function from multiple C++ source files
 
-It is common to have MEX functions generated from multiple C++ source files, we call these MEX functions multiple source MEX functions. For such MEX functions one of the source files implement the gateway function and other source files implement methods that are called within the gateway function. For multiple source MEX functions, create a folder for each MEX function within the `cpp` folder. The name of the folder should be same as that of the MEX function that will be created out for source code with the folder. The folder name can be suffixed with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function. 
+You can create MEX functions from multiple C++ source files, we call them multiple source MEX functions. For such MEX functions one of the source files implement the gateway function and other files implement methods that are called within the gateway function. You can organize the  source code for all these MEX functions under a single folder 
 
-
-For the sake of discussion let us implement substractMex MEXfunction as a Multiple source MEX function. The organization of the source files is shown below.
+- Create a folder for each MEX function within the `cpp` folder. 
+- Name of the folder should be same as that of the MEX function 
+- Folder name is suffixed with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function. 
 
 ``` text
 arithmetic/
@@ -165,13 +167,41 @@ arithmetic/
 │   │   ├───substract.cpp % Implements gateway function
 │   │   └───substractImp.cpp % other features
 │   └───mexfunctions/
-│       └───addMex.cpp
+│       └───invertMex.cpp
 ├───toolbox/
 |   ├───add.m
-|   └───subtract.m
+|   ├───subtract.m
+|   └───invertNumber.m
 ├───arithmetic.prj
 └───buildfile.m
 ```
+
+```matlab
+function plan = buildfile
+
+plan = buildplan();
+
+mexOutputFolder = fullfile("toolbox","private");
+
+% Compile all the .cpp files inside cpp/mexfunctions into MEX functions
+mexSourceFiles = files(plan, fullfile("cpp", "mexfunctions", "*.cpp"));
+plan("mex") = matlab.buildtool.tasks.MexTask.forEachFile(mexSourceFiles, mexOutputFolder);
+
+% Compile all the folders inside cpp/*Mex into MEX functions
+foldersToMex = plan.files("cpp/*Mex").select(@isfolder);
+for f = foldersToMex.paths
+    [~, folderName] = fileparts(f);
+    plan("mex:"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(f, "**/*.cpp"), ...
+        mexOutputFolder, ...
+        Options="-I""cpp/includes""", ...
+        Filename=folderName);
+end
+plan("mex").Description = "Build MEX functions";
+end
+```
+
+
+
 
 <!-- ## Expanding to create multiple MEX functions
 _Insert the add and subtract example here_
