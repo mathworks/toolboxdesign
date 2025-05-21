@@ -77,6 +77,9 @@ You’ll notice that we deliberately name the source file and the MEX function t
 * It makes it easy to match each MEX function to its source code.
 * By adding the "Mex" suffix, it’s immediately clear that this is a MEX function—not a regular MATLAB function.
 
+The m-script `invertNumber.m` within the `toolbox` folder makes a call to the `invertMex` MEX function. We suggest adding an [arguments block](https://www.mathworks.com/help/matlab/ref/arguments.html) to `invertNumber.m` for validating the inputs before passing it to `invertMex`. 
+
+
 We recommend leaving the MEX files out of version control since they are just build artifacts. You can do this by adding the `private` folder to your `.gitignore` file.
 
 <!-- use the same language as in TBP -->
@@ -154,7 +157,7 @@ The previously mentioned build file works only in MATLAB R2025a and later, for o
 
 ## Creating a MEX function from multiple C++ source files
 
-You can create MEX functions from multiple C++ source files, we call them multiple source MEX functions. For such MEX functions one of the source files implement the gateway function and other files implement methods that are called within the gateway function. You can organize the  source code for all these MEX functions under a single folder 
+You can create MEX functions from multiple C++ source files, we call them multiple source MEX functions. For such MEX functions one of the source files implement the gateway function and other files implement methods that are called within the gateway function. You can organize the  source code for all these MEX functions under a single folder.
 
 - Create a folder for each MEX function within the `cpp` folder. 
 - Name of the folder should be same as that of the MEX function 
@@ -199,8 +202,6 @@ end
 plan("mex").Description = "Build MEX functions";
 end
 ```
-
-
 
 
 <!-- ## Expanding to create multiple MEX functions
@@ -323,23 +324,21 @@ For MEX functions written using the C++, we recommend calling the MEX function f
 
 
 ## Incorporating External Libraries
-One of the key strengths of MEX functions is their ability to call  libraries implemented in languages like C, C++ and Fortran. Since MEX source files are just source code written in a MEX supported language, they use the source language syntax to access functionality implemented in external libraries. One of the common questions with using external libraries in you toolbox work is, where to store these external libraries?
+You can call libraries implemented in C++ using MEX functions. Since MEX source files are just C++ source code, they use the syntax of C++ to access external libraries. You may be wondering where to store these external libraries?
 
-The answer to this question depends on the external library and the platform with which you are working with. For the purposes of this best practices we classify the external libraries into compile time and execution time libraries. 
+The answer to this question depends on the external library and the operating system with which you are working with. There are two broad categories of libraries: compile time and execution time libraries. 
  
-We will assume that the external library is available to you as include headers and binaries. We do not dwell into the details of how these headers and binaries are created. First let as talk a bit about organizing 
+We assume that the external library is available to you as include headers and binaries. We will not dwell into the details of how these headers and binaries are created. Let as talk a bit about it organization.
 
 ### External library headers
-These files are required only at compile time, your toolbox users do not want them to run the MEX functions. Having a standard location to store these headers makes it easier for you (the author) to manage them and pass it to the compiler.
+These files are required only at compile time, your users do not want them to run the MEX functions. Having a standard location to store these headers makes it easier for you to manage them and pass it to the compiler.
 
-Create an `include` folder within the the language specific folder (say `cpp`) and move the external library headers within this folder. The [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) MATLAB API takes in an [optional argument](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) that can be used to inform the compiler to look for header files within the `include` folder.
+Create an `include` folder within the `cpp` folder and move the external library headers within this folder. You can use [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) APIs [optional argument](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) to ask the compiler to look for header files within the `include` folder.
 
-If you want to include a header only library in your work, copy the library headers into the `include` folder within the respective language folders.
+If you want to include a header only library, copy the library headers into the `include` folder within the `cpp` folder.
 
-
-
-### Compile time libraries
-The toolbox user does not need these library binaries to run the MEX functions  they are required only at compile time, these libraries are often referred to as static libraries. You can place these binaries under platform specific folders within the `library` folder. We recommend using standard names for the platform folders as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. The table below provides a summary of the folder names and file extensions used for static libraries for popular platforms.
+### Interfacing with a compile time library
+Toolbox users do not need these libraries for running the MEX functions, they are required only at compile time, these libraries are often referred to as static libraries. You can place these binaries under platform specific folders within the `library` folder. We recommend using standard names for the platform folders as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. The table below provides a summary of the folder names and file extensions used for static libraries for popular operating systems.
 
 | Platform          | Folder name | Binary Extension | 
 | :---------------- | :------     | :------        |
