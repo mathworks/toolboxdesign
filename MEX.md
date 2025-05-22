@@ -3,57 +3,57 @@
 > [!IMPORTANT]
 > This page is under construction and review
 
+**TODO:**
+
+- [X] Review and revise up to and including buildtool.  
+- [ ] Update `buildfile.m` in buildtool section
+- [ ] Review and update multiple source file section
+- [ ] Review and update `mexfunction` folder scenario section
+- [ ] Review and update external libraries section
+- [ ] Review and update CI / GitHub Actions section
+
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
-Welcome to the MATLAB&reg; MEX Best Practice guide, this document extends [MATLAB Toolbox Best Practices](./README.md) by offering advise on integrating [MEX files](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) into your MATLAB toolbox projects. MEX functions enable you to harness the power of _C/C++/Fortran_ functions within MATLAB.In this document when we say "C++", we mean "C, C++, and Fortran."
+Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbox Best Practices](./README.md) focusing on  integrating [MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) into your MATLAB toolbox. MEX functions enable you to harness the power of C, C++, and Fortran code within MATLAB. In this document when we say "C++", we mean "C, C++, and Fortran."
 
 ## Overview
 
-[MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) are compiled code that bridges the gap between MATLAB and C++. They behave like a MATLAB function and you must build them for each operating system you want to run on. You can determine the MEX extension for your operating system using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html). While the integration of MEX files can be intricate, this guide will navigate you through the process, ensuring smooth implementation in both development and production environments.  This makes it easier for others to understand and contribute to your project.
+[MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) are compiled functions that bridge the gap between MATLAB and C++. They behave like a MATLAB function and you must build them for each operating system you want to run on. You can determine the MEX file extension (for example, `.mexw64` in Microsoft Windows) for your operating system using [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html). This guide will navigate you through the process of integrating of MEX functions, ensuring smooth implementation in both development and production environments.  This makes it easier for others to understand and contribute to your toolbox.
 
-To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this project throughout the guide to demonstrate practical applications of these principles.  For key concepts please refer to the [Toolbox Best Practices](./README.md).
+To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this toolbox throughout the guide to demonstrate practical applications of these principles.  For key concepts please refer to the [Toolbox Best Practices](./README.md).
 
-<!-- - **Compile time binaries**: Static libraries are a good examples of compile time binaries. These library binaries are required only at build time and you need not ship them to your users. -->
-<!-- - **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples. -->
-<!-- RP: Maybe introduce this later 
-BP: Introduced the buildtool later as suggested-->
-<!-- - **`buildtool`**: MATLAB's tool for automating build processes, including MEX file compilation.  See the [`buildtool`](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html) for more information. -->
-<!-- RP: save this till we use it -->
-<!-- -  **MEX compiler**: Converts MEX source files into MEX functions. The MEX compiler can be accessed from MATLAB via the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, it can be invoked for the system terminal via the same command. You can configure C/ C++/ Fortran compilers using the [mex -setup](https://www.mathworks.com/help/matlab/matlab_external/changing-default-compiler.html). -->
-<!-- - **Project Root**: The folder under which the toolbox source code is organized. A git repository is initialized under this folder. -->
-<!-- - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically. -->
+## MEX function from a single C++ source file
+Suppose you have a C++ MEX source file that is a single C++ source file. MEX source files need not be distributed to the toolbox users, since they are not required to run the toolbox. Only the compiled function needs to be distributed.  We recommend keeping the C++ MEX source files outside of the `toolbox` folder in a folder focused on C++ code, `cpp`. 
 
-## Creating a MEX function from a single C++ source file
-<!-- RP: let's focus on a single C++ / MEX scenario first (add), then have a closing section that talks about multiple single C++ file MEX functions.
-BP: Added the single source scenario, first.
- -->
-Suppose you have a C++ MEX source file that is self contained (has a MEX gateway and does not depend on other files). You want to organize this file in a way that makes building, integrating and sharing the MEX function easy. MEX source files need not be distributed to the toolbox users, since they are not required to run the toolbox. We recommend keeping the MEX source file outside of the `toolbox` folder. 
+For each MEX function in the `cpp` folder, create a folder with the name that matches the name of your MEX function.  This folder should end with `Mex` to indicate that all the files within the folder are associated with a single MEX function.
 
-For the Arithmetic toolbox, create: 
-1. `cpp` folder under the root folder
-2. `mexfunctions` subfolder within the `cpp` folder and save `invertMex.cpp` within this folder
-3. `private` folder within the `toolbox` folder for storing the compiled MEX functions
+Our example toolbox has a `cpp` folder in the root folder, with an `invertMex` subfolder inside.  The C++ code `invertMex.cpp` is within this folder.  While the `.cpp` file does not have to match the folder name, it can be convenient to do this in simple cases.
+
 ``` text
 arithmetic/
 ├───cpp/
 │   └───invertMex/
 │       └───invertMex.cpp
 ├───toolbox/
-|   ├───private/
-|   └───...
+...
 └───arithmetic.prj
 ```
 ### Building MEX functions
-<!-- RP: I think we're introducing buildtool too early. Show the basic mex solution first.
-BP: Added the mex command based build and introduced the buildtool lated  -->
-You can use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, to compile `invertMex.cpp` into MEX functions. You need to provide the path of `invertMex.cpp` and path of the `private` folder as inputs to the `mex` command. 
+
+You can use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, to compile `invertMex.cpp` into MEX functions. We suggest you place your compiled MEX functions in your `private` folder within the `toolbox` folder (see below). You need to provide the path of `invertMex.cpp` and path of the `private` folder as inputs to the `mex` command. 
 
 ```matlab
 >>source = fullfile("cpp", "invertMex", "*.cpp");
 >>destination = fullfile("toolbox", "private");
->>mex(source, destination) % Add output file name
+>>mex(source, "-outdir", destination, "-output", "invertMex")
 ```
 The `mex` command would create the MEX function and place it within the `private` folder.
+
+Our example toolbox has:
+
+1. A `invertMex.mexw64` file in the `toolbox/private` folder
+2. The MATLAB function `invertNumber.m` within the `toolbox` folder calls into the `invertMex` MEX function. We recommend using an [arguments block](https://www.mathworks.com/help/matlab/ref/arguments.html) in `invertNumber` to validate the inputs before passing it to `invertMex`. 
+
 ``` text
 arithmetic/
 ├───cpp/
@@ -66,51 +66,51 @@ arithmetic/
 |   └───invertNumber.m
 └───arithmetic.prj
 ``` 
- ## Why put the MEX functions within a private folder?
- By putting it in a [private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html) folder, you restrict your users from  calling the MEX functions directly. It is very common for MEX files to crash MATLAB if they get unexpected inputs. By limiting access to MEX functions from a MATLAB function, you can control what gets passed as input to the MEX function, there by preventing errors from unexpected or unhandled inputs.
-
-The MATLAB function `invertNumber` within the `toolbox` folder makes a call to the `invertMex` MEX function. We suggest adding an [arguments block](https://www.mathworks.com/help/matlab/ref/arguments.html) to `invertNumber` to validate the inputs before passing it to `invertMex`. 
-
-<!-- Rewrite this -->
-You’ll notice that we deliberately name the source file and the MEX function the same way. For example, on Windows, `invertMex.cpp` gets compiled into `invertMex.mexw64`, with `invertMex` being the name of the MEX function. This naming convention is helpful for the following reasons:
-
-* It makes it easy to match each MEX function to its source code.
-* By adding the "Mex" suffix, it’s immediately clear that this is a MEX function—not a regular MATLAB function.
-
-If you are using git, we recommend leaving the compiled MEX files out of version control. You can add `*.mex*` to you `.gitignore` file. This is part of the [standard .gitignore](https://github.com/mathworks/gitignore/blob/main/Global/MATLAB.gitignore) for MATLAB.
-
-### Out of process MEX host
-For MEX functions written using the C++, we recommend calling the MEX function from an out of process MEX host. You can create an out of process MEX host using the [mexhost](https://www.mathworks.com/help/matlab/matlab_external/out-of-process-execution-of-c-mex-functions.html) command. It protects MATLAB from crashing due to unexpected errors originating from the MEX function execution.
-
-**Note**: `mexhost` is only supported for C++ MEX functions. 
-
-<!-- Create an Example for mexhost -->
+ ### Additional Notes
+ * **Why put the MEX functions within a private folder?** By putting it in a [private](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html) folder, you restrict your users from calling the MEX function directly. Even minor errors in a MEX function will crash MATLAB, especially if they receive unexpected inputs. By limiting access to MEX functions to a MATLAB function that you control, you ensure that only what you expect will be passed as input to the MEX function, preventing errors from unexpected or unhandled inputs.
+ * **Out of process MEX host** We recommend [Out-of-Process Execution of C++ MEX Functions](https://www.mathworks.com/help/matlab/matlab_external/out-of-process-execution-of-c-mex-functions.html). This isolates the MATLAB process from crashes in you C++ MEX function and allows you to use some third-party libraries that are not compatible with MATLAB.  Use the [mexhost](https://www.mathworks.com/help/matlab/ref/mexhost.html) command to do this. Note that `mexhost` is only supported for C++ MEX functions. 
+ * **Using git** In git source control systems, we recommend that you do not keep compiled MEX functions under version control, as they are derived files. Add `*.mex*` to your `.gitignore` file. This is part of the [standard .gitignore file](https://github.com/mathworks/gitignore/blob/main/Global/MATLAB.gitignore) for MATLAB.
 
 ### Automation using `buildtool`
-Running the `mex` command for each MEX file can be tedious and error prone. That’s where MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b can be useful. The following `buildfile.m` creates a `mex` task, that builds your MEX files.
+
+Running the `mex` command for each MEX function can be tedious and error prone. MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, can automate this and many other repetative processes for you. The following `buildfile.m` creates a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), introduced in R2024a, that builds your MEX functions.
 
 ```matlab
 function plan = buildfile
-% Should work in 24a
-plan = buildplan();
+% !!Revise to work in 24a!!
+    plan = buildplan();
 
-mexOutputFolder = fullfile("toolbox","private");
+    mexOutputFolder = fullfile("toolbox","private");
 
-% Compile all the folders inside cpp/*Mex into MEX functions
-foldersToMex = plan.files("cpp/*Mex").select(@isfolder);
-for f = foldersToMex.paths
-    [~, folderName] = fileparts(f);
-    plan("mex:"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(f, "**/*.cpp"), ...
-                              mexOutputFolder, ...
-                              Filename=folderName);
-end
-plan("mex").Description = "Build MEX functions";
+    % Compile all the folders inside cpp/*Mex into MEX functions
+    foldersToMex = plan.files("cpp/*Mex").select(@isfolder);
+    for f = foldersToMex.paths
+        [~, folderName] = fileparts(f);
+        plan("mex:"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(f, "**/*.cpp"), ...
+                                mexOutputFolder, ...
+                                Filename=folderName);
+    end
+    plan("mex").Description = "Build MEX functions";
 
 end
 ```
 <!-- In the build file, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the it. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) API, introduced in R2025a, converts every C++ file within the specified folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. The  [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API can be used to create a `FileCollection`. -->
 
+Our example toolbox adds a `buildfile.m` to automate the building of the MEX functions:
 
+``` text
+arithmetic/
+├───cpp/
+│   └───invertMex/
+│       └───invertMex.cpp
+├───toolbox/
+|   ├───private/
+|   |   └───invertMex.mexw64
+|   ├...
+|   ├───buildfile.m
+|   └───invertNumber.m
+└───arithmetic.prj
+``` 
 
 ## Creating a MEX function from multiple C++ source files
 
@@ -142,6 +142,12 @@ The `buildfile.m` is the same as before.
 
 
 ## Incorporating External Libraries
+
+<!-- - **Compile time binaries**: Static libraries are a good examples of compile time binaries. These library binaries are required only at build time and you need not ship them to your users. -->
+<!-- - **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples. -->
+<!-- RP: save this till we use it -->
+<!-- - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically. -->
+
 You can call libraries implemented in C++ using MEX functions. Since MEX source files are just C++ source code, they use the syntax of C++ to access external libraries. You may be wondering where to store these external libraries?
 
 The answer to this question depends on the external library and the operating system with which you are working with. There are two broad categories of libraries: compile time and execution time libraries. 
@@ -306,7 +312,7 @@ arithmetic/
 
 ## Conclusion
 
-By following to these best practices, you'll create a robust, maintainable, and user-friendly MATLAB toolbox that harnesses the full potential of MEX files. Through effective project structure organization, build automation, and dependency management, you can focus on delivering great solutions to your users.
+By following to these best practices, you'll create a robust, maintainable, and user-friendly MATLAB toolbox that harnesses the full potential of MEX functions. Through effective project structure organization, build automation, and dependency management, you can focus on delivering great solutions to your users.
 
 We welcome your input! For further details, suggestions, or to contribute, please [open an issue](https://github.com/mathworks/toolboxdesign/issues/new/choose).
 
