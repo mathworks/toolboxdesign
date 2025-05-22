@@ -5,7 +5,9 @@
 
 **TODO:**
 
-- [X] Review and revise up to and including buildtool.  
+- [X] Review and revise overview.  
+- [X] Review and revise single source file section.  
+- [X] Review and revise buildtool section.  
 - [ ] Update `buildfile.m` in buildtool section
 - [ ] Review and update multiple source file section
 - [ ] Review and update `mexfunction` folder scenario section
