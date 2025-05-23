@@ -9,7 +9,7 @@
 - [X] Review and revise single source file section.  
 - [X] Review and revise buildtool section.  
 - [ ] Update `buildfile.m` in buildtool section
-- [ ] Review and update multiple source file section
+- [X] Review and update multiple source file section
 - [ ] Review and update `mexfunction` folder scenario section
 - [ ] Review and update external libraries section
 - [ ] Review and update CI / GitHub Actions section
@@ -79,7 +79,7 @@ Running the `mex` command for each MEX function can be tedious and error prone. 
 
 ```matlab
 function plan = buildfile
-% !!Revise to work in 24a!!
+% !!Revise to work in 24a!!  Make sure it supports multiple *Mex directoriesa and multiple .cpp files
     plan = buildplan();
 
     mexOutputFolder = fullfile("toolbox","private");
@@ -122,17 +122,22 @@ Tha above pattern naturally extends to MEX functions that has multiple C++ sourc
 - Name of the folder should be same as that of the MEX function 
 - Folder name is suffixed with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function.  -->
 
+Our example toolbox adds two .cpp files in the  `subtractMex` folder, which builds to the `subtractMex.mexw64` binary in the `private` folder.  `subtractNumber.m` provides a user accessible version that error checks:
+
 ``` text
 arithmetic/
 ├───cpp/
-│   ├───substractMex/
-│   │   ├───substract.cpp % Implements gateway function
-│   │   └───substractImp.cpp % other features
+│   ├───subtractMex/
+│   │   ├───subtract.cpp % Implements gateway function
+│   │   └───subtractImpl.cpp % other features
 │   └───invertMex/
 │       └───invertMex.cpp
 ├───toolbox/
+|   ├───private/
+|   |   ├───invertMex.mexw64
+|   |   └───subtractMex.mexw64
 |   ├─...
-|   ├───subtract.m
+|   ├───subtractNumber.m
 |   └───invertNumber.m
 ├───arithmetic.prj
 └───buildfile.m
@@ -140,8 +145,7 @@ arithmetic/
 
 The `buildfile.m` is the same as before.
 
-## Special case: Many MEX functions with a single C++ source file
-
+## Many MEX functions with a single C++ source file
 
 ## Incorporating External Libraries
 
