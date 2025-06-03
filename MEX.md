@@ -79,21 +79,21 @@ Running the `mex` command for each MEX function can be tedious and error prone. 
 
 ```matlab
 function plan = buildfile
-% !!Revise to work in 24a!!  Make sure it supports multiple *Mex directories and multiple .cpp files
+    % !!Revise to work in 24a!!
+    % 
     plan = buildplan();
-
+    
     mexOutputFolder = fullfile("toolbox","private");
-
-    % Compile all the folders inside cpp/*Mex into MEX functions
-    foldersToMex = plan.files("cpp/*Mex").select(@isfolder);
-    for f = foldersToMex.paths
-        [~, folderName] = fileparts(f);
-        plan("mex:"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(f, "**/*.cpp"), ...
-                                mexOutputFolder, ...
-                                Filename=folderName);
+    
+    % Compile Cpp source code within cpp/*Mex into MEX functions
+    foldersToMex = plan.files(fullfile("cpp", "*Mex")).select(@isfolder);
+    for folder = foldersToMex.paths
+        [~, folderName] = fileparts(folder);
+        plan("mex:"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(folder, "**/*.cpp"), ...
+            mexOutputFolder, ...
+            Filename=folderName);
     end
     plan("mex").Description = "Build MEX functions";
-
 end
 ```
 <!-- In the build file, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the it. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) API, introduced in R2025a, converts every C++ file within the specified folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. The  [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API can be used to create a `FileCollection`. -->
@@ -169,19 +169,18 @@ You can use the build file below to build all the MEX functions.
 ```matlab
 function plan = buildfile
 % !!Revise to work in 24a!!
+% Do not have 24a installed on my machine, tried is on 24b worked fine.
     plan = buildplan();
-
     mexOutputFolder = fullfile("toolbox","private");
 
-    % Compile all the folders inside cpp/*Mex into MEX functions
-    filesToMex = plan.files("cpp/mexfunction/*.cpp");
-    for f = foldersToMex.paths
-        [~, fileName] = fileparts(f);
-        plan("mex:"+fileName) = matlab.buildtool.tasks.MexTask(fullfile(f, "**/*.cpp"), ...
+    % Compile all the folders inside cpp/*Mex.cpp into MEX functions
+    filesToMex = plan.files(fullfile("cpp", "mexfunctions", "*.cpp"));
+    for cppFile = filesToMex.paths
+        [~, fileName] = fileparts(cppFile);
+        plan("mex:"+fileName) = matlab.buildtool.tasks.MexTask(cppFile, ...
                                 mexOutputFolder);
     end
     plan("mex").Description = "Build MEX functions";
-
 end
 ```
 
