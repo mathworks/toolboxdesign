@@ -25,7 +25,7 @@ Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbo
 To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this toolbox throughout the guide to demonstrate practical applications of these principles.  For key concepts please refer to the [Toolbox Best Practices](./README.md).
 
 ## MEX function from a single C++ source file
-Suppose you have a C++ MEX source file that is a single C++ source file. MEX source files need not be distributed to the toolbox users, since they are not required to run the toolbox. Only the compiled function needs to be distributed.  We recommend keeping the C++ MEX source files outside of the `toolbox` folder in a folder focused on C++ code, `cpp`. 
+Suppose you have a single C++ MEX source file, this MEX source file need not be distributed to the toolbox users, since they are not required to run the toolbox. Only the compiled function needs to be distributed.  We recommend keeping the C++ MEX source files outside of the `toolbox` folder in a folder focused on C++ code, `cpp`. 
 
 For each MEX function in the `cpp` folder, create a folder with the name that matches the name of your MEX function.  This folder should end with `Mex` to indicate that all the files within the folder are associated with a single MEX function.
 
@@ -45,9 +45,9 @@ arithmetic/
 You can use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command, to compile `invertMex.cpp` into MEX functions. We suggest you place your compiled MEX functions in your `private` folder within the `toolbox` folder (see below). You need to provide the path of `invertMex.cpp` and path of the `private` folder as inputs to the `mex` command. 
 
 ```matlab
->>source = fullfile("cpp", "invertMex", "*.cpp");
->>destination = fullfile("toolbox", "private");
->>mex(source, "-outdir", destination, "-output", "invertMex")
+>> source = fullfile("cpp", "invertMex", "*.cpp");
+>> destination = fullfile("toolbox", "private");
+>> mex(source, "-outdir", destination, "-output", "invertMex")
 ```
 The `mex` command would create the MEX function and place it within the `private` folder.
 
@@ -79,7 +79,7 @@ Running the `mex` command for each MEX function can be tedious and error prone. 
 
 ```matlab
 function plan = buildfile
-% !!Revise to work in 24a!!  Make sure it supports multiple *Mex directoriesa and multiple .cpp files
+% !!Revise to work in 24a!!  Make sure it supports multiple *Mex directories and multiple .cpp files
     plan = buildplan();
 
     mexOutputFolder = fullfile("toolbox","private");
