@@ -146,6 +146,7 @@ arithmetic/
 The `buildfile.m` is the same as before.
 
 ## Multiple single source MEX functions
+For multiple C++ source files implementing its own MEX gateway, move the source file within the `mexfunctions` subfolder within the `cpp` folder.
 
 ``` text
 arithmetic/
@@ -163,7 +164,7 @@ arithmetic/
 ├───arithmetic.prj
 └───buildfile.m
 ```
-
+You can use the build file below to build all the MEX functions. 
 
 ```matlab
 function plan = buildfile
