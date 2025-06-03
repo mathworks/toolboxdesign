@@ -145,7 +145,44 @@ arithmetic/
 
 The `buildfile.m` is the same as before.
 
-## Many MEX functions with a single C++ source file
+## Multiple single source MEX functions
+
+``` text
+arithmetic/
+├───cpp/
+│   └───mexfunctions/
+|       ├───powerMex.cpp
+│       └───divideMex.cpp
+├───toolbox/
+|   ├───private/
+|   |   ├───powerMex.mexw64
+|   |   └───divideMex.mexw64
+|   ├─...
+|   ├───powerNumber.m
+|   └───divideNumber.m
+├───arithmetic.prj
+└───buildfile.m
+```
+
+
+```matlab
+function plan = buildfile
+% !!Revise to work in 24a!!
+    plan = buildplan();
+
+    mexOutputFolder = fullfile("toolbox","private");
+
+    % Compile all the folders inside cpp/*Mex into MEX functions
+    filesToMex = plan.files("cpp/mexfunction/*.cpp");
+    for f = foldersToMex.paths
+        [~, fileName] = fileparts(f);
+        plan("mex:"+fileName) = matlab.buildtool.tasks.MexTask(fullfile(f, "**/*.cpp"), ...
+                                mexOutputFolder);
+    end
+    plan("mex").Description = "Build MEX functions";
+
+end
+```
 
 ## Incorporating External Libraries
 
