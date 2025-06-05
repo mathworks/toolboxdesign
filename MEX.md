@@ -8,7 +8,7 @@
 - [X] Review and revise overview.  
 - [X] Review and revise single source file section.  
 - [X] Review and revise buildtool section.  
-- [ ] Update `buildfile.m` in buildtool section
+- [ ] Update `buildfile.m` in buildtool section to work with 24a(24a does not have task collection)
 - [X] Review and update multiple source file section
 - [ ] Review and update `mexfunction` folder scenario section
 - [ ] Review and update external libraries section
@@ -79,20 +79,23 @@ Running the `mex` command for each MEX function can be tedious and error prone. 
 
 ```matlab
 function plan = buildfile
-    % !!Revise to work in 24a!!
-    % 
+    % !! Works in 24a, introduced a dummy task called mex and made all the mex compile task as dependency. Not a great way to make it work. 24a does not have task collection. !!
     plan = buildplan();
     
     mexOutputFolder = fullfile("toolbox","private");
     
     % Compile Cpp source code within cpp/*Mex into MEX functions
     foldersToMex = plan.files(fullfile("cpp", "*Mex")).select(@isfolder);
+    mexTasks = string([]);
     for folder = foldersToMex.paths
         [~, folderName] = fileparts(folder);
-        plan("mex:"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(folder, "**/*.cpp"), ...
+        plan("mex_"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(folder, "**/*.cpp"), ...
             mexOutputFolder, ...
             Filename=folderName);
+        mexTasks(end+1) = "mex_" + folderName;
     end
+    plan("mex") = matlab.buildtool.Task;
+    plan("mex").Dependencies = mexTasks;
     plan("mex").Description = "Build MEX functions";
 end
 ```
@@ -145,8 +148,8 @@ arithmetic/
 
 The `buildfile.m` is the same as before.
 
-## Multiple single source MEX functions
-For multiple C++ source files implementing its own MEX gateway, move the source file within the `mexfunctions` subfolder within the `cpp` folder.
+## Creating multiple single source MEX functions
+If you have multiple C++ source files with each files having its own MEX gateway, the above approach of placing each C++ source file in a separate folder can become cumbersome. In such scenarios we recommend moving the source files within the `mexfunctions` subfolder under the `cpp` folder.
 
 ``` text
 arithmetic/
@@ -164,22 +167,26 @@ arithmetic/
 ├───arithmetic.prj
 └───buildfile.m
 ```
-You can use the build file below to build all the MEX functions. 
+The build file for building these MEX functions is slightly different. 
 
 ```matlab
 function plan = buildfile
 % !!Revise to work in 24a!!
-% Do not have 24a installed on my machine, tried is on 24b worked fine.
+% No task group in 24a, need to introduce a dummy mex task and make the actual tasks as a dependency
     plan = buildplan();
     mexOutputFolder = fullfile("toolbox","private");
 
     % Compile all the folders inside cpp/*Mex.cpp into MEX functions
+    mexTasks = string([]);
     filesToMex = plan.files(fullfile("cpp", "mexfunctions", "*.cpp"));
     for cppFile = filesToMex.paths
         [~, fileName] = fileparts(cppFile);
-        plan("mex:"+fileName) = matlab.buildtool.tasks.MexTask(cppFile, ...
+        plan("mex_"+fileName) = matlab.buildtool.tasks.MexTask(cppFile, ...
                                 mexOutputFolder);
+        mexTasks(end+1) = "mex_" + fileName;
     end
+    plan("mex") = matlab.buildtool.Task;
+    plan("mex").Dependencies = mexTasks;
     plan("mex").Description = "Build MEX functions";
 end
 ```
