@@ -8,16 +8,25 @@
 - [X] Review and revise overview.  
 - [X] Review and revise single source file section.  
 - [X] Review and revise buildtool section.  
-- [ ] Update `buildfile.m` in buildtool section to work with 24a(24a does not have task collection)
+- [ ] Update `buildfile.m` in buildtool section to work with 24b
 - [X] Review and update multiple source file section
 - [X] Review and update `mexfunction` folder scenario section
 - [X] Review and update external libraries section
 - [ ] Review and update CI / GitHub Actions section
-- [ ] External: GitHub repos for examples
+- [ ] Extend Arithmetic to build on all three OS- single MEX API
+- [ ] Appendix for 2024a buildfiles
 
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
 Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbox Best Practices](./README.md) focusing on  integrating [MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) into your MATLAB toolbox. MEX functions enable you to harness the power of C, C++, and Fortran code within MATLAB. In this document when we say "C++", we mean "C, C++, and Fortran."
+
+## TL;DR
+- C++ code goes into the `cpp` folder.
+- Each MEX functon is in its own folder with a `Mex` suffix
+- Place the built MEX functions under a `private` folder under your `toolbox` folder. MEX functions should only be called from within your toolbox in order to increase reliablity.
+- External libraries are placed within a platform specific folder
+- We recommend using the `mexhost` command to increase relaiablity
+- Use a MexTask in your buildfile.m
 
 ## Overview
 
@@ -311,9 +320,13 @@ arithmetic/
 ``` -->
 
 
-## Multi platform MEX functions build using CI systems
 
-## Testing
+## Automating Builds with GitHub Actions
+
+### Multi platform MEX functions build using CI systems
+**TBD**
+
+<!-- ## Testing
 
 Develop tests for the MATLAB layer in the `tests` folder. While MEX functionality is indirectly tested through MATLAB scripts, this approach ensures comprehensive validation of your toolbox's capabilities.
 
@@ -343,13 +356,7 @@ arithmetic/
 |       └───subtractMex.mexmaca64 (derived)
 ├───arithmetic.prj
 └───buildfile.m 
-```
-
-
-## Automating Builds with GitHub Actions
-**TBD**
-
-## Summary: Organizing a toolbox with MEX functions
+``` -->
 
 
 ## Conclusion
@@ -357,6 +364,9 @@ arithmetic/
 By following to these best practices, you'll create a robust, maintainable, and user-friendly MATLAB toolbox that harnesses the full potential of MEX functions. Through effective project structure organization, build automation, and dependency management, you can focus on delivering great solutions to your users.
 
 We welcome your input! For further details, suggestions, or to contribute, please [open an issue](https://github.com/mathworks/toolboxdesign/issues/new/choose).
+
+## Appendeix
+
 
 ---
 [![CC-BY-4.0](images/cc-by-40.png)](https://creativecommons.org/licenses/by/4.0/)
