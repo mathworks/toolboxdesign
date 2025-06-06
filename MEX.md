@@ -10,7 +10,7 @@
 - [X] Review and revise buildtool section.  
 - [ ] Update `buildfile.m` in buildtool section to work with 24a(24a does not have task collection)
 - [X] Review and update multiple source file section
-- [ ] Review and update `mexfunction` folder scenario section
+- [X] Review and update `mexfunction` folder scenario section
 - [ ] Review and update external libraries section
 - [ ] Review and update CI / GitHub Actions section
 
@@ -117,7 +117,7 @@ arithmetic/
 └───arithmetic.prj
 ``` 
 
-## Creating a MEX function from multiple C++ source files
+## MEX function from multiple C++ source files
 
 Tha above pattern naturally extends to MEX functions that has multiple C++ source files. One of the source files must contain the [gateway](https://www.mathworks.com/help/matlab/matlab_external/gateway-routine.html) function. Place a the source files under a single folder.
 
@@ -148,8 +148,8 @@ arithmetic/
 
 The `buildfile.m` is the same as before.
 
-## Creating multiple single source MEX functions
-If you have multiple C++ source files with each files having its own MEX gateway, the above approach of placing each C++ source file in a separate folder can become cumbersome. In such scenarios we recommend moving the source files within the `mexfunctions` subfolder under the `cpp` folder.
+## Handling a large number of MEX functions
+If you have many MEX functions, each in its own C++ source file, the approach of placing each C++ source file in a separate folder is cumbersome. In such scenarios we recommend an alternate pattern: move the source files within a `mexfunctions` subfolder under the `cpp` folder.
 
 ``` text
 arithmetic/
