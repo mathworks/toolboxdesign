@@ -241,6 +241,8 @@ zlibStatic/
 ### Calling a Dynamic Library
 [Dynamic libraries](https://www.learncpp.com/cpp-tutorial/a1-static-and-dynamic-libraries/) are required for running the MEX functions and must ship to the users. You can place the binaries within the `private` folder under the `toolbox` folder to ensure the library gets shipped to the user. You can use the [`-L`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [mex function](https://www.mathworks.com/help/matlab/ref/mex.html) to specify the location and the name of the runtime library.
 
+**Note:** If you have a choice between using a static or dynamic library with your MEX function, we recommend using a static library.  Static libraries are incorprorated inside your MEX function, making your MEX function more robust and reliable.
+
 
 ``` text
 zlibShared/
@@ -269,11 +271,10 @@ loader's search path for different platforms.
 
 | Platform  | Environment variable for loader's search path |
 | :-------- | :-------------------------------------------- |
-| Linux     | LD_LIBRARY_PATH                               |
-| Windows   | PATH                                          |
-| Mac       | DYLD_LIBRARY_PATH                             |           
+| Linux     | `LD_LIBRARY_PATH`                             |
+| Windows   | `PATH`                                        |
+| Mac       | `DYLD_LIBRARY_PATH`                           |           
 
-For non C++ libraries, you need to start MATLAB from an environment where the loaders's search path is already established.
 
 <!-- Our example toolbox adds a library called `complex` to the `subtractMex` function: -->
 
