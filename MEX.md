@@ -10,8 +10,8 @@
 - [X] Review and revise buildtool section.  
 - [ ] Update `buildfile.m` in buildtool section to work with 24a(24a does not have task collection)
 - [X] Review and update multiple source file section
-- [ ] Review and update `mexfunction` folder scenario section (updated the section, added the folder structure and build file)
-- [ ] Review and update external libraries section
+- [X] Review and update `mexfunction` folder scenario section
+- [X] Review and update external libraries section
 - [ ] Review and update CI / GitHub Actions section
 - [ ] External: GitHub repos for examples
 
@@ -118,7 +118,7 @@ arithmetic/
 └───arithmetic.prj
 ``` 
 
-## Creating a MEX function from multiple C++ source files
+## MEX function from multiple C++ source files
 
 Tha above pattern naturally extends to MEX functions that has multiple C++ source files. One of the source files must contain the [gateway](https://www.mathworks.com/help/matlab/matlab_external/gateway-routine.html) function. Place the source files under a single folder.
 
@@ -149,8 +149,8 @@ arithmetic/
 
 The `buildfile.m` is the same as before.
 
-## Creating multiple single source MEX functions
-If you have multiple C++ MEX source files with each files having its own MEX gateway, the above approach of placing each source file in a separate folder can become cumbersome. We recommend keeping the source files within the `mexfunctions` subfolder under the `cpp` folder.
+## Handling a large number of MEX functions
+If you have many MEX functions, each in its own C++ source file, the approach of placing each C++ source file in a separate folder is cumbersome. In such scenarios we recommend an alternate pattern: move the source files within a `mexfunctions` subfolder under the `cpp` folder.
 
 ``` text
 arithmetic/
@@ -199,28 +199,19 @@ end
 <!-- RP: save this till we use it -->
 <!-- - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically. -->
 
-If you have a MEX function that make a call to a an external C++ library and you might be wondering how to organize these external libraries?
+You can call libraries implemented in C++ using MEX functions. Since MEX source files are just C++ source code, they use standard C++ syntax to access external libraries. Where do we put these external libraries?
 
-The answer to this question depends on the external library and the operating system with which you are working with. There are two broad categories of libraries: compile time and execution time libraries. 
- 
-We assume that the external library is available to you as include headers and binaries. We will not dwell into the details of how these headers and binaries are created. Let as talk a bit about its organization.
+### External Library Header Files (`.h`,`.hpp`)
+Create an `include` folder within the `cpp` folder and put the external library [header files](https://www.learncpp.com/cpp-tutorial/header-files/) within this folder. Use the [`-I`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [mex function](https://www.mathworks.com/help/matlab/ref/mex.html) to specify that header files are in the `include` folder.
 
-### External library headers
-These files are required only at compile time, your users do not want them to run the MEX functions. Having a standard location to store these headers makes it easier for you to manage them and pass it to the compiler.
-
-Create an `include` folder within the `cpp` folder and move the external library headers within this folder. You can use [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) APIs [optional argument](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) to ask the compiler to look for header files within the `include` folder.
-
-If you want to include a header only library, copy the library headers into the `include` folder within the `cpp` folder.
-
-### Interfacing with a compile time library
-Like library headers, these libraries are not needed for running the MEX functions, they are required only at compile time, these libraries are often referred to as static libraries. You can place these binaries under platform specific folders within the `library` folder. We recommend using standard names for the platform folders as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB. The table below provides a summary of the folder names and file extensions used for static libraries for popular operating systems.
+### Incorporating a Static Library (`.lib`)
+Some MEX functions incorporate [static libraries](https://www.learncpp.com/cpp-tutorial/a1-static-and-dynamic-libraries/) that are compiled into your MEX function. Place these binaries under platform specific folders within the `library` folder. Use the names from the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB for the folder names. The table below provides a summary of the folder names and file extensions used for static libraries for popular operating systems.
 
 | Platform          | Folder name | Binary Extension | 
 | :---------------- | :------     | :------        |
 | Linux             | glnxa64     | .a             |
 | Windows           | win64       | .lib           |
-| ARM Mac           | maca64      | .dylib         |
-| Intel Mac         | maci64      | .dylib         |
+| ARM / Intel  Mac  | maca64      | .dylib         |
 
 ``` text
 zlibStatic/
@@ -248,9 +239,10 @@ zlibStatic/
 └───buildfile.m 
 ```
 
+### Calling a Dynamic Library
+[Dynamic libraries](https://www.learncpp.com/cpp-tutorial/a1-static-and-dynamic-libraries/) are required for running the MEX functions and must ship to the users. You can place the binaries within the `private` folder under the `toolbox` folder to ensure the library gets shipped to the user. You can use the [`-L`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [mex function](https://www.mathworks.com/help/matlab/ref/mex.html) to specify the location and the name of the runtime library.
 
-### Execution time libraries
-These type of libraries are often referred to as shared object libraries or dynamic link libraries. These libraries are required for running the MEX functions and need to be shipped to the users. You can place the execution time binaries within the `private` folder under the `toolbox` folder, this makes sure that the library gets shipped to the user. Make sure to use `-L` and `-l` flags during compile time to specify the location and the name of the runtime library.
+**Note:** If you have a choice between using a static or dynamic library with your MEX function, we recommend using a static library.  Static libraries are incorprorated inside your MEX function, making your MEX function more robust and reliable.
 
 
 ``` text
@@ -280,12 +272,10 @@ loader's search path for different platforms.
 
 | Platform  | Environment variable for loader's search path |
 | :-------- | :-------------------------------------------- |
-| Linux     | LD_LIBRARY_PATH                               |
-| Windows   | PATH                                          |
-| Mac       | DYLD_LIBRARY_PATH                             |
-           
+| Linux     | `LD_LIBRARY_PATH`                             |
+| Windows   | `PATH`                                        |
+| Mac       | `DYLD_LIBRARY_PATH`                           |           
 
-For non C++ libraries, you need to start MATLAB from an environment where the loaders's search path is already established.
 
 <!-- Our example toolbox adds a library called `complex` to the `subtractMex` function: -->
 
