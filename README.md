@@ -14,7 +14,7 @@ We use the term “toolbox” here to mean a collection of reusable MATLAB code 
 
 To make it easier to follow, we’ve created a fictitious toolbox for doing basic arithmetic: The Arithmetic Toolbox on [GitHub](https://github.com/mathworks/arithmetic). We’ll use this throughout to show how to apply these design principles.  If you'd like to explore a complete toolbox that uses this structure, visit the [Climate Data Store Toolbox](https://github.com/mathworks/climatedatastore).
 
-## TLDR: File and Folder Structure 
+## File and Folder Structure Summary
 Organize files using the following structure. Names in <> are placeholders for your toolbox. All other names are exactly as they should appear.
 
 ``` text
@@ -139,9 +139,10 @@ Sharing a MATLAB toolbox typically involves sharing a collection of .m files or 
 
 For a full overview of toolbox packaging, see the [Create and Share Toolboxes](https://www.mathworks.com/help/matlab/matlab_prog/create-and-share-custom-matlab-toolboxes.html) section of the documentation.
 
-The information about your toolbox is stored in a toolbox packaging file. Confusingly, this file has a `.prj` extension -- the same as a MATLAB project file. These files are not interchangeable. Because of this, we recommend that you name your packaging file `toolboxPackaging.prj` and put it in the root folder. To make it clear which icon image file will be used, we recommend that you symmetrically name this file `toolboxPackaging.jpg` and put it in the `images` folder. These files should be under source control.
+Starting in R2025a, Toolbox packaging files are created using the Package Toolbox task with MATLAB Projects. If you already are using a MATLAB Project, on the Projects tab, in the Tools section, click Package Toolbox. If you are not using a project, on the Home tab, in the Environment section, click Add-Ons. From the drop-down menu, select Package Toolbox. This will create a project for you.
 
-Toolbox packaging files are created using the Toolbox Packaging Tool.  In MATLAB, go to the home tab, drop the "Add-Ons" menu, and choose "Package Toolbox."
+In releases prior to R2025a, toolbox packaging files are created using the Toolbox Packaging Tool.  On the Home tab, in the Environment section, click Add-Ons. From the drop-down menu, select Package Toolbox. The information about your toolbox is stored in a toolbox packaging file. Confusingly, this file has a `.prj` extension -- the same as a MATLAB project file. These files are not interchangeable. Because of this, for releases prior to R2025a we recommend that you name your packaging file `toolboxPackaging.prj` and put it in the root folder. To make it clear which icon image file will be used, we recommend that you symmetrically name this file `toolboxPackaging.jpg` and put it in the `images` folder. These files should be under source control.
+
 
 ![Screenshot of Packaging Tool](images/PackagingTool.jpg)
 
