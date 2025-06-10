@@ -14,6 +14,23 @@ We use the term “toolbox” here to mean a collection of reusable MATLAB code 
 
 To make it easier to follow, we’ve created a fictitious toolbox for doing basic arithmetic: The Arithmetic Toolbox on [GitHub](https://github.com/mathworks/arithmetic). We’ll use this throughout to show how to apply these design principles.  If you'd like to explore a complete toolbox that uses this structure, visit the [Climate Data Store Toolbox](https://github.com/mathworks/climatedatastore).
 
+## TLDR: File and Folder Structure 
+Organize files using the following structure. Names in <> are placeholders for your toolbox. All other names are exactly as they should appear.
+
+``` text
+<toolboxname>/
+|   README.md
+|   license.txt
+└───images/
+└───toolbox/
+    |   <toolboxfunction1>.m
+    |   <toolboxfunction2>.m
+    |   GettingStarted.mlx
+    ├───apps/
+    ├───examples/
+    └───private/
+```
+
 ## Topics
 
 * [Root Folder Name and Contents](#root-folder)
