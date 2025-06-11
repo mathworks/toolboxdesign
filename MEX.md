@@ -322,7 +322,9 @@ arithmetic/
 
 
 ## Automating Builds with GitHub Actions
+For setting up GitHub Runner refer to [this page](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners).
 
+MAC on GH Actions take a lot of time to execute.
 ### Multi platform MEX functions build using CI systems
 **TBD**
 
@@ -366,7 +368,26 @@ By following to these best practices, you'll create a reliable, maintainable, an
 We welcome your input! For further details, suggestions, or to contribute, please [open an issue](https://github.com/mathworks/toolboxdesign/issues/new/choose).
 
 ## Appendeix
-
+MATLAB 2024b introduced task collection, it makes managing multiple mex tasks much easier. 
+```matlab
+function plan = buildfile
+    % Works in 24b.
+    
+    plan = buildplan();
+    
+    mexOutputFolder = fullfile("toolbox","private");
+    
+    % Compile Cpp source code within cpp/*Mex into MEX functions
+    foldersToMex = plan.files(fullfile("cpp", "*Mex")).select(@isfolder);
+    for folder = foldersToMex.paths
+        [~, folderName] = fileparts(folder);
+        plan("mex:"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(folder, "**/*.cpp"), ...
+            mexOutputFolder, ...
+            Filename=folderName);
+    end
+    plan("mex").Description = "Build MEX functions";
+end
+```
 
 ---
 [![CC-BY-4.0](images/cc-by-40.png)](https://creativecommons.org/licenses/by/4.0/)
