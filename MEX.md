@@ -322,6 +322,9 @@ arithmetic/
 
 
 ## Automating Builds with GitHub Actions
+You can use [MATLAB Actions](https://github.com/matlab-actions) for building, testing and deploying MATLAB toolboxes. MathWorks offers free MATLAB licenses for configuring MATLAB within a GitHub Actions for public GitHub repositories. If you GitHub repository is private you will need a [batch license token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) to run MATLAB on [GitHub Hosted Runners](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners).
+
+
 For setting up GitHub Runner refer to [this page](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners).
 
 MAC on GH Actions take a lot of time to execute.
@@ -372,7 +375,7 @@ MATLAB 2024b introduced task collection, it makes managing multiple mex tasks mu
 ```matlab
 function plan = buildfile
     % Works in 24b.
-    
+
     plan = buildplan();
     
     mexOutputFolder = fullfile("toolbox","private");
