@@ -14,7 +14,7 @@
 - [X] Review and update external libraries section
 - [ ] Review and update CI / GitHub Actions section
 - [ ] Extend Arithmetic to build on all three OS- single MEX API
-- [ ] Appendix for 2024a buildfiles
+- [ ] Appendix for 2024a and earlier buildfile that just uses `mex`
 
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
