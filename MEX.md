@@ -322,14 +322,44 @@ arithmetic/
 
 
 ## Automating Builds with GitHub Actions
-You can use [MATLAB Actions](https://github.com/matlab-actions) for building, testing and deploying MATLAB toolboxes. MathWorks offers free MATLAB licenses for configuring MATLAB within a GitHub Actions for public GitHub repositories. If you GitHub repository is private you will need a [batch license token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) to run MATLAB on [GitHub Hosted Runners](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners).
+You can use [MATLAB Actions](https://github.com/matlab-actions) for configuring MATLAB within a [GitHub Action](https://docs.github.com/en/actions). It can be used to build, test and deploy your toolbox. MathWorks offers free licenses for configuring MATLAB within a GitHub Action for public GitHub repositories. If your GitHub repository is private, you will need a [batch license token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) to run MATLAB on [GitHub Runners](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners). GitHub Hosted Runners offer support for all the three major operating systems Windows, Mac and Linux.
 
+Within a GitHub Action, you can invoke MATLAB's buildtool using [matlab-actions/run-command@v2](https://github.com/matlab-actions/run-command/). The build tasks that you already configured for local development like building MEX functions, running tests and packaging the toolbox can all be reused within your GitHub Workflow. 
 
-For setting up GitHub Runner refer to [this page](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners).
+```yml
+name: releaseWorkflow
 
-MAC on GH Actions take a lot of time to execute.
+# This workflows creates a new (draft) release when a new git tag is pushed to GitHub.
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  buildPackageAndRelease:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2024b
+      - name: Run script
+        uses: matlab-actions/run-command@v2
+        with:
+          command: buildtool mex test release
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          draft: true        
+          artifacts: "release/Arithmetic_Toolbox.mltbx"  
+```
+
 ### Multi platform MEX functions build using CI systems
-**TBD**
+MAC on GH Actions take a lot of time to execute.
 
 <!-- ## Testing
 
