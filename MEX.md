@@ -242,7 +242,7 @@ zlibStatic/
 ```
 
 ### Calling a Dynamic Library
-[Dynamic libraries](https://www.learncpp.com/cpp-tutorial/a1-static-and-dynamic-libraries/) are required for running the MEX functions and must ship to the users. Place the binaries within the `private` folder under the `toolbox` folder to ensure the library gets shipped to the user. Use the [`-L`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [mex function](https://www.mathworks.com/help/matlab/ref/mex.html) to specify the location and the name of the runtime library.
+[Dynamic libraries](https://www.learncpp.com/cpp-tutorial/a1-static-and-dynamic-libraries/) are required for running the MEX functions and must ship to the users. Place the binaries within the `private` folder under the `toolbox` folder to ensure the library gets shipped to the user. Use the [`-L`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command to specify the location and the name of the runtime library.
 
 **Note:** If you have a choice between using a static or dynamic library with your MEX function, we recommend using a static library.  Static libraries are incorprorated inside your MEX function, making your MEX function more robust and reliable.
 
@@ -269,10 +269,9 @@ zlibShared/
 ```
 <!-- * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB.  -->
 * For projects with complex dependencies, consider adopting dependency management tools like [Conan](https://conan.io/) which can significantly simplify library management across different platforms.
-* Depending on the platform, dynamic libraries require adding their path to the operating system search path. These search paths are often set using environment variables.  In case of C++ libraries you can use [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html)'s `EnvironmentVariables` option to set-up the loader's path. Here is a summary of 
-loader's search path for different platforms.
+* Depending on the platform, dynamic libraries require adding their path to the operating system search path. These search paths are often set using environment variables.  In case of C++ libraries you can use [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html)'s `EnvironmentVariables` option to set-up the loader's path. The table below shows the environment variable for different operating systems.
 
-| Platform  | Environment variable for loader's search path |
+| Operating system  | Environment variable for loader's search path |
 | :-------- | :-------------------------------------------- |
 | Linux     | `LD_LIBRARY_PATH`                             |
 | Windows   | `PATH`                                        |
@@ -315,108 +314,35 @@ arithmetic/
 
 
 ## Automating Builds with GitHub Actions
-You can use [MATLAB Actions](https://github.com/matlab-actions) for configuring MATLAB within a [GitHub Action](https://docs.github.com/en/actions). It can be used to build, test and deploy your toolbox. MathWorks offers free licenses for configuring MATLAB within a GitHub Action for public GitHub repositories. If your GitHub repository is private, you will need a [batch license token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) to run MATLAB on [GitHub Runners](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners). GitHub Hosted Runners offer support for all the three major operating systems Windows, Mac and Linux.
+[MATLAB Actions](https://github.com/matlab-actions) build, test and deploy your toolbox as a part of [GitHub Action](https://docs.github.com/en/actions).  MathWorks offers free licenses for public GitHub repositories, including support for Windows, Mac and Linux. If your GitHub repository is private, visit [this webpage](https://github.com/matlab-actions/setup-matlab?tab=readme-ov-file#use-matlab-batch-licensing-token).
 
-Within a GitHub Action, you can invoke MATLAB's buildtool using [matlab-actions/run-command@v2](https://github.com/matlab-actions/run-command/). The build tasks that you already configured for local development like building MEX functions, running tests and packaging the toolbox can all be reused within your GitHub Workflow. 
-
-```yml
-name: releaseWorkflow
-
-# This workflows creates a new (draft) release when a new git tag is pushed to GitHub.
-on:
-  push:
-    tags:
-      - '*'
-  workflow_dispatch:
-
-jobs:
-  buildPackageAndRelease:
-    runs-on: windows-latest
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-      - name: Set up MATLAB
-        uses: matlab-actions/setup-matlab@v2
-        with:
-          release: R2024b
-      - name: Run script
-        uses: matlab-actions/run-command@v2
-        with:
-          command: buildtool mex test package
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          draft: true        
-          artifacts: "release/Arithmetic_Toolbox.mltbx"  
-```
-
-### Multi platform MEX functions build using CI systems
-You can use GitHub Actions' [matrix strategy](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow) to build MEX functions on different operating systems. We recommend splitting the workflow into two jobs, the first job creates the MEX functions for all the three platforms and publishes the MEX functions as a artifacts. The second job executes on a single operating system, creates a MLTBX file incorporating the platform dependent MEX functions and publishes the MLTBX to the release section on GitHub.
+Within a GitHub Action, you can invoke MATLAB's buildtool using [matlab-actions/run-command@v2](https://github.com/matlab-actions/run-command/). The build tasks that you already configured for local development like building MEX functions, running tests and packaging the toolbox can all be reused within your GitHub Workflow. Our example uses a [matrix strategy](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow) in the GitHub Action to build MEX functions on different operating systems. 
 
 ```yml
-name: releaseMultiplePlatform
-
-on:
-  push:
-    tags:
-      - '*'
-  workflow_dispatch:
-
-jobs:
+# Exert from the YML file
+Jobs:
   mexBuild:
   # Build MEX function on different operating systems using matrix strategy for operating systems.
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, mac-latest]
-        MATLABVersion: [R2024b]
     runs-on: ${{ matrix.os }}
+  ...
 
-    steps:
-      - name: Check out repository
+  steps:
+    - name: Check out repository
         uses: actions/checkout@v4
-      - name: Set up MATLAB
+    - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2
+    - name: Run build
+        uses: matlab-actions/run-build@v2
         with:
-          release: ${{ matrix.MATLABVersion }}
-      - name: Run script
-        uses: matlab-actions/run-command@v2
-        with:
-          command: buildtool mex
-      - name: Upload MEX
-        uses: actions/upload-artifact@v4
-        with:
-          name: MEX_${{ matrix.os }}
-          path: toolbox/private
-    
-  packageAndRelease:
-    needs: mexBuild
-    runs-on: windows-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: MEX_ubuntu-latest
-          path: toolbox/private
-      - uses: actions/download-artifact@v4
-        with:
-          name: MEX_windows-latest
-          path: toolbox/private
-      - name: Set up MATLAB
-        uses: matlab-actions/setup-matlab@v2
-        with:
-          release: R2024b
-      - name: Run script
-        uses: matlab-actions/run-command@v2
-        with:
-          command: buildtool test package
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          draft: true        
-          artifacts: "release/Arithmetic_Toolbox.mltbx"
+          task: mex 
+      ...
 ```
+For the full YML file refer to [`release.yml`](Add the link).
+
+
 
 <!-- ## Testing
 
