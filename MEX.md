@@ -359,7 +359,71 @@ jobs:
 ```
 
 ### Multi platform MEX functions build using CI systems
-MAC on GH Actions take a lot of time to execute.
+You can use GitHub Actions' [matrix strategy](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow) to build MEX functions on different operating systems. We recommend splitting the workflow into two jobs, the first job creates the MEX functions for all the three platforms and publishes the MEX functions as a artifacts. The second job executes on a single operating system, creates a MLTBX file incorporating the platform dependent MEX functions and publishes the MLTBX to the release section on GitHub.
+
+```yml
+name: releaseMultiplePlatform
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  mexBuild:
+  # Build MEX function on different operating systems using matrix strategy for operating systems.
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, mac-latest]
+        MATLABVersion: [R2024b]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: ${{ matrix.MATLABVersion }}
+      - name: Run script
+        uses: matlab-actions/run-command@v2
+        with:
+          command: buildtool mex
+      - name: Upload MEX
+        uses: actions/upload-artifact@v4
+        with:
+          name: MEX_${{ matrix.os }}
+          path: toolbox/private
+    
+  packageAndRelease:
+    needs: mexBuild
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: MEX_ubuntu-latest
+          path: toolbox/private
+      - uses: actions/download-artifact@v4
+        with:
+          name: MEX_windows-latest
+          path: toolbox/private
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2024b
+      - name: Run script
+        uses: matlab-actions/run-command@v2
+        with:
+          command: buildtool release, ls release
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          draft: true        
+          artifacts: "release/Arithmetic_Toolbox.mltbx"
+```
 
 <!-- ## Testing
 
