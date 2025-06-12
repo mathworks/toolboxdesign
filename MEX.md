@@ -85,30 +85,28 @@ arithmetic/
 
 ### Automation using `buildtool`
 
-Running the `mex` command for each MEX function can be tedious and error prone. MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, can automate this and many other repetative processes for you. The following `buildfile.m` creates a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), introduced in R2024a, that builds your MEX functions.
+Running the `mex` command for each MEX function can be tedious and error prone. MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, can automate this and many other repetitive processes for you. The following `buildfile.m` creates a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), that builds your MEX functions.
 
 ```matlab
 function plan = buildfile
-    % !! Works in 24a, introduced a dummy task called mex and made all the mex compile task as dependency. Not a great way to make it work. 24a does not have task collection. !!
+    % Works in 24b.
+
     plan = buildplan();
     
     mexOutputFolder = fullfile("toolbox","private");
     
     % Compile Cpp source code within cpp/*Mex into MEX functions
     foldersToMex = plan.files(fullfile("cpp", "*Mex")).select(@isfolder);
-    mexTasks = string([]);
     for folder = foldersToMex.paths
         [~, folderName] = fileparts(folder);
-        plan("mex_"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(folder, "**/*.cpp"), ...
+        plan("mex:"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(folder, "**/*.cpp"), ...
             mexOutputFolder, ...
             Filename=folderName);
-        mexTasks(end+1) = "mex_" + folderName;
     end
-    plan("mex") = matlab.buildtool.Task;
-    plan("mex").Dependencies = mexTasks;
     plan("mex").Description = "Build MEX functions";
 end
 ```
+
 <!-- In the build file, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the it. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) API, introduced in R2025a, converts every C++ file within the specified folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. The  [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API can be used to create a `FileCollection`. -->
 
 Our example toolbox adds a `buildfile.m` to automate the building of the MEX functions, on executing `buildtool mex`, the `invertMex.mexw64` gets created within the `private` folder.
@@ -181,22 +179,17 @@ The build file for building these MEX functions is slightly different.
 
 ```matlab
 function plan = buildfile
-% !!Revise to work in 24a!!
-% No task group in 24a, need to introduce a dummy mex task and make the actual tasks as a dependency
+% !!Revise to work in 24b!!
     plan = buildplan();
     mexOutputFolder = fullfile("toolbox","private");
 
     % Compile all the folders inside cpp/*Mex.cpp into MEX functions
-    mexTasks = string([]);
     filesToMex = plan.files(fullfile("cpp", "mexfunctions", "*.cpp"));
     for cppFile = filesToMex.paths
         [~, fileName] = fileparts(cppFile);
-        plan("mex_"+fileName) = matlab.buildtool.tasks.MexTask(cppFile, ...
+        plan("mex:"+fileName) = matlab.buildtool.tasks.MexTask(cppFile, ...
                                 mexOutputFolder);
-        mexTasks(end+1) = "mex_" + fileName;
     end
-    plan("mex") = matlab.buildtool.Task;
-    plan("mex").Dependencies = mexTasks;
     plan("mex").Description = "Build MEX functions";
 end
 ```
@@ -350,7 +343,7 @@ jobs:
       - name: Run script
         uses: matlab-actions/run-command@v2
         with:
-          command: buildtool mex test release
+          command: buildtool mex test package
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
@@ -417,7 +410,7 @@ jobs:
       - name: Run script
         uses: matlab-actions/run-command@v2
         with:
-          command: buildtool release, ls release
+          command: buildtool test package
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
@@ -464,24 +457,50 @@ By following to these best practices, you'll create a reliable, maintainable, an
 
 We welcome your input! For further details, suggestions, or to contribute, please [open an issue](https://github.com/mathworks/toolboxdesign/issues/new/choose).
 
-## Appendeix
-MATLAB 2024b introduced task collection, it makes managing multiple mex tasks much easier. 
+## Appendix: Buildfiles for MATLAB R2024a 
+
 ```matlab
 function plan = buildfile
-    % Works in 24b.
-
+    % !! Works in 24a, introduced a dummy task called mex and made all the mex compile task as dependency. Not a great way to make it work. 24a does not have task collection. !!
     plan = buildplan();
     
     mexOutputFolder = fullfile("toolbox","private");
     
     % Compile Cpp source code within cpp/*Mex into MEX functions
     foldersToMex = plan.files(fullfile("cpp", "*Mex")).select(@isfolder);
+    mexTasks = string([]);
     for folder = foldersToMex.paths
         [~, folderName] = fileparts(folder);
-        plan("mex:"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(folder, "**/*.cpp"), ...
+        plan("mex_"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(folder, "**/*.cpp"), ...
             mexOutputFolder, ...
             Filename=folderName);
+        mexTasks(end+1) = "mex_" + folderName;
     end
+    plan("mex") = matlab.buildtool.Task;
+    plan("mex").Dependencies = mexTasks;
+    plan("mex").Description = "Build MEX functions";
+end
+```
+
+
+```matlab
+function plan = buildfile
+% !!Revise to work in 24a!!
+% No task group in 24a, need to introduce a dummy mex task and make the actual tasks as a dependency
+    plan = buildplan();
+    mexOutputFolder = fullfile("toolbox","private");
+
+    % Compile all the folders inside cpp/*Mex.cpp into MEX functions
+    mexTasks = string([]);
+    filesToMex = plan.files(fullfile("cpp", "mexfunctions", "*.cpp"));
+    for cppFile = filesToMex.paths
+        [~, fileName] = fileparts(cppFile);
+        plan("mex_"+fileName) = matlab.buildtool.tasks.MexTask(cppFile, ...
+                                mexOutputFolder);
+        mexTasks(end+1) = "mex_" + fileName;
+    end
+    plan("mex") = matlab.buildtool.Task;
+    plan("mex").Dependencies = mexTasks;
     plan("mex").Description = "Build MEX functions";
 end
 ```
