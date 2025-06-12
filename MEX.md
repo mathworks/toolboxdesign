@@ -23,10 +23,10 @@ Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbo
 ## TL;DR
 - C++ code goes into the `cpp` folder.
 - Each MEX functon is in its own folder with a `Mex` suffix
-- Place the built MEX functions in a `private` folder inside your `toolbox` folder. MEX functions should only be called from within your toolbox in order to increase reliablity.
+- Place the built MEX functions in a `private` folder inside your `toolbox` folder. MEX functions should only be called from within your toolbox in order to increase reliablity
 - External libraries are placed within a platform specific folder in the `private` folder and added to the system path
 - We recommend using the [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html) command to increase reliablity
-- Use a [MexTask](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) in your [buildfile.m](https://www.mathworks.com/help/matlab/build-automation.html) for consistent builds.
+- Use a [MexTask](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) in your [buildfile.m](https://www.mathworks.com/help/matlab/build-automation.html) for consistent builds
 
 ## Overview
 
