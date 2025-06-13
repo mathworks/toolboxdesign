@@ -3,19 +3,6 @@
 > [!IMPORTANT]
 > This page is under construction and review
 
-**TODO:**
-
-- [X] Review and revise overview.  
-- [X] Review and revise single source file section.  
-- [X] Review and revise buildtool section.  
-- [ ] Update `buildfile.m` in buildtool section to work with 24b
-- [X] Review and update multiple source file section
-- [X] Review and update `mexfunction` folder scenario section
-- [X] Review and update external libraries section
-- [ ] Review and update CI / GitHub Actions section
-- [ ] Extend Arithmetic to build on all three OS- single MEX API
-- [ ] Appendix for 2024a and earlier buildfile that just uses `mex`
-
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
 Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbox Best Practices](./README.md). This document focuses on integrating [MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) into your MATLAB toolbox. MEX functions enable you to harness the power of C, C++, and Fortran code within MATLAB. In this document when we say "C++", we mean "C, C++, and Fortran."
