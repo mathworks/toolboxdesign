@@ -14,7 +14,7 @@ We use the term “toolbox” here to mean a collection of reusable MATLAB code 
 
 To make it easier to follow, we’ve created a fictitious toolbox for doing basic arithmetic: The Arithmetic Toolbox on [GitHub](https://github.com/mathworks/arithmetic). We’ll use this throughout to show how to apply these design principles.  If you'd like to explore a complete toolbox that uses this structure, visit the [Climate Data Store Toolbox](https://github.com/mathworks/climatedatastore).
 
-## File and Folder Structure Summary
+## Summary of Recommended File and Folder Structure
 Organize files using the following structure. Names in <> are placeholders for your toolbox. All other names are exactly as they should appear.
 
 ``` text
@@ -38,6 +38,7 @@ Organize files using the following structure. Names in <> are placeholders for y
 * [Packaging and Releasing your Toolbox](#packaging-and-releasing-your-toolbox)
 * [Make your Toolbox more robust](#make-your-toolbox-more-robust)
 * [MATLAB Online and File Exchange badges](#open-in-matlab-online-and-file-exchange-badges-for-githubcom)
+* [Examples] (#example-repositories)
 
 ## Root Folder Name and Contents
 At the top level of your project is a folder or source repository, which we'll call the _root folder_. This folder has everything a developer needs to collaborate with you on your toolbox.  When you are working in GitHub, this is the repository name, and will be the name of the folder when the repository is cloned.
@@ -139,14 +140,11 @@ Sharing a MATLAB toolbox typically involves sharing a collection of .m files or 
 
 For a full overview of toolbox packaging, see the [Create and Share Toolboxes](https://www.mathworks.com/help/matlab/matlab_prog/create-and-share-custom-matlab-toolboxes.html) section of the documentation.
 
-Starting in R2025a, Toolbox packaging files are created using the Package Toolbox task with MATLAB Projects. If you already are using a MATLAB Project, on the Projects tab, in the Tools section, click Package Toolbox. If you are not using a project, on the Home tab, in the Environment section, click Add-Ons. From the drop-down menu, select Package Toolbox. This will create a project for you.
+Starting in R2025a, Toolbox packaging files are created using the Package Toolbox task with MATLAB Projects. If you already are using a MATLAB Project, on the Projects tab, in the Tools section, click Package Toolbox. If you are not using a project, on the Home tab, in the Environment section, click Add-Ons. From the drop-down menu, select Package Toolbox. This will create a project for you. Give the project file (with a `.prj` extension) the same name as the root folder. Put it in the root folder and check it into the source control system.
 
 In releases prior to R2025a, toolbox packaging files are created using the Toolbox Packaging Tool.  On the Home tab, in the Environment section, click Add-Ons. From the drop-down menu, select Package Toolbox. The information about your toolbox is stored in a toolbox packaging file. Confusingly, this file has a `.prj` extension -- the same as a MATLAB project file. These files are not interchangeable. Because of this, for releases prior to R2025a we recommend that you name your packaging file `toolboxPackaging.prj` and put it in the root folder. To make it clear which icon image file will be used, we recommend that you symmetrically name this file `toolboxPackaging.jpg` and put it in the `images` folder. These files should be under source control.
 
-
-![Screenshot of Packaging Tool](images/PackagingTool.jpg)
-
-The MATLAB Toolbox file (`.mltbx`) created by the packaging tool should be placed in a folder named `release` under the root folder. Since this is a derived file, it should not be under source control.
+The MATLAB Toolbox file (`.mltbx`) should be placed in a folder named `release` under the root folder. Since this is a derived file, it should not be under source control.
 
 **What to include:** When you package, include all the contents in the toolbox folder, nothing else -- no exclusions, no extra stuff. Make sure that you include all your apps in the apps section of the packaging dialog.
 
@@ -247,7 +245,13 @@ This opens your toolbox in MATLAB Online. This feature enables your users to try
 
 This provides an easy way for people visiting your GitHub repository to jump to your code on File Exchange. Once your File Exchange entry is set up, a tool will appear at the top of the page to assist you in creating a File Exchange badge.  See [this posting](https://blogs.mathworks.com/community/2019/11/27/a-github-badge-for-the-file-exchange/) for more information.
 
+## Example Repositories
+Here are example repositories that apply some or all of these best practices:
+* [Climate Data Store Toolbox for MATLAB](https://github.com/mathworks/climatedatastore)
+* [AI Verification: Constrained Deep Learning](https://github.com/matlab-deep-learning/constrained-deep-learning)
+
+
 ---
 [![CC-BY-4.0](images/cc-by-40.png)](https://creativecommons.org/licenses/by/4.0/)
 
-Copyright &copy; 2023, The MathWorks, Inc.
+Copyright &copy; 2025, The MathWorks, Inc.
