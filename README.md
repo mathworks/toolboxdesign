@@ -68,9 +68,8 @@ The structure of this folder depends on the size and complexity of your toolbox:
 * For projects with less than 20 functions or classes, put the documented functions that you expect users to call directly at the top level of the toolbox folder.
 * For larger projects, put the most commonly used functions and classes at the top level of the toolbox folder. Then, group additional specialized functions into folders by functionality. To keep things even more organized, consider using namespaces ([see below](#enhancing-your-toolbox)) to organize your functions and classes into logical groups.
 
-If you have code that is needed to implement your toolbox, but not intended for end users to call, put it in a subfolder called `private`. This is a [special folder](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html) in MATLAB that is only accessible to code in the parent folder. 
-
-The easiest approach is to put supporting code in a `private` folder at the top level of the toolbox folder. This code is callable from to make it clear that these functions are not intended for end users.  If you have a lot of internal functions, consider creating subfolders to group them logically.
+If you have code that is needed to implement your toolbox, but not intended for end users to call, put it in a subfolder called `private`. This is a [special folder](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html) in MATLAB that is only accessible to code in the parent folder. If you need to call implementation code from multiple source code folders, put your code in a ``<toolboxname>.internal`` [namespace](https://www.mathworks.com/help/matlab/matlab_oop/namespaces.html) 
+instead. Functions in this namespace are callable with the full name, e.g. ``arithmetic.internal.intToWord``. While this code is callable by end users of your toolbox, the full name makes it clear that the code is not intended for end users. 
 
 We also recommend including in your toolbox folder:
 
@@ -92,7 +91,7 @@ arithmetic/
     |   GettingStarted.mlx
     ├───examples/
     |       usingAdd.mlx
-    └───internal/
+    └───private/
             intToWord.m
 ```
 
