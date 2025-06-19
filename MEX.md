@@ -22,7 +22,7 @@ Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbo
 To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this toolbox throughout the guide to demonstrate practical applications of these principles.  For key concepts, refer to the [Toolbox Best Practices](./README.md).
 
 ## MEX function from a single C++ source file
-The most common case is when you have a single C++ MEX source file.  You do not distribute the source file to toolbox users, only the compiled mex function.  We recommend keeping the C++ MEX source files outside of the `toolbox` folder in a folder focused on C++ code, `cpp`. 
+The most common case is when you have a single C++ MEX source file.  You do not distribute the source file to toolbox users, only the compiled MEX function.  We recommend keeping the C++ MEX source files outside of the `toolbox` folder in a folder focused on C++ code, `cpp`. 
 
 For each MEX function in the `cpp` folder, create a folder with the name that matches the name of your MEX function.  This folder should end with `Mex` to indicate that all the files within the folder are associated with a single MEX function.
 
@@ -67,8 +67,8 @@ arithmetic/
 ``` 
  ### Additional Notes
  * **Why put the MEX functions within a private folder?** By putting it in a [`private`](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html) folder, you restrict your users from calling the MEX function directly. Even minor errors in a MEX function will crash MATLAB, especially if they receive unexpected inputs. By limiting access to MEX functions to a MATLAB function that you control, you ensure that only what you expect will be passed as input to the MEX function, preventing errors from unexpected or unhandled inputs.
- * **Out of process MEX host** We recommend [Out-of-Process Execution of C++ MEX Functions](https://www.mathworks.com/help/matlab/matlab_external/out-of-process-execution-of-c-mex-functions.html). This prevents coding errors in your C++ MEX function from crashing MATLAB and allows you to use some third-party libraries that are not compatible with MATLAB.  Use the [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html) command. Note that `mexhost` is only supported for C++ MEX functions. 
- * **Using git** In git source control systems, we recommend that you do not keep compiled MEX functions under version control, as they are derived files. Add `*.mex*` to your `.gitignore` file. This is part of the [standard .gitignore file](https://github.com/mathworks/gitignore/blob/main/Global/MATLAB.gitignore) for MATLAB.
+ * **Out of process MEX host:** We recommend [Out-of-Process Execution of C++ MEX Functions](https://www.mathworks.com/help/matlab/matlab_external/out-of-process-execution-of-c-mex-functions.html). This prevents coding errors in your C++ MEX function from crashing MATLAB and allows you to use some third-party libraries that are not compatible with MATLAB.  Use the [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html) command. Note that `mexhost` is only supported for C++ MEX functions. 
+ * **Using git:** In git source control systems, we recommend that you *do not* keep compiled MEX functions under version control, as they are derived files. Add `*.mex*` to your `.gitignore` file. This is part of the [standard .gitignore file](https://github.com/mathworks/gitignore/blob/main/Global/MATLAB.gitignore) for MATLAB.
 
 ### Automation using `buildtool`
 
@@ -327,41 +327,8 @@ Jobs:
           task: mex 
       ...
 ```
-For the full YML file refer to [`release.yml`](Add the link).
+For the full YML file refer to [`mexbuild.yml`](https://github.com/mathworks/arithmetic/blob/main/.github/workflows/mexbuild.yml).
 
-
-
-<!-- ## Testing
-
-Develop tests for the MATLAB layer in the `tests` folder. While MEX functionality is indirectly tested through MATLAB scripts, this approach ensures comprehensive validation of your toolbox's capabilities.
-
-Our example toolbox adds `testAdd.m` and `testSubtract.m`to validate the functionality of `add.m` and `subtract.m` which, in turn, use `addMex` and `subtractMex`.
-
-``` text
-arithmetic/
-:
-├───tests/
-|   ├───testAdd.m
-|   └───testSubstract.m
-├───cpp/
-│   ├───substractMex/
-│   │   ├───substract.cpp
-│   │   └───substractImp.cpp
-│   └───mexfunctions/
-│       └───addMex.cpp
-├───toolbox/
-|   ├───add.m
-|   ├───subtract.m
-|   └───private/
-|       ├───addMex.mexw64 (derived)
-|       ├───addMex.mexa64 (derived)
-|       ├───addMex.mexmaca64 (derived)
-|       ├───subtractMex.mexw64 (derived)
-|       ├───subtractMex.mexa64 (derived)
-|       └───subtractMex.mexmaca64 (derived)
-├───arithmetic.prj
-└───buildfile.m 
-``` -->
 
 
 ## Conclusion
