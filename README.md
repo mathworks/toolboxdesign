@@ -25,8 +25,9 @@ Organize files using the following structure. Names in <> are placeholders for y
 └───toolbox/
     |   <toolboxfunction1>.m
     |   <toolboxfunction2>.m
-    |   GettingStarted.mlx
     ├───apps/
+    ├───doc/
+    |       GettingStarted.mlx
     ├───examples/
     └───private/
 ```
@@ -38,7 +39,7 @@ Organize files using the following structure. Names in <> are placeholders for y
 * [Packaging and Releasing your Toolbox](#packaging-and-releasing-your-toolbox)
 * [Make your Toolbox more robust](#make-your-toolbox-more-robust)
 * [MATLAB Online and File Exchange badges](#open-in-matlab-online-and-file-exchange-badges-for-githubcom)
-* [Examples] (#example-repositories)
+* [Examples](#example-repositories)
 
 ## Root Folder Name and Contents
 At the top level of your project is a folder or source repository, which we'll call the _root folder_. This folder has everything a developer needs to collaborate with you on your toolbox.  When you are working in GitHub, this is the repository name, and will be the name of the folder when the repository is cloned.
@@ -65,20 +66,21 @@ The _toolbox folder_ is where you store all the materials that you plan to share
 
 The structure of this folder depends on the size and complexity of your toolbox:
 
-* For projects with less than 20 functions or classes, put the documented functions that you expect users to call directly at the top level of the toolbox folder.
-* For larger projects, put the most commonly used functions and classes at the top level of the toolbox folder. Then, group additional specialized functions into folders by functionality. To keep things even more organized, consider using namespaces ([see below](#enhancing-your-toolbox)) to organize your functions and classes into logical groups.
+1. For projects with fewer than 20 functions or classes, put the documented functions that you expect users to call directly at the top level of the toolbox folder. 
+2. For larger projects, put the most commonly used functions and classes at the top level of the toolbox folder. Then, group additional specialized functions into folders by functionality. To keep things even more organized, consider using namespaces ([see below](#enhancing-your-toolbox)) to organize your functions and classes into logical groups.
 
-If you have code that is needed to implement your toolbox, but not intended for end users to call, put it in a subfolder called `private`. This is a [special folder](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html) in MATLAB that is only accessible to code in the parent folder. If you need to call implementation code from multiple source code folders, put your code in a ``<toolboxname>.internal`` [namespace](https://www.mathworks.com/help/matlab/matlab_oop/namespaces.html) 
-instead. Functions in this namespace are callable with the full name, e.g. ``arithmetic.internal.intToWord``. While this code is callable by end users of your toolbox, the full name makes it clear that the code is not intended for end users. 
+If you have functions or classes that are needed to implement your toolbox, but not intended for end users to call, do not put them on the global search path.
+1. For small projects (#1 in the previous list), put this code in a subfolder called `private`. This is a [special folder](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html) in MATLAB that is only accessible to code in the parent folder. 
+2. For larger projects (#2), put your code in a ``<toolboxname>.internal`` [namespace](https://www.mathworks.com/help/matlab/matlab_oop/namespaces.html). Functions in this namespace are callable with the full name, e.g. ``arithmetic.internal.intToWord``. While this code is callable by end users of your toolbox, the full name makes it clear that the code is not intended for end users. 
 
 We also recommend including in your toolbox folder:
 
-* A `GettingStarted.mlx` file at the top level of the toolbox folder that introduces your users to your toolbox and showcase important workflows. This file should give an overview of how to use your toolbox and highlight key functionality.
+* A `GettingStarted.mlx` file that introduces your users to your toolbox and showcase important workflows. This file should give an overview of how to use your toolbox and highlight key functionality. Put this file in a `doc` folder under the toolbox directory. This specific name and location will come in handy later since it ensures your end users will be shown the `GettingStarted.mlx` file when they [install your toolbox](#packaging-and-releasing-your-toolbox).
 * Examples are an effective way for users to learn how to use your toolbox. We recommend using MATLAB Live Scripts to show how to use different parts of your toolbox and including them in an `examples` folder under the toolbox directory. This makes it easier for users to explore and try out different code samples.
 
 Our example toolbox has:
 
-1. A `GettingStarted.mlx` file at the top level of the toolbox folder
+1. A `doc` folder with a `GettingStarted.mlx` script.
 2. A function for users called `add.m`.
 3. An `examples` folder with MATLAB Live Scripts showing different ways the toolbox can be used.
 4. An internal function, `intToWord.m` that isn't intended for end users.
@@ -88,7 +90,8 @@ arithmetic/
 :
 └───toolbox/
     |   add.m
-    |   GettingStarted.mlx
+    ├───doc/
+    |       GettingStarted.mlx
     ├───examples/
     |       usingAdd.mlx
     └───private/
@@ -120,11 +123,12 @@ arithmetic/
 └───toolbox/
     |   add.m
     |   functionSignatures.json
-    |   GettingStarted.mlx
     ├───+describe/
     |       add.m
     ├───apps/
     |       arithmetic.mlapp
+    ├───doc/
+    |       GettingStarted.mlx
     ├───examples/
     |       usingAdd.mlx
     └───internal/
