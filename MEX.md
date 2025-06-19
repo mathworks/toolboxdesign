@@ -341,24 +341,17 @@ We welcome your input! For further details, suggestions, or to contribute, pleas
 
 ```matlab
 function plan = buildfile
-    % !! Works in 24a, introduced a dummy task called mex and made all the mex compile task as dependency. Not a great way to make it work. 24a does not have task collection. !!
-    plan = buildplan();
-    
-    mexOutputFolder = fullfile("toolbox","private");
-    
-    % Compile Cpp source code within cpp/*Mex into MEX functions
-    foldersToMex = plan.files(fullfile("cpp", "*Mex")).select(@isfolder);
-    mexTasks = string([]);
-    for folder = foldersToMex.paths
-        [~, folderName] = fileparts(folder);
-        plan("mex_"+folderName) = matlab.buildtool.tasks.MexTask(fullfile(folder, "**/*.cpp"), ...
-            mexOutputFolder, ...
-            Filename=folderName);
-        mexTasks(end+1) = "mex_" + folderName;
+    % Create a plan from the task functions
+    plan = buildplan(localfunctions);
+    plan("mex").Inputs = files(plan, fullfile("cpp","*Mex"));
+    plan("mex").Outputs = files(plan, fullfile("toolbox","private"));
+   
+end
+
+function mexTask(context)
+    for f = context.Task.Inputs.paths
+        mex(fullfile(f, "*.cpp"), "-outdir", context.Task.Outputs.paths)
     end
-    plan("mex") = matlab.buildtool.Task;
-    plan("mex").Dependencies = mexTasks;
-    plan("mex").Description = "Build MEX functions";
 end
 ```
 
