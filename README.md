@@ -57,15 +57,15 @@ If you have functions or classes that are needed to implement your toolbox, but 
 
 We also recommend including in your toolbox folder:
 
-* A `GettingStarted.mlx` file that introduces your users to your toolbox and showcase important workflows. This file should give an overview of how to use your toolbox and highlight key functionality. Put this file in a `doc` folder under the toolbox directory. This specific name and location will come in handy later since it ensures your end users will be shown the `GettingStarted.mlx` file when they [install your toolbox](#packaging-and-releasing-your-toolbox).
-* Examples are an effective way for users to learn how to use your toolbox. We recommend using MATLAB Live Scripts to show how to use different parts of your toolbox and including them in an `examples` folder under the toolbox directory. This makes it easier for users to explore and try out different code samples.
+* A `GettingStarted.mlx` file that introduces your users to your toolbox and showcase important workflows. This file should give an overview of how to use your toolbox and highlight key functionality. Put this file in a `doc` folder under the toolbox folder. This specific name and location will come in handy later since it ensures your end users will be shown the `GettingStarted.mlx` file when they [install your toolbox](#packaging-and-releasing-your-toolbox).
+* Examples are an effective way for users to learn how to use your toolbox. We recommend using MATLAB Live Scripts to show how to use different parts of your toolbox and including them in an `examples` folder under the toolbox folder. This makes it easier for users to explore and try out different code samples.
 
 Our example toolbox has:
 
 1. A `doc` folder with a `GettingStarted.mlx` script.
 2. A function for users called `add.m`.
 3. An `examples` folder with MATLAB Live Scripts showing different ways the toolbox can be used.
-4. An internal function, `intToWord.m` that isn't intended for end users.
+4. A private function, `intToWord.m` that isn't intended for end users.
 
 ``` markdown
 arithmetic/
@@ -84,20 +84,20 @@ arithmetic/
 
 MATLAB offers various features to make your toolbox more intuitive and user-friendly. We recommend the following to improve the quality of your toolbox:
 
-* **Suggestions and Argument Validation:** To enhance your user's experience when using your functions, you can add an `arguments` block to create customized tab completion suggestions. This was introduced in R2019a. Additionally, MATLAB will verify the type, size, and values passed to your function, enabling users to call your function correctly. See the [Function Argument Validation documentation](https://www.mathworks.com/help/matlab/matlab_prog/function-argument-validation-1.html) for more information. If you need more control over tab completion, create a `functionSignatures.json` and place it in the same directory as the corresponding function or class.  See the [custom suggestions and tab completion documentation](https://www.mathworks.com/help/matlab/matlab_prog/customize-code-suggestions-and-completions.html) for more information.
+* **Suggestions and Argument Validation:** To enhance your user's experience when using your functions, you can add an `arguments` block to create customized tab completion suggestions. This was introduced in R2019a. Additionally, MATLAB will verify the type, size, and values passed to your function, enabling users to call your function correctly. See the [Function Argument Validation documentation](https://www.mathworks.com/help/matlab/matlab_prog/function-argument-validation-1.html) for more information. If you need more control over tab completion, create a `functionSignatures.json` and place it in the same folder as the corresponding function or class.  See the [custom suggestions and tab completion documentation](https://www.mathworks.com/help/matlab/matlab_prog/customize-code-suggestions-and-completions.html) for more information.
 
 * **Namespaces:** Namespaces (also known as Packages) provide a means to organize classes and functions and reduce the risk of two functions having the same name.  See the [Namespaces documentation](https://www.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html) for more information.
 
 * **MATLAB Apps:** MATLAB Apps are interactive graphical applications that allow users to do specific workflows in your toolbox. You package your MATLAB App into a single file (.mlapp) for easier distribution. Create an `apps` folder at the top level of your toolbox folder. When you package your toolbox, make sure to include your apps in the toolbox packaging dialog's apps section. This way, the users can easily access and run your apps after installation. See the [MATLAB apps documentation](https://www.mathworks.com/help/matlab/gui-development.html) for more information.
 
-* **Live Tasks:** Live Tasks are simple point-and-click interfaces that can be used inside a Live Script, starting in R2022a. They offer an interactive and intuitive approach for users to interact with your toolbox. Place your Live Task class in the `internal` folder in the toolbox folder, since users do not directly call this function.  As part of the creation, you'll create a `liveTasks.json` file, which must go in a `resources` folder.  See the [Live Tasks documentation](https://www.mathworks.com/help/matlab/develop-live-editor-tasks.html) for more information.
+* **Live Tasks:** Live Tasks are simple point-and-click interfaces that can be used inside a Live Script, starting in R2022a. They offer an interactive and intuitive approach for users to interact with your toolbox. Place your Live Task class in the `<toolbox>.internal` namespace, since users do not directly call this function, and they are not supported inside `private` folders.  As part of the creation, you'll create a `liveTasks.json` file, which must go in a `resources` folder.  See the [Live Tasks documentation](https://www.mathworks.com/help/matlab/develop-live-editor-tasks.html) for more information.
 
 Our example toolbox takes advantage of all these recommended features, providing a user-friendly experience:
 
 1. An app called `arithmetic.mlapp` in the `apps` folder
 2. Tab completion and argument validation for our functions
 3. The secondary functionality `describe.add` in the `describe` namespace.  These are grouped in the  `+describe` folder.
-4. A Live Task in the `internal` folder and its accompanying `liveTasks.json` file.
+4. A Live Task in the `arithmetic.internal` namespace and its accompanying `liveTasks.json` file.
 
 ``` markdown
 arithmetic/
@@ -113,11 +113,13 @@ arithmetic/
     |       GettingStarted.mlx
     ├───examples/
     |       usingAdd.mlx
-    └───internal/
-        |   addLiveTask.m
-        |   intToWord.m
-        └───resources/
-                liveTasks.json
+    ├───private/
+    |   └───intToWord.m
+    └───+arithmetic/
+        └───+internal/
+            ├───addLiveTask.m
+            └───resources/
+                    liveTasks.json
 ```
 
 ## Packaging and Releasing your Toolbox
