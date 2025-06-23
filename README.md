@@ -115,15 +115,17 @@ arithmetic/
 
 To successfully share your toolbox with others, having a release strategy is crucial. This will help you keep track of which version of your toolbox your users have and make bug reporting more efficient. Additionally, it will ensure that your users are equipped with a stable and well-functioning version of your code. By implementing a release strategy, you can have better control over the distribution of your toolbox and ensure the best experience for your users.
 
-Sharing a MATLAB toolbox typically involves sharing a collection of .m files or combining them into a .zip file. However, we highly recommend a better approach - packaging your toolbox into a MATLAB Toolbox file (`.mltbx`) - for a more enhanced user experience. You can provide an icon for your toolbox, version number, and other information. They can easily discover, install, update, and uninstall your toolbox via the [Add-on Manager](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html).
+Sharing a MATLAB toolbox typically involves sharing a collection of .m files or combining them into a .zip file. However, we highly recommend a better approach - packaging your toolbox into a MATLAB Toolbox file (`.mltbx`). This makes it easy for users to install and manage your toolbox. They can install by opening the `.mltbx` file or using [Add-Ons](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html).
 
-For a full overview of toolbox packaging, see the [Create and Share Toolboxes](https://www.mathworks.com/help/matlab/matlab_prog/create-and-share-custom-matlab-toolboxes.html) section of the documentation.
+Note that the tools for packaging a toolbox changed in R2025a:
+* Starting in R2025a, Toolbox packaging files are created using the Package Toolbox task with MATLAB Projects. Give the project file (with a `.prj` extension) the same name as the root folder. Put it in the root folder.
+* In releases prior to R2025a, toolbox packaging files are created using the [Toolbox Packaging Tool](https://www.mathworks.com/help/releases/R2024b/matlab/matlab_prog/create-and-share-custom-matlab-toolboxes.html). Confusingly, this file has a `.prj` extension -- the same as a MATLAB project file. These files are not interchangeable. Because of this, for releases prior to R2025a name your packaging file `toolboxPackaging.prj` and put it in the root folder. 
 
-Starting in R2025a, Toolbox packaging files are created using the Package Toolbox task with MATLAB Projects. If you already are using a MATLAB Project, on the Projects tab, in the Tools section, click Package Toolbox. If you are not using a project, on the Home tab, in the Environment section, click Add-Ons. From the drop-down menu, select Package Toolbox. This will create a project for you. Give the project file (with a `.prj` extension) the same name as the root folder. Put it in the root folder and check it into the source control system.
+Name your toolbox icon image file `toolboxPackaging.jpg` and put it in the `images` folder. The project files and toolbox icon image file should be under source control.
 
-In releases prior to R2025a, toolbox packaging files are created using the Toolbox Packaging Tool.  On the Home tab, in the Environment section, click Add-Ons. From the drop-down menu, select Package Toolbox. The information about your toolbox is stored in a toolbox packaging file. Confusingly, this file has a `.prj` extension -- the same as a MATLAB project file. These files are not interchangeable. Because of this, for releases prior to R2025a we recommend that you name your packaging file `toolboxPackaging.prj` and put it in the root folder. To make it clear which icon image file will be used, we recommend that you symmetrically name this file `toolboxPackaging.jpg` and put it in the `images` folder. These files should be under source control.
+The MATLAB Toolbox file (`.mltbx`) you create should be placed in a folder named `release` under the root folder. Since this is a derived file, it should not be under source control.
 
-The MATLAB Toolbox file (`.mltbx`) should be placed in a folder named `release` under the root folder. Since this is a derived file, it should not be under source control.
+For a full overview of toolbox packaging, see the [Create and Share Toolboxes](https://www.mathworks.com/help/matlab/matlab_prog/create-and-share-custom-matlab-toolboxes.html) section of the documentation. 
 
 **What to include:** When you package, include all the contents in the toolbox folder, nothing else -- no exclusions, no extra stuff. Make sure that you include all your apps in the apps section of the packaging dialog.
 
@@ -131,12 +133,12 @@ The MATLAB Toolbox file (`.mltbx`) should be placed in a folder named `release` 
 
 **Version:** Use semantic versioning. It helps your users plan and understand how much work they will have to do to update to your latest release.  See the [Semantic Versioning Standard](https://semver.org/) for more information -- you really only need to read the summary.  In the case of MATLAB, your "API" is the set of functions that your users use.  
 
-Our example toolbox has chosen to use the name “Arithmetic Toolbox” in the Add-on Manager.
+Our example toolbox has chosen to use the name “Arithmetic Toolbox”. This example is for R2025a and newer. For older releases, use `toolboxPackaging.prj` instead of `arithmetic.prj`.
 
 ``` markdown
 arithmetic/
 :
-|   toolboxPackaging.prj
+|   arithmetic.prj
 ├───images/
 │       readmeImage.jpg
 │       toolboxPackaging.jpg
