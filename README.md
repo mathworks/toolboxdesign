@@ -46,14 +46,11 @@ arithmetic/
 
 The _toolbox folder_ is where you store all the materials that you plan to share with your users, including code, apps, and examples. Storing these materials in a single folder makes it clear what is going to be distributed to users, and what is not. The folder is named `toolbox` and placed under the root folder.
 
-The structure of this folder depends on the size and complexity of your toolbox:
+The structure of your toolbox folder should reflect its size and complexity:
 
-1. For projects with fewer than 20 functions or classes, put the documented functions that you expect users to call directly at the top level of the toolbox folder. 
-2. For larger projects, put the most commonly used functions and classes at the top level of the toolbox folder. Then, group additional specialized functions into folders by functionality. To keep things even more organized, consider using namespaces ([see below](#enhancing-your-toolbox)) to organize your functions and classes into logical groups.
+1. For projects with fewer than 20 functions or classes, put the documented functions that you expect users to call directly at the top level of the toolbox folder. Any helper functions or implementation details that users shouldn't access should go in a `private` subfolder. Functions and classes in this [special folder](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html) are only accessible to code in its parent folder, keeping internal logic hidden.
 
-If you have functions or classes that are needed to implement your toolbox, but not intended for end users to call, do not put them on the global search path.
-1. For small projects (#1 in the previous list), put this code in a subfolder called `private`. This is a [special folder](https://www.mathworks.com/help/matlab/matlab_prog/private-functions.html) in MATLAB that is only accessible to code in the parent folder. 
-2. For larger projects (#2), put your code in a ``<toolboxname>.internal`` [namespace](https://www.mathworks.com/help/matlab/matlab_oop/namespaces.html). Functions in this namespace are callable with the full name, e.g. ``arithmetic.internal.intToWord``. While this code is callable by end users of your toolbox, the full name makes it clear that the code is not intended for end users. 
+2. For larger projects, put the most commonly used functions and classes at the top level of the toolbox folder. Then, group additional specialized functions into folders by functionality. To keep things even more organized, consider using namespaces ([see below](#enhancing-your-toolbox)) to organize your functions and classes into logical groups. Internal implementation code should be placed in a `<toolboxname>.internal` namespace. Functions in this namespace are callable with the full name, e.g. `arithmetic.internal.intToWord`. While this code is callable by end users of your toolbox, the full name makes it clear that the code is not intended for end users.
 
 We also recommend including in your toolbox folder:
 
