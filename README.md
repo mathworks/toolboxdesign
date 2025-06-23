@@ -54,7 +54,7 @@ The structure of your toolbox folder should reflect its size and complexity:
 
 We also recommend including in your toolbox folder:
 
-* A `GettingStarted.mlx` file that introduces your users to your toolbox and showcase important workflows. This file should give an overview of how to use your toolbox and highlight key functionality. Put this file in a `doc` folder under the toolbox folder. This specific name and location will come in handy later since it ensures your end users will be shown the `GettingStarted.mlx` file when they [install your toolbox](#packaging-and-releasing-your-toolbox).
+* A `GettingStarted.mlx` file that introduces your users to your toolbox and showcase important workflows. This file should give an overview of how to use your toolbox and highlight key functionality. Put this file in a `doc` folder under the `toolbox` folder. This specific name and location will come in handy later since it ensures your end users will be shown the `GettingStarted.mlx` file when they [install your toolbox](#packaging-and-releasing-your-toolbox).
 * Examples are an effective way for users to learn how to use your toolbox. We recommend using MATLAB Live Scripts to show how to use different parts of your toolbox and including them in an `examples` folder under the toolbox folder. This makes it easier for users to explore and try out different code samples.
 
 Our example toolbox has:
@@ -87,14 +87,11 @@ MATLAB offers various features to make your toolbox more intuitive and user-frie
 
 * **MATLAB Apps:** MATLAB Apps are interactive graphical applications that allow users to do specific workflows in your toolbox. You package your MATLAB App into a single file (.mlapp) for easier distribution. Create an `apps` folder at the top level of your toolbox folder. When you package your toolbox, make sure to include your apps in the toolbox packaging dialog's apps section. This way, the users can easily access and run your apps after installation. See the [MATLAB apps documentation](https://www.mathworks.com/help/matlab/gui-development.html) for more information.
 
-* **Live Tasks:** Live Tasks are simple point-and-click interfaces that can be used inside a Live Script, starting in R2022a. They offer an interactive and intuitive approach for users to interact with your toolbox. Place your Live Task class in the `<toolbox>.internal` namespace, since users do not directly call this function, and they are not supported inside `private` folders.  As part of the creation, you'll create a `liveTasks.json` file, which must go in a `resources` folder.  See the [Live Tasks documentation](https://www.mathworks.com/help/matlab/develop-live-editor-tasks.html) for more information.
-
 Our example toolbox takes advantage of all these recommended features, providing a user-friendly experience:
 
 1. An app called `arithmetic.mlapp` in the `apps` folder
 2. Tab completion and argument validation for our functions
 3. The secondary functionality `describe.add` in the `describe` namespace.  These are grouped in the  `+describe` folder.
-4. A Live Task in the `arithmetic.internal` namespace and its accompanying `liveTasks.json` file.
 
 ``` markdown
 arithmetic/
@@ -112,11 +109,6 @@ arithmetic/
     |       usingAdd.mlx
     ├───private/
     |   └───intToWord.m
-    └───+arithmetic/
-        └───+internal/
-            ├───addLiveTask.m
-            └───resources/
-                    liveTasks.json
 ```
 
 ## Packaging and Releasing your Toolbox
