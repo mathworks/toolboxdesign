@@ -9,11 +9,11 @@ Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbo
 
 ## TL;DR
 - C++ code goes into the `cpp` folder.
-- Each MEX functon is in its own folder with a `Mex` suffix
-- Place the built MEX functions in a `private` folder inside your `toolbox` folder. MEX functions should only be called from within your toolbox in order to increase reliablity
+- Each MEX function is in its own folder with a `Mex` suffix
+- Place the built MEX functions in a `private` folder inside your `toolbox` folder. MEX functions should only be called from within your toolbox in order to increase reliability
 - External libraries are placed within a platform specific folder in the `private` folder and added to the system path
-- We recommend using the [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html) command to increase reliablity
-- Use a [MexTask](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) in your [buildfile.m](https://www.mathworks.com/help/matlab/build-automation.html) for consistent builds
+- We recommend using the [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html) command to increase reliability
+- Use a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) in your [`buildfile.m`](https://www.mathworks.com/help/matlab/build-automation.html) for consistent builds
 
 ## Overview
 
@@ -41,7 +41,7 @@ arithmetic/
 
 Use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command to compile `invertMex.cpp` into MEX functions. Place your compiled MEX functions in a `private` folder within the `toolbox` folder (see below). You need to provide the path of `invertMex.cpp` and path of the `private` folder as inputs to the `mex` command. 
 
-```matlab
+``` matlab
 >> source = fullfile("cpp", "invertMex", "*.cpp");
 >> destination = fullfile("toolbox", "private");
 >> mex(source, "-outdir", destination, "-output", "invertMex")
@@ -74,9 +74,9 @@ arithmetic/
 
 Running the `mex` command for each MEX function can be tedious and error prone. MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, can automate this and many other repetitive processes for you. The following `buildfile.m` creates a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), that builds your MEX functions.
 
-```matlab
+*This works in R2024b and later -- see the end of this document for a version supported in R2022a-R2024a.*
+``` matlab
 function plan = buildfile
-    % Works in 24b.
 
     plan = buildplan();
     
@@ -94,9 +94,7 @@ function plan = buildfile
 end
 ```
 
-<!-- In the build file, we create a [`plan`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan-class.html) and add a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) to the it. The [`matlab.buildtool.tasks.MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) API, introduced in R2025a, converts every C++ file within the specified folder into MEX functions. [`MexTask.forEachFile`](https://www-jobarchive.mathworks.com/Bdoc/latest_pass/matlab/help/matlab/ref/matlab.buildtool.tasks.mextask.foreachfile.html) takes a [`FileCollection`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.io.filecollection-class.html) as input. The  [`files`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.plan.files.html) API can be used to create a `FileCollection`. -->
-
-Our example toolbox adds a `buildfile.m` to automate the building of the MEX functions, on executing `buildtool mex`, the `invertMex.mexw64` gets created within the `private` folder.
+Our example toolbox adds a `buildfile.m` to automate the building of the MEX functions. When you run "`buildtool mex`", the `invertMex.mexw64` gets created within the `private` folder.
 
 ``` text
 arithmetic/
@@ -116,11 +114,7 @@ arithmetic/
 
 The above pattern extends to MEX functions that has multiple C++ source files. One of the source files must contain the [gateway](https://www.mathworks.com/help/matlab/matlab_external/gateway-routine.html) function. Place all the source files under a single folder.
 
-<!-- - Create a folder for each MEX function within the `cpp` folder 
-- Name of the folder should be same as that of the MEX function 
-- Folder name is suffixed with 'Mex' to indicate that the contents of the folder should be compiled into a single MEX function.  -->
-
-Our example toolbox adds two .cpp files in the  `subtractMex` folder, which builds to the `subtractMex.mexw64` binary in the `private` folder.  `subtractNumber.m` provides a user accessible version that error checks before calling `SubtractMex`:
+Our example toolbox adds two `.cpp` files in the  `subtractMex` folder, which builds to the `subtractMex.mexw64` binary in the `private` folder.  `subtractNumber.m` provides a user accessible version that error checks before calling `SubtractMex`:
 
 ``` text
 arithmetic/
@@ -164,7 +158,7 @@ arithmetic/
 ```
 The build file for building these MEX functions is slightly different. 
 
-```matlab
+``` matlab
 function plan = buildfile
 % !!Revise to work in 24b!!
     plan = buildplan();
@@ -182,11 +176,6 @@ end
 ```
 
 ## Incorporating External Libraries
-
-<!-- - **Compile time binaries**: Static libraries are a good examples of compile time binaries. These library binaries are required only at build time and you need not ship them to your users. -->
-<!-- - **Run time binaries**: These are platform dependent binaries, that the users need to run your toolbox, shared object libraries (.so files) in Linux and dynamic link libraries (.dll files) in Windows are good examples. -->
-<!-- RP: save this till we use it -->
-<!-- - **CI/CD Pipelines**: Continuous Integration and Continuous Deployment tools like GitHub Actions or GitLab CI/CD ensure your code is tested and deployed automatically. -->
 
 You can call libraries implemented in C++ using MEX functions. Since MEX source files are just C++ source code, they use standard C++ syntax to access external libraries. 
 
@@ -231,7 +220,7 @@ zlibStatic/
 ### Calling a Dynamic Library
 [Dynamic libraries](https://www.learncpp.com/cpp-tutorial/a1-static-and-dynamic-libraries/) are required for running the MEX functions and must ship to the users. Place the binaries within the `private` folder under the `toolbox` folder to ensure the library gets shipped to the user. Use the [`-L`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command to specify the location and the name of the runtime library.
 
-**Note:** If you have a choice between using a static or dynamic library with your MEX function, we recommend using a static library.  Static libraries are incorprorated inside your MEX function, making your MEX function more robust and reliable.
+**Note:** If you have a choice between using a static or dynamic library with your MEX function, we recommend using a static library.  Static libraries are incorporated inside your MEX function, making your MEX function more robust and reliable.
 
 
 ``` text
@@ -254,9 +243,8 @@ zlibShared/
 ├───zlibShared.prj
 └───buildfile.m 
 ```
-<!-- * When your MEX function relies on external libraries, store the binaries in a `libraries` directory with platform-specific subdirectories, as defined by the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB.  -->
 * For projects with complex dependencies, consider adopting dependency management tools like [Conan](https://conan.io/) which can significantly simplify library management across different platforms.
-* Depending on the platform, dynamic libraries require adding their path to the operating system search path. These search paths are often set using environment variables.  In case of C++ libraries you can use [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html)'s `EnvironmentVariables` option to set-up the loader's path. The table below shows the environment variable for different operating systems.
+* Depending on the platform, dynamic libraries require adding their path to the operating system search path. These search paths are often set using environment variables.  In case of C++ libraries you can use the `EnvironmentVariables` option of [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html) to set-up the loader's path. The table below shows the environment variable for different operating systems.
 
 | Operating system  | Environment variable for loader's search path |
 | :-------- | :-------------------------------------------- |
@@ -264,49 +252,13 @@ zlibShared/
 | Windows   | `PATH`                                        |
 | Mac       | `DYLD_LIBRARY_PATH`                           |           
 
-
-<!-- Our example toolbox adds a library called `complex` to the `subtractMex` function: -->
-
-<!-- ``` text
-arithmetic/
-:
-├───toolbox/
-|   ├───add.m
-|   ├───subtract.m
-|   └───private/
-|       ├───addMex.mexw64 (derived)
-|       ├───addMex.mexa64 (derived)
-|       ├───addMex.mexmaca64 (derived)
-|       ├───subtractMex.mexw64 (derived)
-|       ├───subtractMex.mexa64 (derived)
-|       └───subtractMex.mexmaca64 (derived)
-├───cpp/
-│   ├───addMex/
-│   │   ├───firstFile.cpp
-│   │   └───secondFile.cpp
-│   └───subtractMex/
-│       ├───subtract.cpp
-|       └───libraries
-|           ├───complex.hpp
-|           ├───glnxa64
-|           |   └───libcomplex.so
-|           ├───maci64
-|           |   └───libcomplex.dylib
-|           └───win64
-|               └───complex.dll
-├───arithmetic.prj
-└───buildfile.m 
-``` -->
-
-
-
 ## Automating Builds with GitHub Actions
 [MATLAB Actions](https://github.com/matlab-actions) build, test and deploy your toolbox as a part of [GitHub Action](https://docs.github.com/en/actions).  MathWorks offers free licenses for public GitHub repositories, including support for Windows, Mac and Linux. If your GitHub repository is private, visit [this webpage](https://github.com/matlab-actions/setup-matlab?tab=readme-ov-file#use-matlab-batch-licensing-token).
 
-Within a GitHub Action, you can invoke MATLAB's buildtool using [matlab-actions/run-command@v2](https://github.com/matlab-actions/run-command/). The build tasks that you already configured for local development like building MEX functions, running tests and packaging the toolbox can all be reused within your GitHub Workflow. Our example uses a [matrix strategy](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow) in the GitHub Action to build MEX functions on different operating systems. 
+Within a GitHub Action, you can invoke MATLAB's `buildtool` using [matlab-actions/run-command](https://github.com/matlab-actions/run-command/). The build tasks that you already configured for local development like building MEX functions, running tests and packaging the toolbox can all be reused within your GitHub Workflow. Our example uses a [matrix strategy](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow) in the GitHub Action to build MEX functions on different operating systems. 
 
-```yml
-# Exert from the YML file
+```yaml
+# Excerpt from the YAML file
 Jobs:
   mexBuild:
   # Build MEX function on different operating systems using matrix strategy for operating systems.
@@ -327,7 +279,7 @@ Jobs:
           task: mex 
       ...
 ```
-For the full YML file refer to [`mexbuild.yml`](https://github.com/mathworks/arithmetic/blob/main/.github/workflows/mexbuild.yml).
+For the full YAML file refer to [`mexbuild.yml`](https://github.com/mathworks/arithmetic/blob/main/.github/workflows/mexbuild.yml).
 
 
 
@@ -337,9 +289,9 @@ By following to these best practices, you'll create a reliable, maintainable, an
 
 We welcome your input! For further details, suggestions, or to contribute, please [open an issue](https://github.com/mathworks/toolboxdesign/issues/new/choose).
 
-## Appendix: Buildfiles for MATLAB R2024a 
+## Appendix: Buildfiles for MATLAB R2022a-R2024a 
 
-```matlab
+``` matlab
 function plan = buildfile
     % Create a plan from the task functions
     plan = buildplan(localfunctions);
@@ -356,7 +308,7 @@ end
 ```
 
 
-```matlab
+``` matlab
 function plan = buildfile
 % !!Revise to work in 24a!!
 % No task group in 24a, need to introduce a dummy mex task and make the actual tasks as a dependency
@@ -381,4 +333,4 @@ end
 ---
 [![CC-BY-4.0](images/cc-by-40.png)](https://creativecommons.org/licenses/by/4.0/)
 
-Copyright &copy; 2023-2025, The MathWorks, Inc.
+Copyright &copy; 2025, The MathWorks, Inc.
