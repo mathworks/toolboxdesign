@@ -235,4 +235,4 @@ Here are example repositories that apply some or all of these best practices:
 ---
 [![CC-BY-4.0](images/cc-by-40.png)](https://creativecommons.org/licenses/by/4.0/)
 
-Copyright &copy; 2025, The MathWorks, Inc.
+Copyright &copy; 2023 - 2025, The MathWorks, Inc.
