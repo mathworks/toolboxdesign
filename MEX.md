@@ -310,23 +310,17 @@ end
 
 ``` matlab
 function plan = buildfile
-% !!Revise to work in 24a!!
-% No task group in 24a, need to introduce a dummy mex task and make the actual tasks as a dependency
-    plan = buildplan();
-    mexOutputFolder = fullfile("toolbox","private");
+    % Create a plan from the task functions
+    plan = buildplan(localfunctions);
+    plan("mex").Inputs = files(plan, fullfile("cpp","mexfunctions","*.cpp"));
+    plan("mex").Outputs = files(plan, fullfile("toolbox","private"));
+   
+end
 
-    % Compile all the folders inside cpp/*Mex.cpp into MEX functions
-    mexTasks = string([]);
-    filesToMex = plan.files(fullfile("cpp", "mexfunctions", "*.cpp"));
-    for cppFile = filesToMex.paths
-        [~, fileName] = fileparts(cppFile);
-        plan("mex_"+fileName) = matlab.buildtool.tasks.MexTask(cppFile, ...
-                                mexOutputFolder);
-        mexTasks(end+1) = "mex_" + fileName;
+function mexTask(context)
+    for mexSource = context.Task.Inputs.paths
+        mex(mexSource, "-outdir", context.Task.Outputs.paths)
     end
-    plan("mex") = matlab.buildtool.Task;
-    plan("mex").Dependencies = mexTasks;
-    plan("mex").Description = "Build MEX functions";
 end
 ```
 
