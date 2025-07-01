@@ -160,7 +160,6 @@ The build file for building these MEX functions is slightly different.
 
 ``` matlab
 function plan = buildfile
-% !!Revise to work in 24b!!
     plan = buildplan();
     mexOutputFolder = fullfile("toolbox","private");
 
