@@ -121,7 +121,7 @@ Note that the tools for packaging a toolbox changed in R2025a:
 * Starting in R2025a, Toolbox packaging files are created using the [Package Toolbox task with MATLAB Projects](https://www.mathworks.com/help/matlab/matlab_prog/create-and-share-custom-matlab-toolboxes.html). Give the project file (with a `.prj` extension) the same name as the root folder. Put it in the root folder.
 * In releases prior to R2025a, toolbox packaging files are created using the [Toolbox Packaging Tool](https://www.mathworks.com/help/releases/R2024b/matlab/matlab_prog/create-and-share-custom-matlab-toolboxes.html). Confusingly, this file has a `.prj` extension -- the same as a MATLAB project file. These files are not interchangeable. Because of this, for releases prior to R2025a name your packaging file `toolboxPackaging.prj` and put it in the root folder. 
 
-Name your toolbox icon image file `toolboxPackaging.jpg` and put it in the `images` folder. The project files and toolbox icon image file should be under source control.
+Name your toolbox icon image file the same as your root folder (e.g. `arithmetic.jpg`) and put it in the `images` folder. The project files and toolbox icon image file should be under source control.
 
 The MATLAB Toolbox file (`.mltbx`) you create should be placed in a folder named `release` under the root folder. Since this is a derived file, it should not be under source control.
 
@@ -141,7 +141,7 @@ arithmetic/
 |   arithmetic.prj
 ├───images/
 │       readmeImage.jpg
-│       toolboxPackaging.jpg
+│       arithmetic.jpg
 ├───release/
 │       Arithmetic Toolbox.mltbx
 └───toolbox/
