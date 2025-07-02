@@ -118,7 +118,7 @@ To successfully share your toolbox with others, having a release strategy is cru
 Sharing a MATLAB toolbox typically involves sharing a collection of .m files or combining them into a .zip file. However, we highly recommend a better approach - packaging your toolbox into a MATLAB Toolbox file (`.mltbx`). This makes it easy for users to install and manage your toolbox. They can install by opening the `.mltbx` file or using [Add-Ons](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html).
 
 Note that the tools for packaging a toolbox changed in R2025a:
-* Starting in R2025a, Toolbox packaging files are created using the Package Toolbox task with MATLAB Projects. Give the project file (with a `.prj` extension) the same name as the root folder. Put it in the root folder.
+* Starting in R2025a, Toolbox packaging files are created using the [Package Toolbox task with MATLAB Projects](https://www.mathworks.com/help/matlab/matlab_prog/create-and-share-custom-matlab-toolboxes.html). Give the project file (with a `.prj` extension) the same name as the root folder. Put it in the root folder.
 * In releases prior to R2025a, toolbox packaging files are created using the [Toolbox Packaging Tool](https://www.mathworks.com/help/releases/R2024b/matlab/matlab_prog/create-and-share-custom-matlab-toolboxes.html). Confusingly, this file has a `.prj` extension -- the same as a MATLAB project file. These files are not interchangeable. Because of this, for releases prior to R2025a name your packaging file `toolboxPackaging.prj` and put it in the root folder. 
 
 Name your toolbox icon image file `toolboxPackaging.jpg` and put it in the `images` folder. The project files and toolbox icon image file should be under source control.
