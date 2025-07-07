@@ -275,7 +275,7 @@ Jobs:
     - name: Run build
         uses: matlab-actions/run-build@v2
         with:
-          task: mex 
+          tasks: mex 
       ...
 ```
 For the full YAML file refer to [`mexbuild.yml`](https://github.com/mathworks/arithmetic/blob/main/.github/workflows/mexbuild.yml).
