@@ -72,7 +72,9 @@ arithmetic/
 
 ### Automation using `buildtool`
 
-Running the `mex` command for each MEX function can be tedious and error prone. MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, can automate this and many other repetitive processes for you. The following `buildfile.m` creates a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), that builds your MEX functions.
+Running the `mex` command for each MEX function can be tedious and error prone. MATLAB’s [`buildtool`](https://www.mathworks.com/help/matlab/ref/buildtool.html), introduced in R2022b, can automate this and many other repetitive processes for you. The following `buildfile.m` uses [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html), for building your MEX functions. 
+
+We have defined the `mex` task as a [task groups](https://www.mathworks.com/help/matlab/matlab_prog/create-groups-of-similar-tasks.html), this allows us to build MEX functions out of multiple folders.
 
 *This works in R2024b and later -- see the end of this document for a version supported in R2022a-R2024a.*
 ``` matlab
