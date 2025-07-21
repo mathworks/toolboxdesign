@@ -252,7 +252,7 @@ zlibShared/
 | Mac       | `DYLD_LIBRARY_PATH`                           |           
 
 ## Automating Builds with GitHub Actions
-[MATLAB Actions](https://github.com/matlab-actions) build, test and deploy your toolbox as a part of [GitHub Action](https://docs.github.com/en/actions).  MathWorks offers free licenses for public GitHub repositories, including support for Windows, Mac and Linux. If your GitHub repository is private, visit [this webpage](https://github.com/matlab-actions/setup-matlab?tab=readme-ov-file#use-matlab-batch-licensing-token).
+[MATLAB Actions](https://github.com/matlab-actions) build, test and deploy your toolbox as a part of [GitHub Action](https://docs.github.com/en/actions).  MathWorks offers free licenses for public GitHub repositories, including support for Windows, Mac and Linux. If your GitHub repository is private, visit [this webpage](https://github.com/matlab-actions/setup-matlab?tab=readme-ov-file#use-matlab-batch-licensing-token). You can also refer to [this GitHub repository](https://github.com/mathworks/advanced-ci-configuration-examples) for examples on advanced CI configurations from MathWorks.
 
 Within a GitHub Action, you can invoke MATLAB's buildtool using [matlab-actions/run-build](https://github.com/matlab-actions/run-build). The build tasks that you already configured for local development like building MEX functions, running tests and packaging the toolbox can all be reused within your GitHub Workflow. Our example uses a [matrix strategy](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow) in the GitHub Action to build MEX functions on different operating systems. 
 
