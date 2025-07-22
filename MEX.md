@@ -294,16 +294,18 @@ We welcome your input! For further details, suggestions, or to contribute, pleas
 
 ``` matlab
 function plan = buildfile
-    % Create a plan from the task functions
+    % Create a plan using local functions
     plan = buildplan(localfunctions);
-    plan("mex").Inputs = files(plan, fullfile("cpp","*Mex"));
-    plan("mex").Outputs = files(plan, fullfile("toolbox","private"));
-   
+    plan("mex").Inputs.MexFolders = files(plan, fullfile("cpp", "*Mex"));
+    plan("mex").Inputs.Destination = fullfile("toolbox", "private");
+    plan("mex").Outputs = fullfile("toolbox", "private", "*.mexw64");
+    plan("clean") = matlab.buildtool.tasks.CleanTask;
 end
 
 function mexTask(context)
-    for f = context.Task.Inputs.paths
-        mex(fullfile(f, "*.cpp"), "-outdir", context.Task.Outputs.paths)
+    % Build multiple source MEX function within cpp/*Mex folders
+    for mexSourceFolder =context.Task.Inputs.MexFolders.paths
+        mex(fullfile(mexSourceFolder, "*.cpp"), "-outdir", context.Task.Inputs.Destination);
     end
 end
 ```
@@ -311,16 +313,18 @@ end
 
 ``` matlab
 function plan = buildfile
-    % Create a plan from the task functions
+    % Create a plan using local functions
     plan = buildplan(localfunctions);
-    plan("mex").Inputs = files(plan, fullfile("cpp","mexfunctions","*.cpp"));
-    plan("mex").Outputs = files(plan, fullfile("toolbox","private"));
-   
+    plan("mex").Inputs.MexFiles = files(plan, fullfile("cpp","mexfunctions/", "*.cpp"));
+    plan("mex").Inputs.Destination = fullfile("toolbox", "private");
+    plan("mex").Outputs = fullfile("toolbox", "private", "*.mexw64");
+    plan("clean") = matlab.buildtool.tasks.CleanTask;
 end
 
 function mexTask(context)
-    for mexSource = context.Task.Inputs.paths
-        mex(mexSource, "-outdir", context.Task.Outputs.paths)
+    % Build single source MEX functions within cpp/mexfunctions
+    for mexSourceFiles =context.Task.Inputs.MexFiles.paths
+        mex(mexSourceFiles, "-outdir", context.Task.Inputs.Destination);
     end
 end
 ```
