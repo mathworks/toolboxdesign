@@ -93,6 +93,7 @@ function plan = buildfile
             Filename=folderName);
     end
     plan("mex").Description = "Build MEX functions";
+    plan("clean") = matlab.buildtool.tasks.CleanTask;
 end
 ```
 
@@ -173,6 +174,7 @@ function plan = buildfile
                                 mexOutputFolder);
     end
     plan("mex").Description = "Build MEX functions";
+    plan("clean") = matlab.buildtool.tasks.CleanTask;
 end
 ```
 
