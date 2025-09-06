@@ -20,7 +20,7 @@ Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbo
 
 [MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) are compiled functions that bridge the gap between MATLAB and C/C++. They behave like a MATLAB function and you must build them for each operating system you want to run on. This guide will navigate you through the process of integrating MEX functions into your toolbox, ensuring smooth implementation in both development and production environments.  This makes it easier for others to understand and contribute to your toolbox.  
 
-This guide ***does not*** teach how to author MEX functions -- there are extensive guides and examples in the MATLAB documentation for both [C](https://www.mathworks.com/help/matlab/call-mex-files-1.html) and [C++](https://www.mathworks.com/help/matlab/cpp-mex-file-applications.html).  Can't decide between using C or C++?  We recommend you use the C++ MEX function interface introduced in R2018a. One of the large advantages is that it supports more sophisticated memory management.
+This guide ***does not*** teach how to author MEX functions -- there are extensive guides and examples in the MATLAB documentation for both [C](https://www.mathworks.com/help/matlab/call-mex-files-1.html) and [C++](https://www.mathworks.com/help/matlab/cpp-mex-file-applications.html).  Can't decide between using C or C++?  We recommend you use the C++ MEX function interface introduced in R2018a. One of the large advantages is that it supports more sophisticated memory management. For those who have used MEX functions in the past, we highly recommend that before you assume you need to move to MEX for performance reasons, you implement and optimize your MATLAB code.  MATLAB execution performance has greatly improved over the years, and we have found that many times, a native MATLAB implementation using modern constructs can outperform MEX functions.
 
 To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this toolbox throughout the guide to demonstrate practical applications of these principles.  For key concepts, refer to the [Toolbox Best Practices](./README.md).
 
@@ -42,7 +42,7 @@ arithmetic/
 ```
 ### Building MEX functions
 
-Use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command to compile `invertMex.cpp` into MEX functions. Place your compiled MEX functions in a `derived` folder within the `toolbox` folder (see below). You need to provide the path of `invertMex.cpp` and path of the `derived` folder as inputs to the `mex` command. 
+Use the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command to compile `invertMex.cpp` into MEX functions. Place your compiled MEX functions in a `toolbox/derived` folder (see below). You need to provide the path of `invertMex.cpp` and path of the `derived` folder as inputs to the `mex` command. 
 
 ``` matlab
 >> source = fullfile("cpp", "invertMex", "*.cpp");
@@ -147,7 +147,7 @@ arithmetic/
 The `buildfile.m` is the same as before.
 
 ## Handling a large number of MEX functions
-If you have many MEX functions, each in its own C/C++ source file, the approach of placing each MEX source file in a separate folder can be cumbersome. In such scenarios we recommend an alternate pattern: move the source files within a `mexfunctions` subfolder under the `cpp` folder.
+If you have many MEX functions, each in its own C/C++ source file, the approach of placing each MEX source file in a separate folder can be cumbersome. In such scenarios we recommend an alternate pattern: move the source files within a `cpp/mexfunctions` folder.
 
 ``` text
 arithmetic/
@@ -189,16 +189,16 @@ end
 You can call libraries implemented in C/C++ from within your MEX functions. Since MEX source files are just C/C++ source code, they use standard syntax to access external libraries. 
 
 ### External Library Header Files (`.h`,`.hpp`)
-Create an `include` folder within the `cpp` folder and put the external library [header files](https://www.learncpp.com/cpp-tutorial/header-files/) within this folder. Use the [`-I`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [mex](https://www.mathworks.com/help/matlab/ref/mex.html) command to specify that header files are in the `include` folder.
+Create an `cpp/include` folder and put the external library [header files](https://www.learncpp.com/cpp-tutorial/header-files/) within this folder. Use the [`-I`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [mex](https://www.mathworks.com/help/matlab/ref/mex.html) command to specify that header files are in the `include` folder.
 
 ### Incorporating a Static Library (`.lib`)
 Some MEX functions incorporate [static libraries](https://www.learncpp.com/cpp-tutorial/a1-static-and-dynamic-libraries/) that are compiled into your MEX function. Place these binaries under platform specific folders within the `library` folder. Use the names from the [`computer('arch')`](https://www.mathworks.com/help/matlab/ref/computer.html) command in MATLAB for the folder names. The table below provides a summary of the folder names and file extensions used for static libraries for popular operating systems.
 
-| Platform          | Folder name | Binary Extension | 
-| :---------------- | :------     | :------        |
-| Linux             | glnxa64     | .a             |
-| Windows           | win64       | .lib           |
-| ARM / Intel  Mac  | maca64      | .dylib         |
+| Platform          | Folder name     | Binary Extension | 
+| :---------------- | :-------------- | :------          |
+| Linux             | library/glnxa64 | .a               |
+| Windows           | library/win64   | .lib             |
+| ARM / Intel  Mac  | library/maca64  | .dylib           |
 
 ``` text
 zlibStatic/
@@ -227,7 +227,7 @@ zlibStatic/
 ```
 
 ### Calling a Dynamic Library
-[Dynamic libraries](https://www.learncpp.com/cpp-tutorial/a1-static-and-dynamic-libraries/) are required for running the MEX functions and must ship to the users. Place the binaries within the `derived` folder under the `toolbox` folder to ensure the library gets shipped to the user. Use the [`-L`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command to specify the location and the name of the runtime library.
+[Dynamic libraries](https://www.learncpp.com/cpp-tutorial/a1-static-and-dynamic-libraries/) are required for running the MEX functions and must ship to the users. Place the binaries within the `toolbox/derived` folder to ensure the library gets shipped to the user. Use the [`-L`](https://www.mathworks.com/help/matlab/ref/mex.html#btw17rw-1-option1optionN) argument to the [`mex`](https://www.mathworks.com/help/matlab/ref/mex.html) command to specify the location and the name of the runtime library.
 
 **Note:** If you have a choice between using a static or dynamic library with your MEX function, we recommend using a static library.  Static libraries are incorporated inside your MEX function, making your MEX function more robust and reliable.
 
