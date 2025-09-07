@@ -1,8 +1,5 @@
 # MATLAB MEX Best Practice
 
-> [!IMPORTANT]
-> This page is under construction and review
-
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
 Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbox Best Practices](./README.md). This document focuses on integrating [MEX functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html) into your MATLAB toolbox. MEX functions enable you to harness the power of C, C++, and Fortran code within MATLAB. In this document when we say "C/C++", we mean "C, C++, and Fortran."
