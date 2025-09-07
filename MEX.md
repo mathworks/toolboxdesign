@@ -24,7 +24,7 @@ This guide ***does not*** teach how to author MEX functions -- there are extensi
 
 To illustrate these best practices, we've created a sample project: The Arithmetic Toolbox, available on [GitHub](https://github.com/mathworks/arithmetic). We'll reference this toolbox throughout the guide to demonstrate practical applications of these principles.  For key concepts, refer to the [Toolbox Best Practices](./README.md).
 
-## MEX function from a single C++ source file
+## Scenario 1: MEX function from a single C++ source file
 The most common case is when you have a single C/C++ MEX source file.  You do not distribute the source file to toolbox users, only the compiled MEX function.  We recommend keeping the C/C++ MEX source files outside of the `toolbox` folder in a folder focused on C/C++ source code, `cpp`. 
 
 For each MEX function in the `cpp` folder, create a folder with the name that matches the name of your MEX function.  This folder should end with `Mex` to indicate that all the files within the folder are associated with a single MEX function.
@@ -119,9 +119,9 @@ arithmetic/
 └───arithmetic.prj
 ``` 
 
-## MEX function from multiple C/C++ source files
+## Scenario 2: MEX function from multiple C/C++ source files
 
-The above pattern extends to MEX functions that has multiple C/C++ source files. One of the source files must contain the MEX [gateway](https://www.mathworks.com/help/matlab/matlab_external/gateway-routine.html) function. Place all the source files under a single folder.
+The above pattern extends to MEX functions that have multiple C/C++ source files. One of the source files must contain the MEX [gateway](https://www.mathworks.com/help/matlab/matlab_external/gateway-routine.html) function. Place all the source files under a single folder.
 
 Our example toolbox adds two `.cpp` files in the  `subtractMex` folder, which builds to the `subtractMex.mexw64` binary in the `derived` folder.  `subtractNumber.m` provides a user accessible version that error checks before calling `SubtractMex`:
 
@@ -146,7 +146,7 @@ arithmetic/
 
 The `buildfile.m` is the same as before.
 
-## Handling a large number of MEX functions
+## Scenario 3: Handling a large number of MEX functions
 If you have many MEX functions, each in its own C/C++ source file, the approach of placing each MEX source file in a separate folder can be cumbersome. In such scenarios we recommend an alternate pattern: move the source files within a `cpp/mexfunctions` folder.
 
 ``` text
@@ -298,6 +298,7 @@ We welcome your input! For further details, suggestions, or to contribute, pleas
 
 ## Appendix: Build Files for MATLAB R2022a-R2024a 
 
+### For scenario 1 and 2
 ``` matlab
 function plan = buildfile
     % Create a plan using local functions
@@ -315,7 +316,7 @@ function mexTask(context)
     end
 end
 ```
-
+### For scenario 3
 
 ``` matlab
 function plan = buildfile

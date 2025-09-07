@@ -21,7 +21,7 @@ To make it easier to follow, we’ve created a fictitious toolbox for doing basi
 * Package and distribute your toolbox with MATLAB Toolbox files (`.mltbx`)
 * Make your toolbox more robust by using tests, MATLAB Projects, source control, and `buildtool`
 * Add the "Open in MATLAB Online" badge so users can try out your toolbox instantly
-* [`mex.md`](./mex.md) in this repository has recommendations for integrating MEX functions into your toolbox 
+* See [`mex.md`](./mex.md) in this repository for recommendations on using MEX functions in your toolbox 
 
 Recommended file and folder structure:
 
