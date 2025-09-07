@@ -12,6 +12,7 @@ Welcome to the MATLAB&reg; MEX Best Practice guide, which extends [MATLAB Toolbo
 - External libraries are placed within a platform specific folder in the `derived` folder and must be added to the system path
 - If your MEX function is written in C++, we recommend using the [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html) command to increase reliability
 - Use a [`MexTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.mextask-class.html) in your [`buildfile.m`](https://www.mathworks.com/help/matlab/build-automation.html) for consistent builds
+- [MathWorks File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/) does not allow submissions that contain compiled MEX functions for security reasons
 
 ## Overview
 
@@ -71,6 +72,7 @@ arithmetic/
 - You can determine the MEX file extension (for example, `.mexw64` in Microsoft Windows) for your operating system using the MATLAB command [`mexext`](https://www.mathworks.com/help/matlab/ref/mexext.html).
 - **Out of process MEX host:** We recommend [Out-of-Process Execution of C++ MEX Functions](https://www.mathworks.com/help/matlab/matlab_external/out-of-process-execution-of-c-mex-functions.html). This prevents coding errors in your C++ MEX function from crashing MATLAB and allows you to use some third-party libraries that are not compatible with MATLAB.  Use the [`mexhost`](https://www.mathworks.com/help/matlab/ref/mexhost.html) command. Note that `mexhost` is only supported for C++ MEX functions. 
 - **Using git:** In git source control systems, we recommend that you *do not* keep compiled MEX functions or other derived files under version control. Add `*.mex*` and `toolbox/derived` to your `.gitignore` file. `*.mex*` is part of the [standard .gitignore file](https://github.com/mathworks/gitignore/blob/main/Global/MATLAB.gitignore) for MATLAB.
+- [MathWorks File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/) does not permit submissions that include compiled MEX binaries. Because users can’t inspect compiled C/C++ code before running it, such files pose a security risk: executing them could run arbitrary code on a user’s machine.
 - *For software engineers:* Best practice for software projects using a compiled language like C++ is to use [out-of-source builds](https://johnfarrier.com/in-source-vs-out-of-source-builds/).  Unfortunately, in projects that mix interpreted languages like MATLAB and Python with compiled languages, pure out-of-source builds would require major changes in the developer workflow.  As such, we recommend this hybrid approach with dedicated derived directory within the source hierarchy.
 
 ### Automation using `buildtool`
