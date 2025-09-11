@@ -4,7 +4,7 @@
 
 You have a MATLAB&reg; toolbox that you want to share with the world. We want to help. To do that, we want to convince you to use the MathWorks Toolbox best practices. It's a little bit of extra work with a big payoff.
 
-This is a continuously evolving document and some best practices may change in the future as MATLAB evolves. We encourage your feedback and suggestions for future revisions. Feel free to [open an issue](https://github.com/mathworks/toolboxdesign/issues) or [post to the discussions](https://github.com/mathworks/toolboxdesign/discussions). Your insights and feedback help us improve this document and make it even more useful for the community.  Right now, we're focused on toolboxes that don't have derived files that require a build step, like MEX files or content-obscured files (P-Code).  We plan to address those in the future.
+This is a continuously evolving document and some best practices may change in the future as MATLAB evolves. We encourage your feedback and suggestions for future revisions. Feel free to [open an issue](https://github.com/mathworks/toolboxdesign/issues) or [post to the discussions](https://github.com/mathworks/toolboxdesign/discussions). Your insights and feedback help us improve this document and make it even more useful for the community.  We've added information on [how to integrate MEX functions](./mex.md), and plan to add recommendations around content-obscured files (P-Code).
 
 Being in a standard format makes it easier for other people to assess and take advantage of your work. Your work is more "legible," because it's in a familiar format. They know, for example, that they can always expect to find a helpful and thorough `README.md` file in the top folder. They also know that a good place to start learning how to use your toolbox will be the `doc/GettingStarted.mlx` file. These and other best practices help your users build confidence that your toolbox is well built and ready to use.
 
@@ -20,7 +20,8 @@ To make it easier to follow, we’ve created a fictitious toolbox for doing basi
 * Provide a `GettingStarted.mlx` in `toolbox/doc` folder to help people get started
 * Package and distribute your toolbox with MATLAB Toolbox files (`.mltbx`)
 * Make your toolbox more robust by using tests, MATLAB Projects, source control, and `buildtool`
-* Add the "Open in MATLAB Online" badge so users can try out your toolbox instantly 
+* Add the "Open in MATLAB Online" badge so users can try out your toolbox instantly
+* See [`mex.md`](./mex.md) in this repository for recommendations on using MEX functions in your toolbox 
 
 Recommended file and folder structure:
 
@@ -111,7 +112,9 @@ MATLAB offers various features to make your toolbox more intuitive and user-frie
 
 * **MATLAB Apps:** MATLAB Apps are interactive graphical applications that allow users to do specific workflows in your toolbox. You package your MATLAB App into a single file (.mlapp) for easier distribution. Create an `apps` folder at the top level of your toolbox folder. When you package your toolbox, make sure to include your apps in the toolbox packaging dialog's apps section. This way, the users can easily access and run your apps after installation. See the [MATLAB apps documentation](https://www.mathworks.com/help/matlab/gui-development.html) for more information.
 
-Our example toolbox takes advantage of all these recommended features, providing a user-friendly experience:
+* **[Mex Functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html):** Compiled functions written in C, C++, or Fortran that bridge the gap between those languages and MATLAB. These are frequently used to provide access to external libraries or high-performance implementations.  See [`mex.md`](./mex.md) in this repository for recommendations.
+
+Our example toolbox includes some of these recommended features:
 
 1. An app called `arithmetic.mlapp` in the `apps` folder
 2. Tab completion and argument validation for our functions
@@ -220,7 +223,7 @@ arithmetic/
 
 ### Source Control and `buildtool` (CI/CD Files)
 
-* Source control systems should be set up with this folder as the root of a source repository. Additional configuration files like `.gitatributes` and `.gitignore` belong in this folder. A `.gitignore` file for a typical MATLAB toolbox project can be found [here](https://github.com/mathworks/gitignore/blob/main/Global/MATLAB.gitignore).
+* Source control systems should be set up with this folder as the root of a source repository. Additional configuration files like `.gitattributes` and `.gitignore` belong in this folder. A `.gitignore` file for a typical MATLAB toolbox project can be found [here](https://github.com/mathworks/gitignore/blob/main/Global/MATLAB.gitignore).
 * Scripts related to packaging and shipping the toolbox should be placed in a `buildUtilities` folder under the root folder. Consider using the [`buildtool`](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html) introduced in R2022b.  The tasks functions associated with `buildtool` are in `buildfile.m`.
 
 ```markdown
