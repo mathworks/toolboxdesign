@@ -21,7 +21,7 @@ To make it easier to follow, we’ve created a fictitious toolbox for doing basi
 * Package and distribute your toolbox with MATLAB Toolbox files (`.mltbx`)
 * Make your toolbox more robust by using tests, MATLAB Projects, source control, and `buildtool`
 * Add the "Open in MATLAB Online" badge so users can try out your toolbox instantly
-* See [`mex.md`](./mex.md) in this repository for recommendations on using MEX functions in your toolbox 
+* See [`MEX.md`](./MEX.md) in this repository for recommendations on using MEX functions in your toolbox 
 
 Recommended file and folder structure:
 
@@ -112,7 +112,7 @@ MATLAB offers various features to make your toolbox more intuitive and user-frie
 
 * **MATLAB Apps:** MATLAB Apps are interactive graphical applications that allow users to do specific workflows in your toolbox. You package your MATLAB App into a single file (.mlapp) for easier distribution. Create an `apps` folder at the top level of your toolbox folder. When you package your toolbox, make sure to include your apps in the toolbox packaging dialog's apps section. This way, the users can easily access and run your apps after installation. See the [MATLAB apps documentation](https://www.mathworks.com/help/matlab/gui-development.html) for more information.
 
-* **[Mex Functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html):** Compiled functions written in C, C++, or Fortran that bridge the gap between those languages and MATLAB. These are frequently used to provide access to external libraries or high-performance implementations.  See [`mex.md`](./MEX.md) in this repository for recommendations.
+* **[Mex Functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html):** Compiled functions written in C, C++, or Fortran that bridge the gap between those languages and MATLAB. These are frequently used to provide access to external libraries or high-performance implementations.  See [`Mex.md`](./MEX.md) in this repository for recommendations.
 
 Our example toolbox includes some of these recommended features:
 
