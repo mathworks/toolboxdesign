@@ -41,7 +41,7 @@ Recommended file and folder structure:
 
 ## Topics
 
-* [Root Folder Name and Contents](#root-folder)
+* [Root Folder Name and Contents](#root-folder-name-and-contents)
 * [Toolbox Folder](#toolbox-folder)
 * [Packaging and Releasing your Toolbox](#packaging-and-releasing-your-toolbox)
 * [Make your Toolbox more robust](#make-your-toolbox-more-robust)
@@ -108,7 +108,7 @@ MATLAB offers various features to make your toolbox more intuitive and user-frie
 
 * **Suggestions and Argument Validation:** To enhance your user's experience when using your functions, you can add an `arguments` block to create customized tab completion suggestions. This was introduced in R2019a. Additionally, MATLAB will verify the type, size, and values passed to your function, enabling users to call your function correctly. See the [Function Argument Validation documentation](https://www.mathworks.com/help/matlab/matlab_prog/function-argument-validation-1.html) for more information. If you need more control over tab completion, create a `functionSignatures.json` and place it in the same folder as the corresponding function or class.  See the [custom suggestions and tab completion documentation](https://www.mathworks.com/help/matlab/matlab_prog/customize-code-suggestions-and-completions.html) for more information.
 
-* **Namespaces:** Namespaces (also known as Packages) provide a means to organize classes and functions and reduce the risk of two functions having the same name.  See the [Namespaces documentation](https://www.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html) for more information.
+* **Namespaces:** Namespaces (also known as Packages) provide a means to organize classes and functions and reduce the risk of two functions having the same name.  See the [Namespaces documentation](https://www.mathworks.com/help/matlab/matlab_oop/namespaces.html) for more information.
 
 * **MATLAB Apps:** MATLAB Apps are interactive graphical applications that allow users to do specific workflows in your toolbox. You package your MATLAB App into a single file (.mlapp) for easier distribution. Create an `apps` folder at the top level of your toolbox folder. When you package your toolbox, make sure to include your apps in the toolbox packaging dialog's apps section. This way, the users can easily access and run your apps after installation. See the [MATLAB apps documentation](https://www.mathworks.com/help/matlab/gui-development.html) for more information.
 
@@ -189,7 +189,8 @@ To help you ensure that your toolbox is high-quality, performant, and reliable, 
 
 ### Tests
 
-Tests check the quality of your toolbox and help you build confidence that you have high quality releases. The [MATLAB Testing Framework](https://www.mathworks.com/help/matlab/matlab-unit-test-framework.html) provides support for testing your code. For users familiar with MATLAB, [Function-Based Unit Tests](https://www.mathworks.com/help/matlab/function-based-unit-tests.html) will be the most familiar.  Place your tests under the `tests` folder in the root folder since tests are not usually shared with your users. If you host your toolbox on GitHub.com, you can use [GitHub Actions](https://github.com/matlab-actions/overview) created by MathWorks to qualify a change by automatically running the tests.
+Tests check the quality of your toolbox and help you build confidence that you have high quality releases. The [MATLAB Testing Framework](https://www.mathworks.com/help/matlab/matlab-unit-test-framework.html) provides support for testing your code. 
+For users familiar with MATLAB, [Function-Based Unit Tests](https://www.mathworks.com/help/matlab/matlab_prog/function-based-unit-tests.html) will be the most familiar.  Place your tests under the `tests` folder in the root folder since tests are not usually shared with your users. If you host your toolbox on GitHub.com, you can use [GitHub Actions](https://github.com/matlab-actions/overview) created by MathWorks to qualify a change by automatically running the tests.
 
 Here's what our example toolbox looks like with tests:
 
