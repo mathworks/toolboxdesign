@@ -2,7 +2,7 @@
 
 ![Version Number](https://img.shields.io/github/v/release/mathworks/toolboxdesign?label=version) ![CC-BY-4.0 License](https://img.shields.io/github/license/mathworks/toolboxdesign)
 
-You have a MATLAB&reg; toolbox that you want to share with the world. We want to help. To do that, we want to convince you to use the MathWorks Toolbox best practices. It's a little bit of extra work with a big payoff.
+You have a MATLAB&reg; toolbox that you want to share with the world. We want to help. Apply these MathWorks Toolbox best practices. It's a little bit of extra work with a big payoff.
 
 This is a continuously evolving document and some best practices may change in the future as MATLAB evolves. We encourage your feedback and suggestions for future revisions. Feel free to [open an issue](https://github.com/mathworks/toolboxdesign/issues) or [post to the discussions](https://github.com/mathworks/toolboxdesign/discussions). Your insights and feedback help us improve this document and make it even more useful for the community.  We've added information on [how to integrate MEX functions](./MEX.md), and plan to add recommendations around content-obscured files (P-Code).
 
