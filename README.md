@@ -41,7 +41,7 @@ arithmetic/                          # Root folder: short toolbox name without "
 │       arithmetic.jpg               # Toolbox icon
 ├───release/                         # Derived output, NOT under source control
 │       Arithmetic Toolbox.mltbx     # Readable name with spaces and semantic versioning.
-├───tests/                           # Not shipped to users. Function-based unit tests; can run with GitHub Actions.
+├───tests/                           # Not shipped to users
 │       testAdd.m
 │       testIntToWord.m
 └───toolbox/                         # EVERYTHING shipped to users, and nothing else (package exactly this folder)
@@ -49,15 +49,13 @@ arithmetic/                          # Root folder: short toolbox name without "
     │   functionSignatures.json      # Custom tab completion. Also use arguments blocks for validation and suggestions (R2019a+).
     ├───+describe/                   # Namespace that groups secondary functions (describe.add)
     │       add.m
-    ├───+arithmetic/+internal/       # Larger toolboxes: internal code in the <toolboxname>.internal namespace
-    │       ...                      #   (e.g. arithmetic.internal.intToWord)
-    ├───<feature folders>/           # Larger toolboxes: specialized functions grouped by functionality
+    ├───+arithmetic/+internal/       # internal code in the <toolboxname>.internal namespace
     ├───apps/                        # MATLAB Apps; add them in the packaging dialog's apps section
     │       arithmetic.mlapp
     ├───doc/
-    │       GettingStarted.mlx       # Overview and key workflows. Shown to users when they install.
-    ├───examples/                    # Live Script examples
-    │       usingAdd.mlx
+    │       GettingStarted.m         # Overview and key workflows,  saved as plain text live code file format (.m)
+    ├───examples/                    # Live Script examples, saved as plain text live code file format (.m)
+    │       usingAdd.m
     └───private/                     # Helpers that only code in toolbox/ can call; hidden from users
             intToWord.m
 ```
