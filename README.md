@@ -16,7 +16,7 @@ To make it easier to follow, we’ve created a fictitious toolbox for doing basi
 
 ## TL;DR
 * Root folder is a shortened version of the name of the toolbox
-* Put all the materials that you plan to share with your users in `toolbox`sub-folder
+* Put all the materials that you plan to share with your users in `toolbox` sub-folder
 * Provide a `GettingStarted.mlx` in `toolbox/doc` folder to help people get started
 * Package and distribute your toolbox with MATLAB Toolbox files (`.mltbx`)
 * Make your toolbox more robust by using tests, MATLAB Projects, source control, and `buildtool`
@@ -26,17 +26,40 @@ To make it easier to follow, we’ve created a fictitious toolbox for doing basi
 Recommended file and folder structure:
 
 ``` text
-<toolboxname>/
-|   README.md                    # Overview of toolbox for users and developers
-|   license.txt                  # License file
-└───images/                      # Images for README.md
-└───toolbox/
-    |   <toolboxfunction1>.m     # Documented functions
-    |   <toolboxfunction2>.m
-    ├───doc/                     
-    |       GettingStarted.mlx   # Getting started guide
-    ├───examples/                # Examples (Live Scripts)
-    └───private/                 # Implementation details, not intended for end users
+arithmetic/                          # Root folder: short toolbox name without "toolbox"; letters, numbers, underscores; starts with a letter
+│   .gitignore                       # Use the MathWorks MATLAB.gitignore template
+│   README.md                        # Capitalized. Starts with a user summary and install steps, points to GettingStarted.mlx,
+│                                    #   then covers contributing. Add "Open in MATLAB Online" and File Exchange badges.
+│   license.txt                      # Says how others may use, share, and change the code
+│   arithmetic.prj                   # MATLAB Project with the same name as the root folder. Holds Package Toolbox settings (R2025a+).
+│   buildfile.m                      # buildtool task functions (R2022b+)
+├───.git/                            # Source control repository
+├───resources/                       # MATLAB Project metadata, under source control
+├───buildUtilities/                  # Scripts for packaging and shipping the toolbox
+├───images/                          # Images for README.md
+│       readmeImage.jpg 
+│       arithmetic.jpg               # Toolbox icon
+├───release/                         # Derived output, NOT under source control
+│       Arithmetic Toolbox.mltbx     # Readable name with spaces and semantic versioning.
+├───tests/                           # Not shipped to users. Function-based unit tests; can run with GitHub Actions.
+│       testAdd.m
+│       testIntToWord.m
+└───toolbox/                         # EVERYTHING shipped to users, and nothing else (package exactly this folder)
+    │   add.m                        # Documented functions that users call directly. Fewer than 20: keep them at top level.
+    │   functionSignatures.json      # Custom tab completion. Also use arguments blocks for validation and suggestions (R2019a+).
+    ├───+describe/                   # Namespace that groups secondary functions (describe.add)
+    │       add.m
+    ├───+arithmetic/+internal/       # Larger toolboxes: internal code in the <toolboxname>.internal namespace
+    │       ...                      #   (e.g. arithmetic.internal.intToWord)
+    ├───<feature folders>/           # Larger toolboxes: specialized functions grouped by functionality
+    ├───apps/                        # MATLAB Apps; add them in the packaging dialog's apps section
+    │       arithmetic.mlapp
+    ├───doc/
+    │       GettingStarted.mlx       # Overview and key workflows. Shown to users when they install.
+    ├───examples/                    # Live Script examples
+    │       usingAdd.mlx
+    └───private/                     # Helpers that only code in toolbox/ can call; hidden from users
+            intToWord.m
 ```
 
 ## Topics
@@ -79,7 +102,7 @@ The structure of your toolbox folder should reflect its size and complexity:
 
 We also recommend including in your toolbox folder:
 
-* A `GettingStarted.mlx` file that introduces your users to your toolbox and showcase important workflows. This file should give an overview of how to use your toolbox and highlight key functionality. Put this file in a `doc` folder under the `toolbox` folder. This specific name and location will come in handy later since it ensures your end users will be shown the `GettingStarted.mlx` file when they [install your toolbox](#packaging-and-releasing-your-toolbox).
+* A `GettingStarted.mlx` file that introduces your users to your toolbox and showcases important workflows. This file should give an overview of how to use your toolbox and highlight key functionality. Put this file in a `doc` folder under the `toolbox` folder. This specific name and location will come in handy later since it ensures your end users will be shown the `GettingStarted.mlx` file when they [install your toolbox](#packaging-and-releasing-your-toolbox).
 * Examples are an effective way for users to learn how to use your toolbox. We recommend using MATLAB Live Scripts to show how to use different parts of your toolbox and including them in an `examples` folder under the toolbox folder. This makes it easier for users to explore and try out different code samples.
 
 Our example toolbox has:
@@ -112,7 +135,7 @@ MATLAB offers various features to make your toolbox more intuitive and user-frie
 
 * **MATLAB Apps:** MATLAB Apps are interactive graphical applications that allow users to do specific workflows in your toolbox. You package your MATLAB App into a single file (.mlapp) for easier distribution. Create an `apps` folder at the top level of your toolbox folder. When you package your toolbox, make sure to include your apps in the toolbox packaging dialog's apps section. This way, the users can easily access and run your apps after installation. See the [MATLAB apps documentation](https://www.mathworks.com/help/matlab/gui-development.html) for more information.
 
-* **[Mex Functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html):** Compiled functions written in C, C++, or Fortran that bridge the gap between those languages and MATLAB. These are frequently used to provide access to external libraries or high-performance implementations.  See [`Mex.md`](./MEX.md) in this repository for recommendations.
+* **[Mex Functions](https://www.mathworks.com/help/matlab/call-mex-file-functions.html):** Compiled functions written in C, C++, or Fortran that bridge the gap between those languages and MATLAB. These are frequently used to provide access to external libraries or high-performance implementations.  See [`MEX.md`](./MEX.md) in this repository for recommendations.
 
 Our example toolbox includes some of these recommended features:
 
@@ -209,15 +232,15 @@ arithmetic/
 
 * [Projects](https://www.mathworks.com/help/matlab/projects.html) are a great way to ensure a consistent environment for your authoring team. It manages dependencies in complex projects, keeps the path correct, and integrates with source control systems.
 * Give the project file (with a `.prj` extension) the same name as the root folder. Put it in the root folder and check it into the source control system.
+* MATLAB Projects store their metadata in a `resources` folder under the root folder. Check this folder into source control along with the project file.
 
-If we look at our example toolbox:
+If we look at our example toolbox (R2025a and newer):
 
 ```markdown
 arithmetic/
 |   README.md
 |   arithmetic.prj
 |   license.txt
-|   toolboxPackaging.prj
 :
 └───resources/
 ```
@@ -235,7 +258,6 @@ arithmetic/
 |   arithmetic.prj
 |   buildfile.m
 |   license.txt
-|   toolboxPackaging.prj
 ├───.git/
 :
 ├───resources/
@@ -263,4 +285,4 @@ Here are example repositories that apply some or all of these best practices:
 ---
 [![CC-BY-4.0](images/cc-by-40.png)](https://creativecommons.org/licenses/by/4.0/)
 
-Copyright &copy; 2023 - 2025, The MathWorks, Inc.
+Copyright &copy; 2023 - 2026, The MathWorks, Inc.
